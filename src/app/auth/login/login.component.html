@@ -1,0 +1,17 @@
+<div class="login-container">
+    <div *ngIf="!loading" class="login">
+        <img src="assets/img/user.png" alt="user">
+        <form (ngSubmit)="login()" [formGroup]="myForm" autocomplete="off">
+            <mat-form-field appearance="fill">
+                <mat-label>Email</mat-label>
+                <input formControlName="email" matInput>
+            </mat-form-field>
+            <mat-form-field appearance="fill">
+                <mat-label>Contraseña</mat-label>
+                <input formControlName="password" matInput type="password">
+            </mat-form-field>
+            <button *ngIf="!load_btn" mat-raised-button color="primary">Ingresar</button>
+            <button *ngIf="load_btn" mat-raised-button color="primary" disabled>Loading</button>
+        </form>
+    </div>
+</div>

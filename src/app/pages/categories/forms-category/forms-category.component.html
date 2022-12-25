@@ -1,0 +1,22 @@
+<mat-card>
+  <mat-card-content>
+     <div mat-dialog-title class="text-center">{{ titleModal }}</div>
+     <form [formGroup]="myForm" autocomplete="off">
+        <mat-form-field appearance="fill">
+           <mat-label>Título</mat-label>
+           <input formControlName="title" matInput />
+           <mat-error *ngIf="isValid('title')">{{ showMessage('title') }}</mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+           <mat-label>Descripción</mat-label>
+           <input formControlName="description" matInput />
+           <mat-error *ngIf="isValid('description')">{{ showMessage('description') }}</mat-error>
+        </mat-form-field>
+        <mat-slide-toggle formControlName="status" color="primary">Estado</mat-slide-toggle>
+     </form>
+     <div mat-dialog-actions class="mt-3">
+        <button (click)="onClick()" mat-raised-button [color]="colorButton" [disabled]="onLoading()">{{ titleButton }}</button>
+        <button (click)="onClose()" mat-raised-button>Cerrar</button>
+     </div>
+  </mat-card-content>
+</mat-card>

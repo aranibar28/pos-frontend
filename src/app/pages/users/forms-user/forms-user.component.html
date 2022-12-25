@@ -1,0 +1,42 @@
+<mat-card>
+  <mat-card-content>
+     <div mat-dialog-title class="text-center">{{ titleModal }}</div>
+     <form [formGroup]="myForm" autocomplete="off">
+        <mat-form-field appearance="fill">
+           <mat-label>DNI</mat-label>
+           <input formControlName="dni" (keypress)="onlyNumber($event)" type="text" matInput />
+           <button (click)="onSearchDni()" type="button" [disabled]="loadSearch" mat-icon-button matSuffix >
+            <mat-icon *ngIf="!loadSearch" color="primary" fontIcon="search"></mat-icon>
+            <mat-icon *ngIf="loadSearch" class="spinning" fontIcon="loop"></mat-icon>
+           </button>
+           <mat-error *ngIf="isValid('dni')">{{ showMessage('dni') }}</mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+           <mat-label>Nombres</mat-label>
+           <input formControlName="first_name" matInput readonly/>
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+           <mat-label>Apellidos</mat-label>
+           <input formControlName="last_name" matInput readonly/>
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+           <mat-label>Email</mat-label>
+           <input formControlName="email" matInput placeholder="example@gmail.com">
+           <mat-error *ngIf="isValid('email')">{{ showMessage('email') }}</mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+           <mat-label>Password</mat-label>
+           <input formControlName="password" #password matInput [type]="hide ? 'password' : 'text'">
+           <button mat-icon-button matSuffix (click)="hide = !hide">
+              <mat-icon>{{ hide ? 'visibility_off' : 'visibility' }}</mat-icon>
+           </button>
+           <mat-error *ngIf="isValid('password')">{{ showMessage('password') }}</mat-error>
+        </mat-form-field>
+        <mat-slide-toggle formControlName="status" color="primary">Estado</mat-slide-toggle>
+     </form>
+     <div mat-dialog-actions class="mt-3">
+        <button (click)="onClick()" mat-raised-button [color]="colorButton" [disabled]="loadButton">{{ titleButton }}</button>
+        <button (click)="onClose()" mat-raised-button>Cerrar</button>
+     </div>
+  </mat-card-content>
+</mat-card>

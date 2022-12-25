@@ -1,0 +1,24 @@
+<mat-card>
+    <mat-card-content>
+      <div mat-dialog-title class="text-center">{{ titleModal }}</div>
+      
+      <form [formGroup]="myForm" autocomplete="off">
+        <mat-form-field appearance="outline">
+          <mat-label>Título</mat-label>
+          <input formControlName="title" matInput />
+        </mat-form-field>
+        <section formGroupName="allows" class="list-group">
+          <h4 class="mb-0">Módulos:</h4>
+          <mat-checkbox [formControl]="checkedAll" (change)="isCheckedAll($event)" [indeterminate]="indeterminate"><b>Seleccionar todos</b></mat-checkbox>
+          <ng-container *ngFor="let item of menu">
+            <mat-checkbox [formControlName]="item.path" color="primary">{{ item.title }}</mat-checkbox>
+          </ng-container>
+       </section>
+      </form>
+  
+      <div mat-dialog-actions class="mt-3">
+        <button (click)="onClick()" mat-raised-button [color]="colorButton" [disabled]="onLoading()">{{ titleButton }}</button>
+        <button (click)="onClose()" mat-raised-button>Cerrar</button>
+      </div>
+    </mat-card-content>
+</mat-card>

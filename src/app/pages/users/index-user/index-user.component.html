@@ -1,0 +1,71 @@
+<div class="row">
+  
+   <div *ngIf="toggle" class="col-md-3 mb-3 fadeIn">
+     <app-filter-card (data)="onChange($event)" (reset)="onReset($event)"></app-filter-card>
+   </div>
+
+   <div [ngClass]="toggle ? 'col-md-9 mb-3': 'col-md-12 mb-3'">
+      <mat-card>
+         <mat-card-content>
+            <mat-card-title class="centered px-3">
+               <h3 class="mb-0 w-100">Lista de Usuarios</h3>
+               <div class="centered gap-2">
+                  <app-filter-button (switch)="toggle = $event" ></app-filter-button>
+                  <button (click)="create_data()" mat-raised-button color="primary">
+                     <mat-icon fontIcon="exposure_plus_1"></mat-icon>Nuevo
+                  </button>
+               </div>
+            </mat-card-title>
+            <div class="table-responsive">
+               <table mat-table [dataSource]="dataSource" matSort>
+                  <ng-container matColumnDef="dni">
+                     <th mat-header-cell *matHeaderCellDef mat-sort-header>DNI</th>
+                     <td mat-cell *matCellDef="let element">{{ element.dni }}</td>
+                  </ng-container>
+                  <ng-container matColumnDef="email">
+                     <th mat-header-cell *matHeaderCellDef mat-sort-header>Email</th>
+                     <td mat-cell *matCellDef="let element">{{ element.email }}</td>
+                  </ng-container>
+                  <ng-container matColumnDef="full_name">
+                     <th mat-header-cell *matHeaderCellDef mat-sort-header>Nombres</th>
+                     <td mat-cell *matCellDef="let element">{{ element.full_name }}</td>
+                  </ng-container>
+                  <ng-container matColumnDef="status">
+                     <th mat-header-cell *matHeaderCellDef mat-sort-header>Estado</th>
+                     <td mat-cell *matCellDef="let element">
+                        <mat-chip [ngClass]="{'assigned-chip': element.status}" color="primary">{{ element.status | status }}</mat-chip>
+                     </td>
+                  </ng-container>
+                  <ng-container matColumnDef="created_at">
+                   <th mat-header-cell *matHeaderCellDef mat-sort-header>Creación</th>
+                   <td mat-cell *matCellDef="let element">{{ element.created_at | date: 'short' }}</td>
+                   </ng-container>
+                  <ng-container matColumnDef="actions">
+                     <th mat-header-cell *matHeaderCellDef> Actions </th>
+                     <td mat-cell *matCellDef="let element">
+                        <button (click)="update_data(element)" mat-mini-fab color="primary" class="me-2">
+                           <mat-icon fontIcon="edit"></mat-icon>
+                        </button>
+                        <button (click)="delete_data(element)" mat-mini-fab color="primary">
+                           <mat-icon fontIcon="delete"></mat-icon>
+                        </button>
+                     </td>
+                  </ng-container>
+                  <ng-container>
+                     <tr *matNoDataRow>
+                        <td class="text-center py-4" [attr.colspan]="displayedColumns.length">No se encontraron datos.</td>
+                     </tr>
+                  </ng-container>
+                  <ng-container>
+                     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                     <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+                  </ng-container>
+               </table>
+            </div>
+            <mat-paginator (page)="onPageChange($event)" [pageIndex]="pageIndex" [length]="totalDocs" [pageSizeOptions]="[10, 20, 50, 100]"></mat-paginator>
+            <ngx-spinner type="ball-scale-multiple" bdColor="rgba(0, 0, 0, 0.8)" color="#fff" [fullScreen]="false"></ngx-spinner>
+         </mat-card-content>
+     </mat-card>
+   </div>
+
+</div>

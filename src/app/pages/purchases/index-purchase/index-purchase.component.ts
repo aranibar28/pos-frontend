@@ -1,0 +1,240 @@
+import { Component, OnInit, AfterViewInit, inject } from '@angular/core';
+import { FormControl, Validators } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
+import { MatTableDataSource } from '@angular/material/table';
+
+import { ProductService } from 'src/app/services/product.service';
+import { SupplierService } from 'src/app/services/supplier.service';
+import { PurchaseService } from 'src/app/services/purchase.service';
+import { AlertService } from 'src/app/common/alert.service';
+import { ListPurchasesComponent } from '../list-purchases/list-purchases.component';
+import { FormsSupplierComponent } from '../../suppliers/forms-supplier/forms-supplier.component';
+import { RequireMatch } from 'src/app/utils/require-match';
+
+import {
+  SHARED_MODULES,
+  TABLE_MODULES,
+  FORMS_MODULES,
+} from 'src/app/utils/modules';
+
+const columns = ['title', 'price', 'quantity', 'subtotal', 'actions'];
+
+@Component({
+  selector: 'app-index-purchase',
+  standalone: true,
+  imports: [SHARED_MODULES, FORMS_MODULES, TABLE_MODULES],
+  templateUrl: './index-purchase.component.html',
+})
+export class IndexPurchaseComponent implements OnInit, AfterViewInit {
+  private supplierService = inject(SupplierService);
+  private purchaseService = inject(PurchaseService);
+  private productService = inject(ProductService);
+  private alertService = inject(AlertService);
+  private dialog = inject(MatDialog);
+
+  public displayedColumns: string[] = columns;
+  public dataSource!: MatTableDataSource<any>;
+  public loadButton: boolean = false;
+  public loadSearch: boolean = false;
+
+  public purchases: Array<any> = [];
+  public suppliers: Array<any> = [];
+  public products: Array<any> = [];
+  public details = JSON.parse(localStorage.getItem('details') || '[]');
+
+  public suppliersOptions: Array<any> = [];
+  public productsOptions: Array<any> = [];
+
+  public total: number = 0;
+  public count: number = 0;
+
+  public product = new FormControl('');
+  public supplier = new FormControl('', [Validators.required, RequireMatch]);
+
+  ngOnInit(): void {
+    this.init_purchases();
+    this.init_suppliers();
+    this.init_products();
+    this.calculate_total();
+  }
+
+  ngAfterViewInit(): void {
+    this.dataSource = new MatTableDataSource(this.details);
+
+    this.supplier.valueChanges.subscribe((data) => {
+      const value = String(data).trim();
+      this.filterSupplier(value);
+    });
+
+    this.product.valueChanges.subscribe((data) => {
+      const value = String(data).trim();
+      this.filterProduct(value);
+    });
+  }
+
+  filterSupplier(data: string) {
+    const value = data.toString().toLowerCase();
+    this.suppliersOptions = this.suppliers.filter((item) => {
+      return item?.name.toLowerCase().indexOf(value) > -1;
+    });
+  }
+
+  filterProduct(data: string) {
+    const value = data?.toString().toLowerCase();
+    this.productsOptions = this.products.filter((item) => {
+      return item?.title.toLowerCase().indexOf(value) > -1;
+    });
+  }
+
+  displayFn(supplier: any) {
+    return supplier ? supplier.name : supplier;
+  }
+
+  add_item(item: any) {
+    const product = this.details.find((x: any) => x.product == item._id);
+
+    if (product) {
+      product.quantity += 1;
+      product.price = item.price;
+    } else {
+      this.details.push({
+        product: item._id,
+        title: item.title,
+        price: item.price,
+        quantity: 1,
+      });
+    }
+    this.dataSource._updateChangeSubscription();
+    this.product.setValue('');
+    this.calculate_total();
+  }
+
+  del_item(i: number) {
+    this.details.splice(i, 1);
+    this.dataSource._updateChangeSubscription();
+    this.calculate_total();
+  }
+
+  increase_qty(i: number) {
+    this.details[i].quantity = this.details[i].quantity + 1;
+    this.calculate_total();
+  }
+
+  decrease_qty(i: number) {
+    if (this.details[i].quantity <= 1) {
+      this.details[i].quantity = 1;
+    } else {
+      this.details[i].quantity = this.details[i].quantity - 1;
+    }
+    this.calculate_total();
+  }
+
+  keyupQuantity(event: any, i: any) {
+    this.details[i].quantity = Number(event.target.value) || 1;
+    this.calculate_total();
+  }
+
+  calculate_total() {
+    let total = 0;
+    let count = 0;
+    for (let item of this.details) {
+      total += item.price * item.quantity;
+      count += item.quantity;
+    }
+    this.total = total;
+    this.count = count;
+    localStorage.setItem('details', JSON.stringify(this.details));
+  }
+
+  create_data() {
+    if (this.details.length === 0) {
+      this.alertService.error('Seleccione un producto.');
+      return;
+    }
+
+    if (this.supplier.invalid) {
+      this.supplier.markAsTouched();
+      this.loadButton = false;
+      return;
+    }
+
+    const data = {
+      supplier: this.supplier.value,
+      amount: this.total,
+      details: this.details,
+    };
+
+    this.loadButton = true;
+
+    setTimeout(() => {
+      this.loadButton = false;
+      console.log(data);
+    }, 3000);
+
+    /*   this.purchaseService.create_purchase(data).subscribe({
+      next: (res) => {
+        this.loadButton = false;
+
+        if (!res.data) {
+          return this.alertService.error(res.msg);
+        }
+        this.init_purchases();
+        this.alertService.success('Se registró correctamente');
+      },
+      error: (err) => {
+        this.loadButton = false;
+        console.log(err);
+      },
+    }); */
+  }
+
+  init_suppliers() {
+    this.supplierService.read_suppliers(1, 100, '', '', '').subscribe({
+      next: (res) => {
+        this.suppliers = res.docs;
+        this.suppliersOptions = res.docs;
+      },
+    });
+  }
+
+  init_products() {
+    this.productService.read_products(1, 100, '', '', '').subscribe({
+      next: (res) => {
+        this.products = res.docs;
+        this.productsOptions = res.docs;
+      },
+    });
+  }
+
+  init_purchases() {
+    this.purchaseService.read_purchases().subscribe({
+      next: (res) => {
+        this.purchases = res.data;
+      },
+    });
+  }
+
+  create_supplier(): void {
+    const dialogRef = this.dialog.open(FormsSupplierComponent, {
+      data: { data: null, new_data: true },
+      autoFocus: false,
+      width: '400px',
+    });
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.init_suppliers();
+      }
+    });
+  }
+
+  open_table(): void {
+    const dialogRef = this.dialog.open(ListPurchasesComponent, {
+      data: this.purchases,
+      autoFocus: false,
+      width: '960px',
+    });
+    dialogRef.afterClosed().subscribe((result) => {
+      return result;
+    });
+  }
+}
