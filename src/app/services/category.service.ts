@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/app/utils/enviroments';
+import { Document } from '../interfaces/document';
 const base_url = environment.base_url + '/categories';
 
 @Injectable({
@@ -29,9 +30,9 @@ export class CategoryService {
     search: string = '',
     filter: string,
     sort: string
-  ): Observable<any> {
+  ): Observable<Document> {
     const url = `${base_url}/read_categories?page=${p}&limit=${l}&search=${search}&status=${filter}&sort=${sort}`;
-    return this.http.get(url, this.headers);
+    return this.http.get<Document>(url, this.headers);
   }
 
   read_all_categories(): Observable<any> {

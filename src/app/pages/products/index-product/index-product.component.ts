@@ -14,6 +14,8 @@ import { FormsProductComponent } from '../forms-product/forms-product.component'
 import { CategoryService } from 'src/app/services/category.service';
 import { ProductService } from 'src/app/services/product.service';
 import { AlertService } from 'src/app/common/alert.service';
+import { Product } from 'src/app/interfaces/product';
+import { Category } from 'src/app/interfaces/category';
 import { SHARED_MODULES, TABLE_MODULES } from 'src/app/utils/modules';
 
 const columns = [
@@ -48,8 +50,8 @@ export class IndexProductComponent implements OnInit {
   @ViewChild(MatSort) sort!: MatSort;
   public displayedColumns: string[] = columns;
   public dataSource!: MatTableDataSource<any>;
-  public products: Array<any> = [];
-  public categories: Array<any> = [];
+  public products: Product[] = [];
+  public categories: Category[] = [];
 
   public search = this.activatedRoute.snapshot.queryParams['search'] || '';
   public status = this.activatedRoute.snapshot.queryParams['status'] || '';
@@ -79,7 +81,7 @@ export class IndexProductComponent implements OnInit {
       .subscribe({
         next: (res) => {
           this.products = res.docs;
-          this.dataSource = new MatTableDataSource(res.docs);
+          this.dataSource = new MatTableDataSource<Product>(res.docs);
           this.dataSource.sort = this.sort;
           this.totalDocs = res.totalDocs;
           this.pageIndex = res.page - 1;
@@ -135,7 +137,7 @@ export class IndexProductComponent implements OnInit {
     });
   }
 
-  update_data(item: any): void {
+  update_data(item: Product): void {
     const dialogRef = this.dialog.open(FormsProductComponent, {
       data: { data: item, categories: this.categories, new_data: false },
       autoFocus: false,
@@ -146,7 +148,7 @@ export class IndexProductComponent implements OnInit {
     });
   }
 
-  delete_data(item: any): void {
+  delete_data(item: Product): void {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       data: `¿Estas seguro de eliminar ${item.title}?`,
       width: '400px',

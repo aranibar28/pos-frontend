@@ -97,7 +97,7 @@ export class IndexPurchaseComponent implements OnInit, AfterViewInit {
       product.quantity += 1;
       product.price = item.price;
     } else {
-      this.details.push({
+      this.details.unshift({
         product: item._id,
         title: item.title,
         price: item.price,
@@ -105,7 +105,7 @@ export class IndexPurchaseComponent implements OnInit, AfterViewInit {
       });
     }
     this.dataSource._updateChangeSubscription();
-    this.product.setValue('');
+    this.product.reset('');
     this.calculate_total();
   }
 
@@ -126,6 +126,11 @@ export class IndexPurchaseComponent implements OnInit, AfterViewInit {
     } else {
       this.details[i].quantity = this.details[i].quantity - 1;
     }
+    this.calculate_total();
+  }
+
+  keyupPrice(event: any, i: any) {
+    this.details[i].price = Number(event.target.value) || 1;
     this.calculate_total();
   }
 
@@ -165,27 +170,24 @@ export class IndexPurchaseComponent implements OnInit, AfterViewInit {
     };
 
     this.loadButton = true;
-
-    setTimeout(() => {
-      this.loadButton = false;
-      console.log(data);
-    }, 3000);
-
-    /*   this.purchaseService.create_purchase(data).subscribe({
+    this.purchaseService.create_purchase(data).subscribe({
       next: (res) => {
         this.loadButton = false;
-
         if (!res.data) {
           return this.alertService.error(res.msg);
         }
         this.init_purchases();
+        this.supplier.reset('');
+        this.details = [];
+        this.dataSource = new MatTableDataSource(this.details);
         this.alertService.success('Se registró correctamente');
+        localStorage.setItem('details', JSON.stringify(this.details));
       },
       error: (err) => {
         this.loadButton = false;
         console.log(err);
       },
-    }); */
+    });
   }
 
   init_suppliers() {
@@ -198,10 +200,10 @@ export class IndexPurchaseComponent implements OnInit, AfterViewInit {
   }
 
   init_products() {
-    this.productService.read_products(1, 100, '', '', '').subscribe({
+    this.productService.read_products_purchases().subscribe({
       next: (res) => {
-        this.products = res.docs;
-        this.productsOptions = res.docs;
+        this.products = res;
+        this.productsOptions = res;
       },
     });
   }

@@ -13,6 +13,7 @@ import { ConfirmDialogComponent } from 'src/app/shared/confirm-dialog/confirm-di
 import { FormsCategoryComponent } from '../forms-category/forms-category.component';
 import { CategoryService } from 'src/app/services/category.service';
 import { AlertService } from 'src/app/common/alert.service';
+import { Category } from 'src/app/interfaces/category';
 import { SHARED_MODULES, TABLE_MODULES } from 'src/app/utils/modules';
 
 export const columns = ['title', 'description', 'status', 'actions'];
@@ -37,8 +38,8 @@ export class IndexCategoryComponent implements OnInit {
 
   @ViewChild(MatSort) sort!: MatSort;
   public displayedColumns: string[] = columns;
-  public dataSource!: MatTableDataSource<any>;
-  public categories: Array<any> = [];
+  public dataSource!: MatTableDataSource<Category>;
+  public categories: Category[] = [];
 
   public search = this.activatedRoute.snapshot.queryParams['search'] || '';
   public status = this.activatedRoute.snapshot.queryParams['status'] || '';
@@ -67,7 +68,7 @@ export class IndexCategoryComponent implements OnInit {
       .subscribe({
         next: (res) => {
           this.categories = res.docs;
-          this.dataSource = new MatTableDataSource(res.docs);
+          this.dataSource = new MatTableDataSource<Category>(res.docs);
           this.dataSource.sort = this.sort;
           this.totalDocs = res.totalDocs;
           this.pageIndex = res.page - 1;
@@ -114,7 +115,7 @@ export class IndexCategoryComponent implements OnInit {
     });
   }
 
-  update_data(item: any): void {
+  update_data(item: Category): void {
     const dialogRef = this.dialog.open(FormsCategoryComponent, {
       data: { data: item, new_data: false },
       autoFocus: false,
@@ -124,7 +125,7 @@ export class IndexCategoryComponent implements OnInit {
     });
   }
 
-  delete_data(item: any): void {
+  delete_data(item: Category): void {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       data: `¿Estas seguro de eliminar ${item.title}?`,
       width: '400px',
