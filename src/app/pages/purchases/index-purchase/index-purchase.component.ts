@@ -10,6 +10,7 @@ import { AlertService } from 'src/app/common/alert.service';
 import { ListPurchasesComponent } from '../list-purchases/list-purchases.component';
 import { FormsSupplierComponent } from '../../suppliers/forms-supplier/forms-supplier.component';
 import { RequireMatch } from 'src/app/utils/require-match';
+import { Supplier, Product, Purchase } from 'src/app/utils/intefaces';
 
 import {
   SHARED_MODULES,
@@ -37,13 +38,12 @@ export class IndexPurchaseComponent implements OnInit, AfterViewInit {
   public loadButton: boolean = false;
   public loadSearch: boolean = false;
 
-  public purchases: Array<any> = [];
-  public suppliers: Array<any> = [];
-  public products: Array<any> = [];
+  public purchases: Purchase[] = [];
+  public suppliers: Supplier[] = [];
+  public products: Product[] = [];
+  public suppliersOptions: Supplier[] = [];
+  public productsOptions: Product[] = [];
   public details = JSON.parse(localStorage.getItem('details') || '[]');
-
-  public suppliersOptions: Array<any> = [];
-  public productsOptions: Array<any> = [];
 
   public total: number = 0;
   public count: number = 0;
@@ -86,11 +86,11 @@ export class IndexPurchaseComponent implements OnInit, AfterViewInit {
     });
   }
 
-  displayFn(supplier: any) {
+  displayFn(supplier: Supplier) {
     return supplier ? supplier.name : supplier;
   }
 
-  add_item(item: any) {
+  add_item(item: Product) {
     const product = this.details.find((x: any) => x.product == item._id);
 
     if (product) {
@@ -129,13 +129,15 @@ export class IndexPurchaseComponent implements OnInit, AfterViewInit {
     this.calculate_total();
   }
 
-  keyupPrice(event: any, i: any) {
-    this.details[i].price = Number(event.target.value) || 1;
+  keyupPrice(event: Event, i: number) {
+    const input = event.target as HTMLInputElement;
+    this.details[i].price = Number(input.value) || 1;
     this.calculate_total();
   }
 
-  keyupQuantity(event: any, i: any) {
-    this.details[i].quantity = Number(event.target.value) || 1;
+  keyupQuantity(event: Event, i: number) {
+    const input = event.target as HTMLInputElement;
+    this.details[i].quantity = Number(input.value) || 1;
     this.calculate_total();
   }
 
@@ -163,7 +165,7 @@ export class IndexPurchaseComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    const data = {
+    const data: any = {
       supplier: this.supplier.value,
       amount: this.total,
       details: this.details,

@@ -36,7 +36,7 @@ export class ProductService {
   }
 
   read_products_purchases(): Observable<any> {
-    const url = `${base_url}/read_products_options`;
+    const url = `${base_url}/read_all_products`;
     return this.http
       .get(url, this.headers)
       .pipe(
@@ -47,7 +47,7 @@ export class ProductService {
   }
 
   read_products_sales(): Observable<any> {
-    const url = `${base_url}/read_products_options`;
+    const url = `${base_url}/read_all_products`;
     return this.http.get(url, this.headers).pipe(
       map((res: any) =>
         res.data

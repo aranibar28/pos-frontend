@@ -3,6 +3,8 @@ import { Component, OnInit, inject } from '@angular/core';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { MatDialog } from '@angular/material/dialog';
+import { MatSlideToggleChange } from '@angular/material/slide-toggle';
+import { MatTableDataSource } from '@angular/material/table';
 import { RequireMatch } from 'src/app/utils/require-match';
 
 import { RoleService } from 'src/app/services/role.service';
@@ -10,13 +12,14 @@ import { AlertService } from 'src/app/common/alert.service';
 import { ConfirmDialogComponent } from 'src/app/shared/confirm-dialog/confirm-dialog.component';
 import { FormsRoleComponent } from '../forms-role/forms-role.component';
 import { UserService } from 'src/app/services/user.service';
+import { AuthService } from 'src/app/services/auth.service';
+import { User, Rol, UserRole } from 'src/app/utils/intefaces';
+
 import {
   SHARED_MODULES,
   TABLE_MODULES,
   FORMS_MODULES,
 } from 'src/app/utils/modules';
-import { MatSlideToggleChange } from '@angular/material/slide-toggle';
-import { AuthService } from 'src/app/services/auth.service';
 
 const colums = ['user', 'role', 'status', 'created_at', 'actions'];
 
@@ -36,13 +39,13 @@ export class IndexRoleComponent implements OnInit {
   private fb = inject(FormBuilder);
 
   public displayedColumns: string[] = colums;
-  public dataSource: Array<any> = [];
 
-  public roles: Array<any> = [];
+  public dataSource!: MatTableDataSource<UserRole>;
+  public users: User[] = [];
+  public usersOptions: User[] = [];
+
+  public roles: Rol[] = [];
   public role: any = {};
-
-  public users: Array<any> = [];
-  public usersOptions: any;
 
   public myForm: FormGroup = this.fb.group({
     user: [, [Validators.required, RequireMatch]],
@@ -70,15 +73,15 @@ export class IndexRoleComponent implements OnInit {
     });
   }
 
-  displayFn(user: any) {
+  displayFn(user: User) {
     return user ? user.full_name : user;
   }
 
   init_users() {
-    this.userService.read_users(1, 50, '', '', '').subscribe({
+    this.userService.read_all_users().subscribe({
       next: (res) => {
-        this.users = res.docs;
-        this.usersOptions = res.docs;
+        this.users = res.data;
+        this.usersOptions = res.data;
       },
     });
   }
@@ -134,7 +137,7 @@ export class IndexRoleComponent implements OnInit {
     });
   }
 
-  delete_user_role(item: any) {
+  delete_user_role(item: UserRole) {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       data: `¿Desea remover el rol ${item.role?.title} al usuario ${item.user?.full_name}?`,
       width: '400px',
@@ -167,7 +170,7 @@ export class IndexRoleComponent implements OnInit {
     });
   }
 
-  update_role(item: any): void {
+  update_role(item: Rol): void {
     const dialogRef = this.dialog.open(FormsRoleComponent, {
       data: { data: item, new_data: false },
       autoFocus: false,
@@ -189,7 +192,7 @@ export class IndexRoleComponent implements OnInit {
     });
   }
 
-  delete_role(item: any): void {
+  delete_role(item: Rol): void {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       data: `¿Estas seguro de eliminar ${item.title}?`,
       width: '400px',

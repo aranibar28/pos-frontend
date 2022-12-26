@@ -24,7 +24,7 @@ export interface User {
   updated_at: Date;
 }
 
-export interface Roles {
+export interface Rol {
   _id: string;
   title: string;
   status?: boolean;
@@ -40,6 +40,14 @@ export interface AllowsRoles {
   sales: boolean;
   roles: boolean;
   inventories: boolean;
+}
+
+export interface UserRole {
+  _id: string;
+  user: User;
+  role: Rol;
+  created_at: Date;
+  updated_at: Date;
 }
 
 export interface Category {
@@ -85,8 +93,17 @@ export interface Purchase {
   status: string;
   origin: string;
   amount: number;
+  details: PurchaseDetail;
   created_at: Date;
   updated_at: Date;
+}
+
+export interface PurchaseDetail {
+  _id: string;
+  purcharse: Purchase;
+  product: Product;
+  quantity: number;
+  price: number;
 }
 
 export interface Sale {
@@ -97,4 +114,49 @@ export interface Sale {
   amount: number;
   created_at: Date;
   updated_at: Date;
+}
+
+export interface SaleDetail {
+  _id: string;
+  sale: Sale;
+  product: Product;
+  quantity: number;
+  price: number;
+}
+
+export interface Dni {
+  dni: string;
+  nombres: string;
+  apellidoPaterno: string;
+  apellidoMaterno: string;
+  codVerifica: string;
+}
+
+export interface Ruc {
+  ruc: string;
+  razonSocial: string;
+  nombreComercial: null;
+  telefonos: any[];
+  tipo: null;
+  estado: string;
+  condicion: string;
+  direccion: string;
+  departamento: string;
+  provincia: string;
+  distrito: string;
+  fechaInscripcion: null;
+  sistEmsion: null;
+  sistContabilidad: null;
+  actExterior: null;
+  actEconomicas: any[];
+  cpPago: any[];
+  sistElectronica: any[];
+  fechaEmisorFe: null;
+  cpeElectronico: any[];
+  fechaPle: null;
+  padrones: any[];
+  fechaBaja: null;
+  profesion: null;
+  ubigeo: string;
+  capital: string;
 }

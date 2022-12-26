@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/app/utils/enviroments';
+import { Response, Supplier } from 'src/app/utils/intefaces';
 const base_url = environment.base_url + '/suppliers';
 
 @Injectable({
@@ -18,7 +19,7 @@ export class SupplierService {
     return { headers: { token: this.token } };
   }
 
-  create_supplier(data: any): Observable<any> {
+  create_supplier(data: Supplier): Observable<any> {
     const url = `${base_url}/create_supplier`;
     return this.http.post(url, data, this.headers);
   }
@@ -29,22 +30,22 @@ export class SupplierService {
     search: string = '',
     filter: string,
     sort: string
-  ): Observable<any> {
+  ): Observable<Response> {
     const url = `${base_url}/read_suppliers?page=${p}&limit=${l}&search=${search}&status=${filter}&sort=${sort}`;
-    return this.http.get(url, this.headers);
+    return this.http.get<Response>(url, this.headers);
   }
 
-  read_supplier_by_id(id: any): Observable<any> {
+  read_supplier_by_id(id: string): Observable<any> {
     const url = `${base_url}/read_supplier_by_id/${id}`;
     return this.http.get(url, this.headers);
   }
 
-  update_supplier(id: any, data: any): Observable<any> {
+  update_supplier(id: string, data: Supplier): Observable<any> {
     const url = `${base_url}/update_supplier/${id}`;
     return this.http.put(url, data, this.headers);
   }
 
-  delete_supplier(id: any): Observable<any> {
+  delete_supplier(id: string): Observable<any> {
     const url = `${base_url}/delete_supplier/${id}`;
     return this.http.delete(url, this.headers);
   }

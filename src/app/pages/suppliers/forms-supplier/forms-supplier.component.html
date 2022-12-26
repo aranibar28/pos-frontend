@@ -6,7 +6,7 @@
            <mat-label>RUC</mat-label>
            <input formControlName="ruc" (keypress)="onlyNumber($event)" type="text" matInput />
            <mat-error *ngIf="isValid('ruc')">{{ showMessage('ruc') }}</mat-error>
-           <button (click)="onSearchDni()" type="button" [disabled]="loadSearch" mat-icon-button matSuffix >
+           <button (click)="onSearchRuc()" type="button" [disabled]="loadSearch" mat-icon-button matSuffix >
             <mat-icon *ngIf="!loadSearch" color="primary" fontIcon="search"></mat-icon>
             <mat-icon *ngIf="loadSearch" class="spinning" fontIcon="loop"></mat-icon>
            </button>

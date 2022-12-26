@@ -37,15 +37,10 @@ export class FormsSupplierComponent implements OnInit {
   public colorButton: string = 'primary';
   public loadButton: boolean = false;
   public loadSearch: boolean = false;
-
-  public categories: Array<any> = [];
-  public categoriesOptions: Array<any> = [];
   public id: string = '';
 
   ngOnInit(): void {
-    const { data, categories, new_data } = this.dialogData;
-    this.categories = categories;
-    this.categoriesOptions = categories;
+    const { data, new_data } = this.dialogData;
     if (!new_data) {
       this.titleModal = 'Actualizar Proveedor';
       this.titleButton = 'Actualizar';
@@ -107,7 +102,7 @@ export class FormsSupplierComponent implements OnInit {
     });
   }
 
-  onSearchDni() {
+  onSearchRuc() {
     this.loadSearch = true;
     const ruc = this.myForm.controls['ruc'];
 
@@ -117,7 +112,7 @@ export class FormsSupplierComponent implements OnInit {
       return;
     }
 
-    this.authService.consulta_ruc(ruc.value, 'ruc').subscribe({
+    this.authService.consulta_ruc(ruc.value).subscribe({
       next: (res) => {
         this.loadSearch = false;
         if (res.ruc) {

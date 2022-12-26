@@ -35,6 +35,11 @@ export class UserService {
     return this.http.get<Response>(url, this.headers);
   }
 
+  read_all_users(): Observable<any> {
+    const url = `${base_url}/read_all_users`;
+    return this.http.get(url, this.headers);
+  }
+
   read_user_by_id(id: string): Observable<any> {
     const url = `${base_url}/read_user_by_id/${id}`;
     return this.http.get(url, this.headers);

@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/app/utils/enviroments';
+import { Rol, UserRole } from 'src/app/utils/intefaces';
 const base_url = environment.base_url + '/roles';
 
 @Injectable({
@@ -18,7 +19,7 @@ export class RoleService {
     return { headers: new HttpHeaders({ token: this.token }) };
   }
 
-  create_role(data: any): Observable<any> {
+  create_role(data: Rol): Observable<any> {
     const url = `${base_url}/create_role`;
     return this.http.post(url, data, this.headers);
   }
@@ -28,7 +29,7 @@ export class RoleService {
     return this.http.get(url, this.headers);
   }
 
-  update_role(id: string, data: any): Observable<any> {
+  update_role(id: string, data: Rol): Observable<any> {
     const url = `${base_url}/update_role/${id}`;
     return this.http.put(url, data, this.headers);
   }
@@ -38,7 +39,7 @@ export class RoleService {
     return this.http.delete(url, this.headers);
   }
 
-  create_user_role(data: any): Observable<any> {
+  create_user_role(data: UserRole): Observable<any> {
     const url = `${base_url}/create_user_role`;
     return this.http.post(url, data, this.headers);
   }

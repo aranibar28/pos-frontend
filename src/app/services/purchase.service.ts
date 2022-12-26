@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/app/utils/enviroments';
+import { Purchase } from '../utils/intefaces';
 const base_url = environment.base_url + '/purchases';
 
 @Injectable({
@@ -18,7 +19,7 @@ export class PurchaseService {
     return { headers: { token: this.token } };
   }
 
-  create_purchase(data: any): Observable<any> {
+  create_purchase(data: Purchase): Observable<any> {
     const url = `${base_url}/create_purchase`;
     return this.http.post(url, data, this.headers);
   }
@@ -28,7 +29,7 @@ export class PurchaseService {
     return this.http.get(url, this.headers);
   }
 
-  read_purchase_by_id(id: any): Observable<any> {
+  read_purchase_by_id(id: string): Observable<any> {
     const url = `${base_url}/read_purchase_by_id/${id}`;
     return this.http.get(url, this.headers);
   }

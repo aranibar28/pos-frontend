@@ -4,7 +4,7 @@ import { JwtHelperService } from '@auth0/angular-jwt';
 import { Observable, BehaviorSubject, ReplaySubject } from 'rxjs';
 import { catchError, map, of } from 'rxjs';
 import { environment } from 'src/app/utils/enviroments';
-import { User } from 'src/app/utils/intefaces';
+import { Dni, Ruc, User } from 'src/app/utils/intefaces';
 const base_url = environment.base_url + '/users';
 const sunat_url = environment.sunat;
 const token = environment.token;
@@ -68,8 +68,13 @@ export class AuthService {
     );
   }
 
-  consulta_ruc(number: string, type: string): Observable<any> {
-    const url = `${sunat_url}/${type}/${number}?token=${token}`;
-    return this.http.get(url);
+  consulta_dni(number: string): Observable<Dni> {
+    const url = `${sunat_url}/dni/${number}?token=${token}`;
+    return this.http.get<Dni>(url);
+  }
+
+  consulta_ruc(number: string): Observable<Ruc> {
+    const url = `${sunat_url}/ruc/${number}?token=${token}`;
+    return this.http.get<Ruc>(url);
   }
 }

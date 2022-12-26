@@ -13,6 +13,7 @@ import { ConfirmDialogComponent } from 'src/app/shared/confirm-dialog/confirm-di
 import { FormsSupplierComponent } from '../forms-supplier/forms-supplier.component';
 import { SupplierService } from 'src/app/services/supplier.service';
 import { AlertService } from 'src/app/common/alert.service';
+import { Product, Supplier } from 'src/app/utils/intefaces';
 import { SHARED_MODULES, TABLE_MODULES } from 'src/app/utils/modules';
 
 const columns = ['ruc', 'name', 'address', 'actions'];
@@ -37,8 +38,8 @@ export class IndexSupplierComponent implements OnInit {
 
   @ViewChild(MatSort) sort!: MatSort;
   public displayedColumns: string[] = columns;
-  public dataSource!: MatTableDataSource<any>;
-  public products: Array<any> = [];
+  public dataSource!: MatTableDataSource<Supplier>;
+  public products: Product[] = [];
 
   public search = this.activatedRoute.snapshot.queryParams['search'] || '';
   public status = this.activatedRoute.snapshot.queryParams['status'] || '';
@@ -115,7 +116,7 @@ export class IndexSupplierComponent implements OnInit {
     });
   }
 
-  update_data(item: any): void {
+  update_data(item: Supplier): void {
     const dialogRef = this.dialog.open(FormsSupplierComponent, {
       data: { data: item, new_data: false },
       autoFocus: false,
@@ -126,9 +127,9 @@ export class IndexSupplierComponent implements OnInit {
     });
   }
 
-  delete_data(item: any): void {
+  delete_data(item: Supplier): void {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      data: `¿Estas seguro de eliminar ${item.title}?`,
+      data: `¿Estas seguro de eliminar ${item.name}?`,
       width: '400px',
     });
     dialogRef.afterClosed().subscribe((result) => {

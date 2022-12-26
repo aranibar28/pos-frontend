@@ -67,7 +67,7 @@ export class FormsUserComponent implements OnInit {
       return;
     }
 
-    this.authService.consulta_ruc(dni.value, 'dni').subscribe({
+    this.authService.consulta_dni(dni.value).subscribe({
       next: (res) => {
         this.loadSearch = false;
         if (res.dni) {
@@ -169,7 +169,7 @@ export class FormsUserComponent implements OnInit {
       event.preventDefault();
     }
   }
-  
+
   isValid(name: string) {
     const input = this.myForm.controls[name];
     return input.errors && input.touched;
