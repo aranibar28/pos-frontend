@@ -4,7 +4,7 @@ import { JwtHelperService } from '@auth0/angular-jwt';
 import { Observable, BehaviorSubject, ReplaySubject } from 'rxjs';
 import { catchError, map, of } from 'rxjs';
 import { environment } from 'src/app/utils/enviroments';
-import { User } from '../interfaces/user';
+import { User } from 'src/app/utils/intefaces';
 const base_url = environment.base_url + '/users';
 const sunat_url = environment.sunat;
 const token = environment.token;

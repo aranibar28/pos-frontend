@@ -13,7 +13,7 @@ import { ConfirmDialogComponent } from 'src/app/shared/confirm-dialog/confirm-di
 import { FormsUserComponent } from '../forms-user/forms-user.component';
 import { UserService } from 'src/app/services/user.service';
 import { AlertService } from 'src/app/common/alert.service';
-import { User } from 'src/app/interfaces/user';
+import { User } from 'src/app/utils/intefaces';
 import { SHARED_MODULES, TABLE_MODULES } from 'src/app/utils/modules';
 
 export const columns = [

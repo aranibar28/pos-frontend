@@ -2,8 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import { environment } from 'src/app/utils/enviroments';
-import { Response } from '../interfaces/response';
-import { Product } from '../interfaces/product';
+import { Response, Product } from 'src/app/utils/intefaces';
 const base_url = environment.base_url + '/products';
 
 @Injectable({

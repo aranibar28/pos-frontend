@@ -2,8 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/app/utils/enviroments';
-import { Response } from '../interfaces/response';
-import { Category } from 'src/app/interfaces/category';
+import { Response, Category } from 'src/app/utils/intefaces';
 const base_url = environment.base_url + '/categories';
 
 @Injectable({

@@ -28,12 +28,12 @@ export class RoleService {
     return this.http.get(url, this.headers);
   }
 
-  update_role(id: any, data: any): Observable<any> {
+  update_role(id: string, data: any): Observable<any> {
     const url = `${base_url}/update_role/${id}`;
     return this.http.put(url, data, this.headers);
   }
 
-  delete_role(id: any): Observable<any> {
+  delete_role(id: string): Observable<any> {
     const url = `${base_url}/delete_role/${id}`;
     return this.http.delete(url, this.headers);
   }
@@ -48,12 +48,12 @@ export class RoleService {
     return this.http.get(url, this.headers);
   }
 
-  update_user_role(id: any, data: any): Observable<any> {
+  update_user_role(id: string, data: any): Observable<any> {
     const url = `${base_url}/update_user_role/${id}`;
     return this.http.put(url, data, this.headers);
   }
 
-  delete_user_role(id: any): Observable<any> {
+  delete_user_role(id: string): Observable<any> {
     const url = `${base_url}/delete_user_role/${id}`;
     return this.http.delete(url, this.headers);
   }

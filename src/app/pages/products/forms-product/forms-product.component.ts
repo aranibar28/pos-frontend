@@ -9,7 +9,7 @@ import { AlertService } from 'src/app/common/alert.service';
 import { RequireMatch } from 'src/app/utils/require-match';
 import { getErrorMessage } from 'src/app/utils/validators';
 import { FORMS_MODULES } from 'src/app/utils/modules';
-import { Category } from 'src/app/interfaces/category';
+import { Category } from 'src/app/utils/intefaces';
 
 @Component({
   selector: 'app-forms-product',

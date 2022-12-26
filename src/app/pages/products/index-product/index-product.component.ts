@@ -14,8 +14,7 @@ import { FormsProductComponent } from '../forms-product/forms-product.component'
 import { CategoryService } from 'src/app/services/category.service';
 import { ProductService } from 'src/app/services/product.service';
 import { AlertService } from 'src/app/common/alert.service';
-import { Product } from 'src/app/interfaces/product';
-import { Category } from 'src/app/interfaces/category';
+import { Product, Category } from 'src/app/utils/intefaces';
 import { SHARED_MODULES, TABLE_MODULES } from 'src/app/utils/modules';
 
 const columns = [

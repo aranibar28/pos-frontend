@@ -13,7 +13,7 @@ import { ConfirmDialogComponent } from 'src/app/shared/confirm-dialog/confirm-di
 import { FormsCategoryComponent } from '../forms-category/forms-category.component';
 import { CategoryService } from 'src/app/services/category.service';
 import { AlertService } from 'src/app/common/alert.service';
-import { Category } from 'src/app/interfaces/category';
+import { Category } from 'src/app/utils/intefaces';
 import { SHARED_MODULES, TABLE_MODULES } from 'src/app/utils/modules';
 
 export const columns = ['title', 'description', 'status', 'actions'];
