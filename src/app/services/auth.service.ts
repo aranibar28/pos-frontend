@@ -1,15 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { JwtHelperService } from '@auth0/angular-jwt';
-import {
-  Observable,
-  ReplaySubject,
-  map,
-  catchError,
-  of,
-  BehaviorSubject,
-} from 'rxjs';
+import { Observable, BehaviorSubject, ReplaySubject } from 'rxjs';
+import { catchError, map, of } from 'rxjs';
 import { environment } from 'src/app/utils/enviroments';
+import { User } from '../interfaces/user';
 const base_url = environment.base_url + '/users';
 const sunat_url = environment.sunat;
 const token = environment.token;
@@ -58,7 +53,7 @@ export class AuthService {
     return this.payload['allows'];
   }
 
-  login_user(data: any): Observable<any> {
+  login_user(data: User): Observable<any> {
     const url = `${base_url}/login_user`;
     return this.http.post(url, data, this.headers);
   }
@@ -73,7 +68,7 @@ export class AuthService {
     );
   }
 
-  consulta_ruc(number: any, type: string): Observable<any> {
+  consulta_ruc(number: string, type: string): Observable<any> {
     const url = `${sunat_url}/${type}/${number}?token=${token}`;
     return this.http.get(url);
   }

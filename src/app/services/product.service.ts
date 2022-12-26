@@ -2,7 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import { environment } from 'src/app/utils/enviroments';
-import { Document } from '../interfaces/document';
+import { Response } from '../interfaces/response';
+import { Product } from '../interfaces/product';
 const base_url = environment.base_url + '/products';
 
 @Injectable({
@@ -19,7 +20,7 @@ export class ProductService {
     return { headers: { token: this.token } };
   }
 
-  create_product(data: any): Observable<any> {
+  create_product(data: Product): Observable<any> {
     const url = `${base_url}/create_product`;
     return this.http.post(url, data, this.headers);
   }
@@ -30,9 +31,9 @@ export class ProductService {
     search: string = '',
     filter: string,
     sort: string
-  ): Observable<Document> {
+  ): Observable<Response> {
     const url = `${base_url}/read_products?page=${p}&limit=${l}&search=${search}&status=${filter}&sort=${sort}`;
-    return this.http.get<Document>(url, this.headers);
+    return this.http.get<Response>(url, this.headers);
   }
 
   read_products_purchases(): Observable<any> {
@@ -52,19 +53,19 @@ export class ProductService {
       map((res: any) =>
         res.data
           .map((res: any) => res)
-          .filter((item: any) => {
+          .filter((item: Product) => {
             return item.status == true && item.price > 0;
           })
       )
     );
   }
 
-  update_product(id: any, data: any): Observable<any> {
+  update_product(id: string, data: Product): Observable<any> {
     const url = `${base_url}/update_product/${id}`;
     return this.http.put(url, data, this.headers);
   }
 
-  delete_product(id: any): Observable<any> {
+  delete_product(id: string): Observable<any> {
     const url = `${base_url}/delete_product/${id}`;
     return this.http.delete(url, this.headers);
   }

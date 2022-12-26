@@ -13,6 +13,7 @@ import { ConfirmDialogComponent } from 'src/app/shared/confirm-dialog/confirm-di
 import { FormsUserComponent } from '../forms-user/forms-user.component';
 import { UserService } from 'src/app/services/user.service';
 import { AlertService } from 'src/app/common/alert.service';
+import { User } from 'src/app/interfaces/user';
 import { SHARED_MODULES, TABLE_MODULES } from 'src/app/utils/modules';
 
 export const columns = [
@@ -45,7 +46,7 @@ export class IndexUserComponent implements OnInit {
   @ViewChild(MatSort) sort!: MatSort;
   public displayedColumns: string[] = columns;
   public dataSource!: MatTableDataSource<any>;
-  public users: Array<any> = [];
+  public users: User[] = [];
 
   public search = this.activatedRoute.snapshot.queryParams['search'] || '';
   public status = this.activatedRoute.snapshot.queryParams['status'] || '';
@@ -116,7 +117,7 @@ export class IndexUserComponent implements OnInit {
     });
   }
 
-  update_data(item: any): void {
+  update_data(item: User): void {
     const dialogRef = this.dialog.open(FormsUserComponent, {
       data: { data: item, new_data: false },
       autoFocus: false,
@@ -127,7 +128,7 @@ export class IndexUserComponent implements OnInit {
     });
   }
 
-  delete_data(item: any): void {
+  delete_data(item: User): void {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       data: `¿Estas seguro de eliminar ${item.full_name}?`,
       width: '400px',

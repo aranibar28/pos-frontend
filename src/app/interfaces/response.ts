@@ -1,4 +1,4 @@
-export interface Document {
+export interface Response {
   docs: any[];
   totalDocs: number;
   limit: number;

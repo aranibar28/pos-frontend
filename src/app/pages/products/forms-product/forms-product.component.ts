@@ -9,6 +9,7 @@ import { AlertService } from 'src/app/common/alert.service';
 import { RequireMatch } from 'src/app/utils/require-match';
 import { getErrorMessage } from 'src/app/utils/validators';
 import { FORMS_MODULES } from 'src/app/utils/modules';
+import { Category } from 'src/app/interfaces/category';
 
 @Component({
   selector: 'app-forms-product',
@@ -36,8 +37,8 @@ export class FormsProductComponent implements OnInit {
   public titleButton: string = 'Registrar';
   public colorButton: string = 'primary';
   public loadButton: boolean = false;
-  public categories: Array<any> = [];
-  public categoriesOptions: Array<any> = [];
+  public categories: Category[] = [];
+  public categoriesOptions: Category[] = [];
   public id: string = '';
 
   ngOnInit(): void {
@@ -67,7 +68,7 @@ export class FormsProductComponent implements OnInit {
     });
   }
 
-  displayFn(category: any) {
+  displayFn(category: Category) {
     return category ? category.title : category;
   }
 
