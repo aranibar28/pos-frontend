@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import { environment } from 'src/app/utils/enviroments';
@@ -25,14 +25,20 @@ export class ProductService {
   }
 
   read_products(
-    p: number,
-    l: number,
+    page: number,
+    limit: number,
     search: string = '',
     filter: string,
     sort: string
   ): Observable<Response> {
-    const url = `${base_url}/read_products?page=${p}&limit=${l}&search=${search}&status=${filter}&sort=${sort}`;
-    return this.http.get<Response>(url, this.headers);
+    const params = new HttpParams()
+      .set('page', page)
+      .set('limit', limit)
+      .set('search', search)
+      .set('status', filter)
+      .set('sort', sort);
+    const url = `${base_url}/read_products`;
+    return this.http.get<Response>(url, { ...this.headers, params });
   }
 
   read_products_purchases(): Observable<any> {
@@ -67,16 +73,5 @@ export class ProductService {
   delete_product(id: string): Observable<any> {
     const url = `${base_url}/delete_product/${id}`;
     return this.http.delete(url, this.headers);
-  }
-
-  upload_image(id: string, type: string, data: any): Observable<any> {
-    const url = `${base_url}/upload_image/${id}/${type}`;
-    if (data.image) {
-      const fd = new FormData();
-      Object.keys(data).forEach((key) => fd.append(key, data[key]));
-      return this.http.post(url, fd, this.headers);
-    } else {
-      return this.http.post(url, data, this.headers);
-    }
   }
 }

@@ -67,7 +67,7 @@ export interface Product {
   stock: number;
   price: number;
   status: boolean;
-  image: Image;
+  image: Image | any;
   category: Category;
   created_at: Date;
   updated_at: Date;

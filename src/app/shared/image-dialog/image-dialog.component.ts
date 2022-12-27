@@ -4,7 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { ProductService } from 'src/app/services/product.service';
+import { UploadService } from 'src/app/common/upload.service';
 import { AlertService } from 'src/app/common/alert.service';
 import { ImagePipe } from 'src/app/pipes/image.pipe';
 import {
@@ -28,7 +28,7 @@ import {
 })
 export class ImageDialogComponent {
   private dialogRef = inject(MatDialogRef<ImageDialogComponent>);
-  private productService = inject(ProductService);
+  private productService = inject(UploadService);
   private alertService = inject(AlertService);
   private data = inject(MAT_DIALOG_DATA);
 
