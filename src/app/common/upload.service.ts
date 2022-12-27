@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/app/utils/enviroments';
-import { Product } from '../utils/intefaces';
+import { shareReplay } from 'rxjs/operators';
 const base_url = environment.base_url + '/uploads';
 
 @Injectable({
@@ -19,15 +19,10 @@ export class UploadService {
     return { headers: { token: this.token } };
   }
 
-  upload_image(id: string, type: string, data: any): Observable<any> {
+  upload_image(id: string, type: string, file: File): Observable<any> {
     const url = `${base_url}/upload_image/${id}/${type}`;
-    const fd = this.createFormData(data);
-    return this.http.post(url, fd, this.headers);
-  }
-
-  private createFormData(data: any): FormData {
     const fd = new FormData();
-    Object.keys(data).forEach((key) => fd.append(key, data[key]));
-    return fd;
+    fd.append('image', file);
+    return this.http.post(url, fd, this.headers).pipe(shareReplay(1));
   }
 }

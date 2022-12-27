@@ -1,12 +1,12 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
 import { UploadService } from 'src/app/common/upload.service';
 import { AlertService } from 'src/app/common/alert.service';
 import { ImagePipe } from 'src/app/pipes/image.pipe';
+
 import {
   MatDialogRef,
   MatDialogModule,
@@ -16,15 +16,9 @@ import {
 @Component({
   selector: 'app-image-dialog',
   standalone: true,
-  imports: [
-    CommonModule,
-    MatButtonModule,
-    MatDialogModule,
-    MatFormFieldModule,
-    MatInputModule,
-    ImagePipe,
-  ],
+  imports: [CommonModule, MatCardModule, MatDialogModule, MatButtonModule, ImagePipe],
   templateUrl: './image-dialog.component.html',
+  styleUrls: ['./image-dialog.component.scss'],
 })
 export class ImageDialogComponent {
   private dialogRef = inject(MatDialogRef<ImageDialogComponent>);
@@ -35,8 +29,9 @@ export class ImageDialogComponent {
   public file: File | undefined;
   public imgSelected: any = undefined;
   public imgCurrent: any = undefined;
-  public load_btn: boolean = false;
+  public loadButton: boolean = false;
   public disabled: boolean = true;
+  public title: string = '';
   public type: string = '';
   public id: string = '';
 
@@ -45,41 +40,44 @@ export class ImageDialogComponent {
     if (this.data) {
       this.imgSelected = data.image?.secure_url;
       this.imgCurrent = data.image?.secure_url;
+      this.title = data.title;
       this.id = data._id;
       this.type = type;
     }
   }
 
   onSubmit() {
-    this.load_btn = true;
+    this.loadButton = true;
     if (this.file) {
-      const img = { image: this.file };
-      this.productService.upload_image(this.id, this.type, img).subscribe({
-        next: (res) => {
-          this.load_btn = false;
-          if (res.data) {
-            this.alertService.success('Se subió la imagen correctamente.');
-            this.dialogRef.close(true);
-          } else {
-            this.alertService.error(res.msg);
-          }
-        },
-        error: (err) => {
-          this.load_btn = false;
-          console.log(err);
-        },
-      });
+      this.productService
+        .upload_image(this.id, this.type, this.file)
+        .subscribe({
+          next: (res) => {
+            this.loadButton = false;
+            if (res.data) {
+              this.alertService.success('Se subió la imagen correctamente.');
+              this.dialogRef.close(true);
+            } else {
+              this.alertService.error(res.msg);
+            }
+          },
+          error: (err) => {
+            this.loadButton = false;
+            console.log(err);
+          },
+        });
     } else {
-      this.load_btn = false;
+      this.loadButton = false;
     }
   }
 
-  close() {
+  onClose() {
     this.dialogRef.close(false);
   }
 
-  fileChanged(event: any) {
-    const file: File = event.target.files[0];
+  fileChanged(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const file: File = input.files![0];
     const pattern: RegExp = /image-*/;
     const maxSize = 4000000;
 
