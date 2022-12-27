@@ -168,6 +168,11 @@ input.input-number::-webkit-inner-spin-button {
   -moz-appearance: textfield;
   background-color: transparent !important;
 }
+.container-input {
+  .mat-mdc-form-field-subscript-wrapper {
+    height: 0 !important;
+  }
+}
 
 .pointer {
   cursor: pointer;

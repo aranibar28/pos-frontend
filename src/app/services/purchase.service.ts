@@ -1,8 +1,8 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/app/utils/enviroments';
-import { Purchase } from '../utils/intefaces';
+import { Purchase, Response } from '../utils/intefaces';
 const base_url = environment.base_url + '/purchases';
 
 @Injectable({
@@ -24,9 +24,10 @@ export class PurchaseService {
     return this.http.post(url, data, this.headers);
   }
 
-  read_purchases(): Observable<any> {
+  read_purchases(page: number = 1, limit: number = 5): Observable<Response> {
     const url = `${base_url}/read_purchases`;
-    return this.http.get(url, this.headers);
+    const params = new HttpParams().set('page', page).set('limit', limit);
+    return this.http.get<Response>(url, { ...this.headers, params });
   }
 
   read_purchase_by_id(id: string): Observable<any> {

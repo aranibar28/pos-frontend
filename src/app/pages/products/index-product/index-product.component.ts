@@ -10,13 +10,13 @@ import { MatTableDataSource } from '@angular/material/table';
 import { FilterCardComponent } from 'src/app/shared/filter-card/filter-card.component';
 import { FilterButtonComponent } from 'src/app/shared/filter-button/filter-button.component';
 import { ConfirmDialogComponent } from 'src/app/shared/confirm-dialog/confirm-dialog.component';
+import { ImageDialogComponent } from 'src/app/shared/image-dialog/image-dialog.component';
 import { FormsProductComponent } from '../forms-product/forms-product.component';
 import { CategoryService } from 'src/app/services/category.service';
 import { ProductService } from 'src/app/services/product.service';
 import { AlertService } from 'src/app/common/alert.service';
 import { Product, Category } from 'src/app/utils/intefaces';
 import { SHARED_MODULES, TABLE_MODULES } from 'src/app/utils/modules';
-import { ImageDialogComponent } from 'src/app/shared/image-dialog/image-dialog.component';
 
 const columns = [
   'image',

@@ -7,10 +7,9 @@ import { ProductService } from 'src/app/services/product.service';
 import { SupplierService } from 'src/app/services/supplier.service';
 import { PurchaseService } from 'src/app/services/purchase.service';
 import { AlertService } from 'src/app/common/alert.service';
-import { ListPurchasesComponent } from '../list-purchases/list-purchases.component';
 import { FormsSupplierComponent } from '../../suppliers/forms-supplier/forms-supplier.component';
 import { RequireMatch } from 'src/app/utils/require-match';
-import { Supplier, Product, Purchase } from 'src/app/utils/intefaces';
+import { Supplier, Product } from 'src/app/utils/intefaces';
 
 import {
   SHARED_MODULES,
@@ -18,7 +17,7 @@ import {
   FORMS_MODULES,
 } from 'src/app/utils/modules';
 
-const columns = ['image', 'title', 'price', 'quantity', 'subtotal', 'actions'];
+const columns = ['image', 'title', 'quantity', 'price', 'subtotal', 'actions'];
 
 @Component({
   selector: 'app-index-purchase',
@@ -38,7 +37,6 @@ export class IndexPurchaseComponent implements OnInit, AfterViewInit {
   public loadButton: boolean = false;
   public loadSearch: boolean = false;
 
-  public purchases: Purchase[] = [];
   public suppliers: Supplier[] = [];
   public products: Product[] = [];
   public suppliersOptions: Supplier[] = [];
@@ -52,9 +50,8 @@ export class IndexPurchaseComponent implements OnInit, AfterViewInit {
   public supplier = new FormControl('', [Validators.required, RequireMatch]);
 
   ngOnInit(): void {
-    this.init_purchases();
-    this.init_suppliers();
     this.init_products();
+    this.init_suppliers();
     this.calculate_total();
   }
 
@@ -87,7 +84,7 @@ export class IndexPurchaseComponent implements OnInit, AfterViewInit {
   }
 
   displayFn(supplier: Supplier) {
-    return supplier ? supplier.name : supplier;
+    return supplier ? supplier.ruc + ' - ' + supplier.name : supplier;
   }
 
   add_item(item: Product) {
@@ -179,7 +176,6 @@ export class IndexPurchaseComponent implements OnInit, AfterViewInit {
         if (!res.data) {
           return this.alertService.error(res.msg);
         }
-        this.init_purchases();
         this.supplier.reset('');
         this.details = [];
         this.dataSource = new MatTableDataSource(this.details);
@@ -211,14 +207,6 @@ export class IndexPurchaseComponent implements OnInit, AfterViewInit {
     });
   }
 
-  init_purchases() {
-    this.purchaseService.read_purchases().subscribe({
-      next: (res) => {
-        this.purchases = res.data;
-      },
-    });
-  }
-
   create_supplier(): void {
     const dialogRef = this.dialog.open(FormsSupplierComponent, {
       data: { data: null, new_data: true },
@@ -229,17 +217,6 @@ export class IndexPurchaseComponent implements OnInit, AfterViewInit {
       if (result) {
         this.init_suppliers();
       }
-    });
-  }
-
-  open_table(): void {
-    const dialogRef = this.dialog.open(ListPurchasesComponent, {
-      data: this.purchases,
-      autoFocus: false,
-      width: '960px',
-    });
-    dialogRef.afterClosed().subscribe((result) => {
-      return result;
     });
   }
 }
