@@ -18,6 +18,12 @@
           </mat-card-title>
           <div class="table-responsive">
              <table mat-table [dataSource]="dataSource" matSort>
+               <ng-container matColumnDef="image">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header>Imagen</th>
+                  <td mat-cell *matCellDef="let element">
+                     <img (click)="openDialog(element)" [src]="element.image?.secure_url | image: 'products'" alt="user" class="pointer" style="width: 40px;">
+                  </td>
+               </ng-container>
                 <ng-container matColumnDef="title">
                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Título</th>
                    <td mat-cell *matCellDef="let element">{{ element.title }}</td>

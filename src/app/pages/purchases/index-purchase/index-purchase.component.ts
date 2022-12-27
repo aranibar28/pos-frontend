@@ -18,7 +18,7 @@ import {
   FORMS_MODULES,
 } from 'src/app/utils/modules';
 
-const columns = ['title', 'price', 'quantity', 'subtotal', 'actions'];
+const columns = ['image', 'title', 'price', 'quantity', 'subtotal', 'actions'];
 
 @Component({
   selector: 'app-index-purchase',
@@ -101,6 +101,7 @@ export class IndexPurchaseComponent implements OnInit, AfterViewInit {
         product: item._id,
         title: item.title,
         price: item.price,
+        image: item.image?.secure_url,
         quantity: 1,
       });
     }

@@ -1,0 +1,22 @@
+<div class="card">
+    <div class="card-body">
+      <form>
+        <div class="avatar-upload">
+          <div class="avatar-edit">
+              <input (change)="fileChanged($event)" type='file' id="imageUpload" accept=".png, .jpg, .jpeg, .webp" />
+              <label for="imageUpload"><i class="material-icons">edit</i></label>
+              
+          </div>
+          <div class="avatar-preview">
+              <div id="imagePreview" style="background-image: url({{ imgSelected | image: type }});"></div>
+          </div>
+        </div>
+      </form>
+      <div mat-dialog-actions>
+        <button *ngIf="!load_btn" (click)="onSubmit()" mat-raised-button color="primary" [disabled]="disabled">Subir</button>
+        <button *ngIf="load_btn" mat-raised-button color="primary" [disabled]="true">Subiendo</button>
+        <button mat-raised-button (click)="close()">Cerrar</button>
+      </div>
+    </div>
+  </div>
+  

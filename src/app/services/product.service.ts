@@ -68,4 +68,15 @@ export class ProductService {
     const url = `${base_url}/delete_product/${id}`;
     return this.http.delete(url, this.headers);
   }
+
+  upload_image(id: string, type: string, data: any): Observable<any> {
+    const url = `${base_url}/upload_image/${id}/${type}`;
+    if (data.image) {
+      const fd = new FormData();
+      Object.keys(data).forEach((key) => fd.append(key, data[key]));
+      return this.http.post(url, fd, this.headers);
+    } else {
+      return this.http.post(url, data, this.headers);
+    }
+  }
 }

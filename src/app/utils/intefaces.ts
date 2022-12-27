@@ -55,12 +55,8 @@ export interface Category {
   title: string;
   description: string;
   status: boolean;
-  audit_create_user: boolean;
-  audit_create_date: Date;
-  audit_update_user: boolean | null;
-  audit_update_date: Date | null;
-  audit_delete_user: null;
-  audit_delete_date: null;
+  created_at: Date;
+  updated_at: Date;
 }
 
 export interface Product {
@@ -71,9 +67,15 @@ export interface Product {
   stock: number;
   price: number;
   status: boolean;
+  image: Image;
   category: Category;
   created_at: Date;
   updated_at: Date;
+}
+
+export interface Image {
+  public_id: string;
+  secure_url: string;
 }
 
 export interface Supplier {

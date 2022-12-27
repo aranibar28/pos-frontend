@@ -16,8 +16,10 @@ import { ProductService } from 'src/app/services/product.service';
 import { AlertService } from 'src/app/common/alert.service';
 import { Product, Category } from 'src/app/utils/intefaces';
 import { SHARED_MODULES, TABLE_MODULES } from 'src/app/utils/modules';
+import { ImageDialogComponent } from 'src/app/shared/image-dialog/image-dialog.component';
 
 const columns = [
+  'image',
   'title',
   'category',
   'stock',
@@ -164,6 +166,16 @@ export class IndexProductComponent implements OnInit {
           },
         });
       }
+    });
+  }
+
+  openDialog(item: any) {
+    const dialogRef = this.dialog.open(ImageDialogComponent, {
+      data: { data: item, type: 'products' },
+      width: '400px',
+    });
+    dialogRef.afterClosed().subscribe((result) => {
+      return result && this.init_data(1);
     });
   }
 }

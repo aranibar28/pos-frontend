@@ -4,6 +4,7 @@ import { RouterModule } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { StatusPipe } from 'src/app/pipes/status.pipe';
+import { ImagePipe } from 'src/app/pipes/image.pipe';
 
 // Angular Material Dashboard Modules
 import { MatButtonModule } from '@angular/material/button';
@@ -48,6 +49,7 @@ export const TABLE_MODULES = [
   MatChipsModule,
   MatSortModule,
   StatusPipe,
+  ImagePipe,
 ];
 
 export const FORMS_MODULES = [
