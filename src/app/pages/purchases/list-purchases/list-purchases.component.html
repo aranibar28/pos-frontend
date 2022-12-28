@@ -1,5 +1,19 @@
 <mat-card>
     <mat-card-content>
+        <div class="row">
+          <div class="col-md-6">
+            <mat-form-field appearance="fill">
+              <mat-label>Seleccione un rango</mat-label>
+              <mat-date-range-input [formGroup]="range" [rangePicker]="picker">
+                <input formControlName="start" matStartDate placeholder="Start date">
+                <input formControlName="end" matEndDate placeholder="End date">
+              </mat-date-range-input>
+              <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-date-range-picker #picker></mat-date-range-picker>
+            </mat-form-field>
+          </div>
+        </div>
+
         <table mat-table [dataSource]="dataSource" matSort>
             <ng-container matColumnDef="supplier">
               <th mat-header-cell *matHeaderCellDef mat-sort-header>Proveedor</th>

@@ -24,7 +24,7 @@ export class PurchaseService {
     return this.http.post(url, data, this.headers);
   }
 
-  read_purchases(page: number = 1, limit: number = 5): Observable<Response> {
+  read_purchases(page: number = 1, limit: number = 10): Observable<Response> {
     const url = `${base_url}/read_purchases`;
     const params = new HttpParams().set('page', page).set('limit', limit);
     return this.http.get<Response>(url, { ...this.headers, params });
