@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, inject } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, Params } from '@angular/router';
 import { FormGroup, FormControl } from '@angular/forms';
-import { pairwise } from 'rxjs';
+import { Subscription, pairwise } from 'rxjs';
 import * as moment from 'moment';
 
 import { PageEvent } from '@angular/material/paginator';
@@ -31,6 +31,7 @@ const columns = ['supplier', 'amount', 'created_at'];
 })
 export class ListPurchasesComponent implements OnInit {
   @ViewChild(MatSort) sort!: MatSort;
+  private subscription: Subscription = new Subscription();
   private purchaseService = inject(PurchaseService);
   private activatedRoute = inject(ActivatedRoute);
   private router = inject(Router);
@@ -39,12 +40,11 @@ export class ListPurchasesComponent implements OnInit {
   public dataSource!: MatTableDataSource<Purchase[]>;
 
   public totalItems: number = 0;
-  public queryParams = this.activatedRoute.snapshot.queryParams;
-
-  public currentPage: number = this.queryParams['page'] || 1;
-  public pageSize: number = this.queryParams['limit'] || 10;
-  public start: string = this.queryParams['start'];
-  public end: string = this.queryParams['end'];
+  public currentPage: number = 1;
+  public pageIndex: number = 1;
+  public pageSize: number = 10;
+  public start: string = '';
+  public end: string = '';
 
   public range = new FormGroup({
     start: new FormControl<Date | null>(null),
@@ -52,8 +52,26 @@ export class ListPurchasesComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    this.init_purchases(this.currentPage, this.pageSize, this.start, this.end);
-    this.dateChanged();
+    this.subscription = this.activatedRoute.queryParams.subscribe(
+      (params: Params) => {
+        const { page, limit, start, end } = params;
+        this.currentPage = page || 1;
+        this.pageSize = limit || 10;
+        this.start = start;
+        this.end = end;
+        this.init_purchases(
+          this.currentPage,
+          this.pageSize,
+          this.start,
+          this.end
+        );
+      }
+    );
+    this.rangeChanged();
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 
   init_purchases(page?: number, limit?: number, start?: string, end?: string) {
@@ -64,14 +82,28 @@ export class ListPurchasesComponent implements OnInit {
         this.dataSource = new MatTableDataSource(res.docs);
         this.dataSource.sort = this.sort;
         this.totalItems = res.totalDocs;
-        this.currentPage = res.page - 1;
+        this.pageIndex = res.page - 1;
         this.pageSize = res.limit;
-        this.setParams(res.page, res.limit);
       },
     });
   }
 
-  dateChanged() {
+  pageChanged(event: PageEvent) {
+    this.currentPage = event.pageIndex + 1;
+    this.pageSize = event.pageSize;
+
+    const queryParams = {
+      page: this.currentPage === 1 ? undefined : this.currentPage,
+      limit: this.pageSize === 10 ? undefined : this.pageSize,
+    };
+
+    this.router.navigate([], {
+      queryParams,
+      queryParamsHandling: 'merge',
+    });
+  }
+
+  rangeChanged() {
     this.range.valueChanges.pipe(pairwise()).subscribe(([prev, curr]) => {
       if (curr.start && curr.end && curr.end !== prev.end) {
         this.start = moment(curr.start).format('DD-MM-YYYY');
@@ -80,35 +112,7 @@ export class ListPurchasesComponent implements OnInit {
           queryParams: { start: this.start, end: this.end },
           queryParamsHandling: 'merge',
         });
-        this.init_purchases(
-          this.currentPage + 1,
-          this.pageSize,
-          this.start,
-          this.end
-        );
       }
-    });
-  }
-
-  pageChanged(event: PageEvent) {
-    this.currentPage = event.pageIndex;
-    this.pageSize = event.pageSize;
-    this.init_purchases(
-      this.currentPage + 1,
-      this.pageSize,
-      this.start,
-      this.end
-    );
-  }
-
-  private setParams(page: number, limit: number) {
-    const queryParams = {
-      page: page === 1 ? undefined : page,
-      limit: limit === 10 ? undefined : limit,
-    };
-    this.router.navigate([], {
-      queryParams,
-      queryParamsHandling: 'merge',
     });
   }
 }

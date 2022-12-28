@@ -37,6 +37,6 @@
                <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
             </ng-container>
           </table>
-          <mat-paginator (page)="pageChanged($event)" [pageIndex]="currentPage" [length]="totalItems" [pageSize]="pageSize" [pageSizeOptions]="[5, 10, 50, 100]"></mat-paginator>
+          <mat-paginator (page)="pageChanged($event)" [pageIndex]="pageIndex" [length]="totalItems" [pageSize]="pageSize" [pageSizeOptions]="[5, 10, 50, 100]"></mat-paginator>
     </mat-card-content>
 </mat-card>
