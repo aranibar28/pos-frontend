@@ -39,10 +39,12 @@ export class ListPurchasesComponent implements OnInit {
   public dataSource!: MatTableDataSource<Purchase[]>;
 
   public totalItems: number = 0;
-  public currentPage = this.activatedRoute.snapshot.queryParams['page'] || 1;
-  public pageSize = this.activatedRoute.snapshot.queryParams['limit'] || 10;
-  public start = this.activatedRoute.snapshot.queryParams['start'];
-  public end = this.activatedRoute.snapshot.queryParams['end'];
+  public queryParams = this.activatedRoute.snapshot.queryParams;
+
+  public currentPage: number = this.queryParams['page'] || 1;
+  public pageSize: number = this.queryParams['limit'] || 10;
+  public start: string = this.queryParams['start'];
+  public end: string = this.queryParams['end'];
 
   public range = new FormGroup({
     start: new FormControl<Date | null>(null),
@@ -51,7 +53,7 @@ export class ListPurchasesComponent implements OnInit {
 
   ngOnInit(): void {
     this.init_purchases(this.currentPage, this.pageSize, this.start, this.end);
-    this.rangeChanged();
+    this.dateChanged();
   }
 
   init_purchases(page?: number, limit?: number, start?: string, end?: string) {
@@ -69,7 +71,7 @@ export class ListPurchasesComponent implements OnInit {
     });
   }
 
-  rangeChanged() {
+  dateChanged() {
     this.range.valueChanges.pipe(pairwise()).subscribe(([prev, curr]) => {
       if (curr.start && curr.end && curr.end !== prev.end) {
         this.start = moment(curr.start).format('DD-MM-YYYY');
@@ -79,7 +81,7 @@ export class ListPurchasesComponent implements OnInit {
           queryParamsHandling: 'merge',
         });
         this.init_purchases(
-          this.currentPage,
+          this.currentPage + 1,
           this.pageSize,
           this.start,
           this.end
