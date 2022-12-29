@@ -18,36 +18,9 @@ $dark-theme: mat.define-dark-theme(
   @include mat.all-component-colors($dark-theme);
 }
 
-html,
-body {
-  height: 100%;
-}
 body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
-}
-
-.login-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-  background-color: #f5f5f5;
-
-  .login {
-    width: 100%;
-    max-width: 330px;
-    text-align: center;
-
-    img {
-      width: 50%;
-      height: 165px;
-    }
-
-    .h-80 {
-      width: 80%;
-    }
-  }
 }
 
 .spinner {
@@ -77,11 +50,12 @@ body {
   background-color: rgba(0, 0, 0, 0.1);
 }
 
-.progress-container {
-  mat-progress-bar {
-    position: absolute;
-    width: 100%;
-  }
+.pointer {
+  cursor: pointer;
+}
+
+.spacer {
+  flex: 1 1 auto;
 }
 
 .centered {
@@ -90,8 +64,11 @@ body {
   align-items: center;
 }
 
-.spacer {
-  flex: 1 1 auto;
+.progress-container {
+  mat-progress-bar {
+    position: absolute;
+    width: 100%;
+  }
 }
 
 mat-form-field {
@@ -168,12 +145,9 @@ input.input-number::-webkit-inner-spin-button {
   -moz-appearance: textfield;
   background-color: transparent !important;
 }
+
 .container-input {
   .mat-mdc-form-field-subscript-wrapper {
     height: 0 !important;
   }
-}
-
-.pointer {
-  cursor: pointer;
 }
