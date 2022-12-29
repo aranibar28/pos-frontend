@@ -1,15 +1,16 @@
 import { Component, OnInit, ViewChild, inject } from '@angular/core';
-import { ActivatedRoute, Router, Params } from '@angular/router';
-import { FormGroup, FormControl } from '@angular/forms';
+import { ActivatedRoute, Params, Router } from '@angular/router';
+import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
+import { NgxSpinnerService } from 'ngx-spinner';
 import { Subscription, pairwise } from 'rxjs';
 import * as moment from 'moment';
 
-import { PageEvent } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
-import { MatSort, MatSortModule } from '@angular/material/sort';
-import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
+import { PageEvent } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
 
 import { PurchaseService } from 'src/app/services/purchase.service';
 import { Purchase } from 'src/app/utils/intefaces';
@@ -22,9 +23,8 @@ const columns = ['supplier', 'amount', 'created_at'];
   imports: [
     SHARED_MODULES,
     TABLE_MODULES,
-    MatSortModule,
-    MatDatepickerModule,
     MatFormFieldModule,
+    MatDatepickerModule,
     MatNativeDateModule,
   ],
   templateUrl: './list-purchases.component.html',
@@ -34,7 +34,9 @@ export class ListPurchasesComponent implements OnInit {
   private subscription: Subscription = new Subscription();
   private purchaseService = inject(PurchaseService);
   private activatedRoute = inject(ActivatedRoute);
+  private spinner = inject(NgxSpinnerService);
   private router = inject(Router);
+  private fb = inject(FormBuilder);
 
   public displayedColumns: string[] = columns;
   public dataSource!: MatTableDataSource<Purchase[]>;
@@ -46,7 +48,7 @@ export class ListPurchasesComponent implements OnInit {
   public start: string = '';
   public end: string = '';
 
-  public range = new FormGroup({
+  public range: FormGroup = this.fb.group({
     start: new FormControl<Date | null>(null),
     end: new FormControl<Date | null>(null),
   });
@@ -68,6 +70,7 @@ export class ListPurchasesComponent implements OnInit {
       }
     );
     this.rangeChanged();
+    this.setValuesDate();
   }
 
   ngOnDestroy(): void {
@@ -76,6 +79,7 @@ export class ListPurchasesComponent implements OnInit {
 
   init_purchases(page?: number, limit?: number, start?: string, end?: string) {
     const params = start && end ? { page, limit, start, end } : { page, limit };
+    this.spinner.show();
     this.purchaseService.read_purchases(params).subscribe({
       next: (res) => {
         res.docs.map((item) => (item.supplier = item.supplier.name));
@@ -84,6 +88,11 @@ export class ListPurchasesComponent implements OnInit {
         this.totalItems = res.totalDocs;
         this.pageIndex = res.page - 1;
         this.pageSize = res.limit;
+        this.spinner.hide();
+      },
+      error: (err) => {
+        console.log(err);
+        this.spinner.hide();
       },
     });
   }
@@ -114,5 +123,24 @@ export class ListPurchasesComponent implements OnInit {
         });
       }
     });
+  }
+
+  onReset() {
+    this.range.reset();
+    this.router.navigate([], { queryParams: {} });
+  }
+
+  private setValuesDate() {
+    if (this.start && this.end) {
+      const startDate = this.transformDate(this.start);
+      const endDate = this.transformDate(this.end);
+      this.range.setValue({ start: startDate, end: endDate });
+    }
+  }
+
+  private transformDate(date: string): Date {
+    const dateParts = date.split('-');
+    const fixedDate = `${dateParts[1]}-${dateParts[0]}-${dateParts[2]}`;
+    return new Date(fixedDate);
   }
 }

@@ -1,7 +1,7 @@
 <mat-card>
     <mat-card-content>
         <div class="row">
-          <div class="col-md-6">
+          <div class="col-md-6 d-flex gap-3">
             <mat-form-field appearance="fill">
               <mat-label>Seleccione un rango</mat-label>
               <mat-date-range-input [formGroup]="range" [rangePicker]="picker">
@@ -11,6 +11,9 @@
               <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
               <mat-date-range-picker #picker></mat-date-range-picker>
             </mat-form-field>
+            <button (click)="onReset()" color="primary" mat-mini-fab class="mt-2">
+              <mat-icon fontIcon="filter_alt_off"></mat-icon>
+            </button>
           </div>
         </div>
 
@@ -38,5 +41,6 @@
             </ng-container>
           </table>
           <mat-paginator (page)="pageChanged($event)" [pageIndex]="pageIndex" [length]="totalItems" [pageSize]="pageSize" [pageSizeOptions]="[5, 10, 50, 100]"></mat-paginator>
-    </mat-card-content>
+          <ngx-spinner type="ball-scale-multiple" bdColor="rgba(0, 0, 0, 0.8)" color="#fff" [fullScreen]="false"></ngx-spinner>
+        </mat-card-content>
 </mat-card>
