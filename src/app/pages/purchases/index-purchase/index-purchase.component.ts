@@ -190,7 +190,8 @@ export class IndexPurchaseComponent implements OnInit, AfterViewInit {
   }
 
   init_suppliers() {
-    this.supplierService.read_suppliers(1, 100, '', '', '').subscribe({
+    const param = { page: 1, limit: 100, search: '', status: '', order: '' };
+    this.supplierService.read_suppliers(param).subscribe({
       next: (res) => {
         this.suppliers = res.docs;
         this.suppliersOptions = res.docs;

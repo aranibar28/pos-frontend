@@ -1,7 +1,7 @@
 <div class="row">
   
    <div *ngIf="toggle" class="col-md-3 mb-3 fadeIn">
-     <app-filter-card (data)="onChange($event)" (reset)="onReset($event)"></app-filter-card>
+     <app-filter-card (data)="filterChanged($event)" (reset)="filterReset($event)"></app-filter-card>
    </div>
 
    <div [ngClass]="toggle ? 'col-md-9 mb-3': 'col-md-12 mb-3'">
@@ -19,9 +19,9 @@
           <div class="table-responsive">
              <table mat-table [dataSource]="dataSource" matSort>
                <ng-container matColumnDef="image">
-                  <th mat-header-cell *matHeaderCellDef mat-sort-header>Imagen</th>
+                  <th mat-header-cell *matHeaderCellDef>Imagen</th>
                   <td mat-cell *matCellDef="let element">
-                     <img (click)="openDialog(element)" [src]="element.image?.secure_url | image: 'products'" alt="user" class="pointer" style="width: 40px;">
+                     <img (click)="update_image(element)" [src]="element.image?.secure_url | image: 'products'" alt="user" class="pointer" style="width: 40px;">
                   </td>
                </ng-container>
                 <ng-container matColumnDef="title">
@@ -72,7 +72,7 @@
                 </ng-container>
              </table>
           </div>
-          <mat-paginator (page)="onPageChange($event)" [pageIndex]="pageIndex" [length]="totalDocs" [pageSizeOptions]="[10, 20, 50, 100]"></mat-paginator>
+          <mat-paginator (page)="pageChanged($event)" [pageIndex]="pageIndex" [length]="totalItems" [pageSize]="pageSize" [pageSizeOptions]="[5, 10, 50, 100]"></mat-paginator>
           <ngx-spinner type="ball-scale-multiple" bdColor="rgba(0, 0, 0, 0.8)" color="#fff" [fullScreen]="false"></ngx-spinner>
        </mat-card-content>
     </mat-card>

@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild, inject } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router, Params } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { Subscription } from 'rxjs';
 
 import { MatSort } from '@angular/material/sort';
 import { MatDialog } from '@angular/material/dialog';
@@ -37,73 +38,110 @@ export const columns = [
   templateUrl: './index-user.component.html',
 })
 export class IndexUserComponent implements OnInit {
+  private subscription: Subscription = new Subscription();
   private userService = inject(UserService);
   private activatedRoute = inject(ActivatedRoute);
   private alertService = inject(AlertService);
   private spinner = inject(NgxSpinnerService);
   private dialog = inject(MatDialog);
+  private router = inject(Router);
 
   @ViewChild(MatSort) sort!: MatSort;
   public displayedColumns: string[] = columns;
   public dataSource!: MatTableDataSource<any>;
   public users: User[] = [];
-
-  public search = this.activatedRoute.snapshot.queryParams['search'] || '';
-  public status = this.activatedRoute.snapshot.queryParams['status'] || '';
-  public order = this.activatedRoute.snapshot.queryParams['order'] || '';
-
-  public totalDocs: number = 0;
-  public pageIndex: number = 1;
-  public limit: number = 10;
   public toggle!: boolean;
 
+  public totalItems: number = 0;
+  public currentPage: number = 1;
+  public pageIndex: number = 1;
+  public pageSize: number = 10;
+
+  public search = '';
+  public status = '';
+  public order = '';
+
   ngOnInit(): void {
-    this.init_data();
+    this.subscription = this.activatedRoute.queryParams.subscribe(
+      (params: Params) => {
+        const { page, limit, search, status, order } = params;
+        this.currentPage = page ? page : 1;
+        this.pageSize = limit ? limit : 10;
+        this.search = search ? search : '';
+        this.status = status ? status : '';
+        this.order = order ? order : '';
+        this.updatePage();
+      }
+    );
   }
 
-  init_data(page: number = 0) {
-    const pageIndex = page ? this.pageIndex + 1 : 1;
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+  }
+
+  init_data(
+    page?: number,
+    limit?: number,
+    search?: string,
+    status?: string,
+    order?: string
+  ) {
+    const params = { page, limit, search, status, order };
     this.spinner.show();
-    this.userService
-      .read_users(pageIndex, this.limit, this.search, this.status, this.order)
-      .subscribe({
-        next: (res) => {
-          this.users = res.docs;
-          this.dataSource = new MatTableDataSource(res.docs);
-          this.dataSource.sort = this.sort;
-          this.totalDocs = res.totalDocs;
-          this.pageIndex = res.page - 1;
-          this.limit = res.limit;
-          this.spinner.hide();
-        },
-        error: (err) => {
-          console.log(err);
-          this.spinner.hide();
-        },
-      });
+    this.userService.read_users(params).subscribe({
+      next: (res) => {
+        this.dataSource = new MatTableDataSource<User>(res.docs);
+        this.dataSource.sort = this.sort;
+        this.totalItems = res.totalDocs;
+        this.pageIndex = res.page - 1;
+        this.pageSize = res.limit;
+        this.spinner.hide();
+      },
+      error: (err) => {
+        console.log(err);
+        this.spinner.hide();
+      },
+    });
   }
 
-  onChange(data: any) {
+  updatePage() {
+    this.init_data(
+      this.currentPage,
+      this.pageSize,
+      this.search,
+      this.status,
+      this.order
+    );
+  }
+
+  pageChanged(event: PageEvent) {
+    this.currentPage = event.pageIndex + 1;
+    this.pageSize = event.pageSize;
+
+    const queryParams = {
+      page: this.currentPage === 1 ? undefined : this.currentPage,
+      limit: this.pageSize === 10 ? undefined : this.pageSize,
+    };
+
+    this.router.navigate([], {
+      queryParams,
+      queryParamsHandling: 'merge',
+    });
+  }
+
+  filterChanged(data: any) {
     const { type, value } = data;
     if (type == 'search') this.search = value;
     else if (type == 'status') this.status = value;
     else if (type == 'order') this.order = value;
-    this.init_data();
   }
 
-  onReset(status: boolean) {
+  filterReset(status: boolean) {
     if (status) {
       this.search = '';
       this.status = '';
       this.order = '';
-      this.init_data();
     }
-  }
-
-  onPageChange(page: PageEvent) {
-    this.pageIndex = page.pageIndex;
-    this.limit = page.pageSize;
-    this.init_data(1);
   }
 
   create_data(): void {
@@ -113,7 +151,7 @@ export class IndexUserComponent implements OnInit {
       width: '400px',
     });
     dialogRef.afterClosed().subscribe((result) => {
-      return result && this.init_data();
+      return result && this.updatePage();
     });
   }
 
@@ -124,7 +162,7 @@ export class IndexUserComponent implements OnInit {
       width: '400px',
     });
     dialogRef.afterClosed().subscribe((result) => {
-      return result && this.init_data(1);
+      return result && this.updatePage();
     });
   }
 
@@ -140,7 +178,7 @@ export class IndexUserComponent implements OnInit {
             if (!res.data) {
               return this.alertService.error(res.msg);
             }
-            this.init_data(1);
+            this.updatePage();
             this.alertService.success('Se eliminó correctamente');
           },
         });

@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/app/utils/enviroments';
@@ -24,15 +24,16 @@ export class UserService {
     return this.http.post(url, data, this.headers);
   }
 
-  read_users(
-    p: number,
-    l: number,
-    search: string = '',
-    filter: string,
-    sort: string
-  ): Observable<Response> {
-    const url = `${base_url}/read_users?page=${p}&limit=${l}&search=${search}&status=${filter}&sort=${sort}`;
-    return this.http.get<Response>(url, this.headers);
+  read_users(parameters: any): Observable<Response> {
+    const { page, limit, search, status, order } = parameters;
+
+    let params = new HttpParams().set('page', page).set('limit', limit);
+    if (search) params = params.set('search', search);
+    if (status) params = params.set('status', status);
+    if (order) params = params.set('order', order);
+
+    const url = `${base_url}/read_users`;
+    return this.http.get<Response>(url, { ...this.headers, params });
   }
 
   read_all_users(): Observable<any> {

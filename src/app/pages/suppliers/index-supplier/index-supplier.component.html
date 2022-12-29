@@ -1,7 +1,7 @@
 <div class="row">
   
     <div *ngIf="toggle" class="col-md-3 mb-3 fadeIn">
-      <app-filter-card (data)="onChange($event)" (reset)="onReset($event)"></app-filter-card>
+      <app-filter-card (data)="filterChanged($event)" (reset)="filterReset($event)"></app-filter-card>
     </div>
  
     <div [ngClass]="toggle ? 'col-md-9 mb-3': 'col-md-12 mb-3'">
@@ -52,7 +52,7 @@
                  </ng-container>
               </table>
            </div>
-           <mat-paginator (page)="onPageChange($event)" [pageIndex]="pageIndex" [length]="totalDocs" [pageSizeOptions]="[10, 20, 50, 100]"></mat-paginator>
+           <mat-paginator (page)="pageChanged($event)" [pageIndex]="pageIndex" [length]="totalItems" [pageSize]="pageSize" [pageSizeOptions]="[5, 10, 50, 100]"></mat-paginator>
            <ngx-spinner type="ball-scale-multiple" bdColor="rgba(0, 0, 0, 0.8)" color="#fff" [fullScreen]="false"></ngx-spinner>
         </mat-card-content>
      </mat-card>

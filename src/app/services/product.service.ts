@@ -24,19 +24,14 @@ export class ProductService {
     return this.http.post(url, data, this.headers);
   }
 
-  read_products(
-    page: number,
-    limit: number,
-    search: string = '',
-    filter: string,
-    sort: string
-  ): Observable<Response> {
-    const params = new HttpParams()
-      .set('page', page)
-      .set('limit', limit)
-      .set('search', search)
-      .set('status', filter)
-      .set('sort', sort);
+  read_products(parameters: any): Observable<Response> {
+    const { page, limit, search, status, order } = parameters;
+
+    let params = new HttpParams().set('page', page).set('limit', limit);
+    if (search) params = params.set('search', search);
+    if (status) params = params.set('status', status);
+    if (order) params = params.set('order', order);
+
     const url = `${base_url}/read_products`;
     return this.http.get<Response>(url, { ...this.headers, params });
   }
