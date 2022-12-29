@@ -28,9 +28,9 @@ export class CategoryService {
     const { page, limit, search, status, order } = parameters;
 
     let params = new HttpParams().set('page', page).set('limit', limit);
-    if (search) params = params.set('search', search);
-    if (status) params = params.set('status', status);
-    if (order) params = params.set('order', order);
+    params = search ? params.set('search', search) : params;
+    params = status ? params.set('status', status) : params;
+    params = order ? params.set('order', order) : params;
 
     const url = `${base_url}/read_categories`;
     return this.http.get<Response>(url, { ...this.headers, params });
