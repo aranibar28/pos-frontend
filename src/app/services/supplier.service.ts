@@ -36,6 +36,11 @@ export class SupplierService {
     return this.http.get<Response>(url, { ...this.headers, params });
   }
 
+  read_all_suppliers(): Observable<any> {
+    const url = `${base_url}/read_all_suppliers`;
+    return this.http.get(url, this.headers);
+  }
+
   read_supplier_by_id(id: string): Observable<any> {
     const url = `${base_url}/read_supplier_by_id/${id}`;
     return this.http.get(url, this.headers);

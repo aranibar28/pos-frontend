@@ -1,1 +1,85 @@
-<p>index-sale works!</p>
+<mat-card class="px-3">
+  <mat-card-content>
+     <div class="centered mb-2">
+        <h1>Módulo de Ventas</h1>
+        <button routerLink="list" mat-raised-button color="primary">Lista de Ventas</button>
+     </div>
+     <mat-form-field appearance="fill">
+        <mat-label>Buscar Producto</mat-label>
+        <input matInput [formControl]="product" [matAutocomplete]="matProduct">
+        <button (click)="product.setValue('')" *ngIf="product.value" matSuffix mat-icon-button>
+        <mat-icon fontIcon="close"></mat-icon>
+        </button>
+        <mat-autocomplete #matProduct="matAutocomplete">
+           <mat-option (click)="addToShoppingCart(item)" *ngFor="let item of productsOptions" [value]="item">
+            <img [src]="item.image?.secure_url | image: 'products'" loading="lazy" alt="user" style="width: 40px; margin-right: 5px;">
+            {{ item.title | titlecase }} - {{ item.price | currency: 'PEN' }}
+         </mat-option>
+        </mat-autocomplete>
+     </mat-form-field>
+     <div class="table-responsive" style="height: 340px;">
+        <table mat-table [dataSource]="dataSource">
+         <ng-container matColumnDef="image">
+            <th mat-header-cell *matHeaderCellDef>Imagen</th>
+            <td mat-cell *matCellDef="let element">
+               <img [src]="element.image | image: 'products'" alt="user" style="width: 40px;">
+            </td>
+         </ng-container>
+           <ng-container matColumnDef="title">
+              <th mat-header-cell *matHeaderCellDef> Descripción </th>
+              <td mat-cell *matCellDef="let element"> {{ element.title }} </td>
+           </ng-container>
+           <ng-container matColumnDef="quantity">
+              <th mat-header-cell *matHeaderCellDef> Ingreso </th>
+              <td mat-cell *matCellDef="let element; let i = index">
+                 <mat-form-field appearance="outline" class="container-input my-2">
+                    <button (click)="decrementQuantity(i)" mat-icon-button matPrefix>
+                       <mat-icon>remove</mat-icon>
+                    </button>
+                    <input (keyup)="keyupQuantity($event, i)" [value]="element.quantity" type="number" matInput class="input-number mat-number"/>
+                    <button (click)="incrementQuantity(i)" mat-icon-button matSuffix>
+                       <mat-icon>add</mat-icon>
+                    </button>
+                 </mat-form-field>
+              </td>
+           </ng-container>
+           <ng-container matColumnDef="price">
+            <th mat-header-cell *matHeaderCellDef> Precio de Compra </th>
+            <td mat-cell *matCellDef="let element; let i = index">
+             <mat-form-field appearance="outline" class="container-input my-2">
+                <input (keyup)="keyupPrice($event, i)" [value]="element.price | number : '1.2-2'" type="number" matInput class="input-number mat-number"/>
+             </mat-form-field>
+            </td>
+         </ng-container>
+           <ng-container matColumnDef="subtotal">
+              <th mat-header-cell *matHeaderCellDef> Subtotal </th>
+              <td mat-cell *matCellDef="let element"> {{ element.quantity * element.price | currency: 'PEN' }} </td>
+           </ng-container>
+           <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef> Actions </th>
+              <td mat-cell *matCellDef="let element; let i = index">
+                 <button (click)="removeFromShoppingCart(i)" mat-mini-fab color="warn">
+                    <mat-icon fontIcon="close"></mat-icon>
+                 </button>
+              </td>
+           </ng-container>
+           <ng-container>
+              <tr *matNoDataRow>
+                 <td class="text-center py-4" [attr.colspan]="displayedColumns.length">No has seleccionado productos.</td>
+              </tr>
+           </ng-container>
+           <ng-container>
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+           </ng-container>
+        </table>
+     </div>
+     <ng-container>
+      <div class="d-flex justify-content-around mt-3">
+         <div>Productos: <span class="text-danger fw-bold">({{ count }})</span></div>
+         <div>Total Pagar: <span class="text-success fw-bold">{{ total | currency: 'PEN' }}</span></div>
+      </div>
+      <button (click)="createSale()" type="button" mat-raised-button color="primary">Vender</button>
+   </ng-container>
+  </mat-card-content>
+</mat-card>

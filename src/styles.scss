@@ -18,8 +18,13 @@ $dark-theme: mat.define-dark-theme(
   @include mat.all-component-colors($dark-theme);
 }
 
+html {
+  height: 100%;
+}
+
 body {
   margin: 0;
+  height: 100%;
   font-family: Roboto, "Helvetica Neue", sans-serif;
 }
 

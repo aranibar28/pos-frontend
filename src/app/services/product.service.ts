@@ -36,7 +36,7 @@ export class ProductService {
     return this.http.get<Response>(url, { ...this.headers, params });
   }
 
-  read_products_purchases(): Observable<any> {
+  read_all_products(): Observable<any> {
     const url = `${base_url}/read_all_products`;
     return this.http
       .get(url, this.headers)

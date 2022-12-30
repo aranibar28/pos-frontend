@@ -29,7 +29,7 @@
         </button>
         <mat-autocomplete #matProduct="matAutocomplete">
            <mat-option (click)="add_item(item)" *ngFor="let item of productsOptions" [value]="item">
-            <img [src]="item.image?.secure_url | image: 'products'" alt="user" style="width: 40px; margin-right: 5px;">
+            <img [src]="item.image?.secure_url | image: 'products'" loading="lazy" alt="user" style="width: 40px; margin-right: 5px;">
             {{ item.title | titlecase }} - {{ item.price | currency: 'PEN' }}
          </mat-option>
         </mat-autocomplete>

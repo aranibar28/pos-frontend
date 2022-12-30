@@ -1,0 +1,107 @@
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { Observable, startWith, map, of } from 'rxjs';
+
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatTableModule } from '@angular/material/table';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+
+export interface Product {
+  id: number;
+  description: string;
+  price: number;
+  quantity: number;
+}
+
+@Component({
+  selector: 'app-index-sale',
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatAutocompleteModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatTableModule,
+    MatButtonModule,
+    MatIconModule,
+  ],
+  templateUrl: './index-sale.component.html',
+})
+export class IndexSaleComponent {
+  public products: Product[] = [
+    { id: 1, description: 'Producto 1', price: 10, quantity: 1 },
+    { id: 2, description: 'Producto 2', price: 20, quantity: 1 },
+    { id: 3, description: 'Producto 3', price: 30, quantity: 1 },
+  ];
+  public productControl = new FormControl();
+  public filteredProducts: Observable<Product[]> = of([]);
+  public shoppingCart: Product[] = [];
+  public displayedColumns: string[] = [
+    'description',
+    'price',
+    'quantity',
+    'subtotal',
+    'remove',
+  ];
+
+  ngOnInit() {
+    this.filteredProducts = this.productControl.valueChanges.pipe(
+      startWith(''),
+      map((value) => (typeof value === 'string' ? value : value.description)),
+      map((description) =>
+        description ? this._filter(description) : this.products.slice()
+      )
+    );
+  }
+
+  displayFn(product: Product): string {
+    return product ? product.description : '';
+  }
+
+  private _filter(description: string): Product[] {
+    const filterValue = description.toLowerCase();
+    return this.products.filter(
+      (product) => product.description.toLowerCase().indexOf(filterValue) === 0
+    );
+  }
+
+  addToShoppingCart() {
+    const selectedProduct = this.productControl.value;
+    this.shoppingCart.push(selectedProduct);
+    this.productControl.reset();
+  }
+
+  incrementQuantity(product: Product) {
+    product.quantity++;
+  }
+
+  decrementQuantity(product: Product) {
+    if (product.quantity > 1) {
+      product.quantity--;
+    }
+  }
+
+  removeFromShoppingCart(product: Product) {
+    const index = this.shoppingCart.indexOf(product);
+    this.shoppingCart.splice(index, 1);
+  }
+
+  getTotal() {
+    return this.shoppingCart.reduce(
+      (acc, product) => acc + product.price * product.quantity,
+      0
+    );
+  }
+
+  getTotalQuantity() {
+    return this.shoppingCart.reduce(
+      (acc, product) => acc + product.quantity,
+      0
+    );
+  }
+}
