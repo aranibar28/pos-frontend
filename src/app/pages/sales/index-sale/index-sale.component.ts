@@ -1,10 +1,7 @@
 import { Component, inject, OnInit, AfterViewInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { Observable, startWith, map, of } from 'rxjs';
+import { FormControl } from '@angular/forms';
 import { ProductService } from 'src/app/services/product.service';
 import { AlertService } from 'src/app/common/alert.service';
-import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { Product } from 'src/app/utils/intefaces';
 
@@ -36,20 +33,22 @@ export class IndexSaleComponent implements OnInit, AfterViewInit {
   public displayedColumns: string[] = columns;
   public dataSource!: MatTableDataSource<any>;
 
+  public product = new FormControl('');
   public products: Product[] = [];
   public productsOptions: Product[] = [];
+
   public details: Details[] = [];
 
   public total: number = 0;
   public count: number = 0;
 
-  public product = new FormControl('');
-
   ngOnInit(): void {
     this.details = JSON.parse(localStorage.getItem('details') || '[]');
     this.dataSource = new MatTableDataSource(this.details);
     this.getProducts();
-    this.updateTotal();
+    this.dataSource.connect().subscribe((res) => {
+      this.updateTotal();
+    });
   }
 
   ngAfterViewInit(): void {
@@ -77,7 +76,6 @@ export class IndexSaleComponent implements OnInit, AfterViewInit {
 
   addToShoppingCart(item: Product) {
     const product = this.details.find((x: any) => x.product == item._id);
-
     if (product) {
       product.quantity += 1;
       product.price = item.price;
@@ -90,37 +88,35 @@ export class IndexSaleComponent implements OnInit, AfterViewInit {
         quantity: 1,
       });
     }
-    this.dataSource._updateChangeSubscription();
+    this.dataSource.data = this.details;
     this.product.reset('');
-    this.updateTotal();
   }
 
   removeFromShoppingCart(i: number) {
     this.details.splice(i, 1);
-    this.dataSource._updateChangeSubscription();
-    this.updateTotal();
+    this.dataSource.data = this.details;
   }
 
   incrementQuantity(i: number) {
     this.details[i].quantity = this.details[i].quantity + 1;
-    this.updateTotal();
+    this.dataSource.data = this.details;
   }
 
   decrementQuantity(i: number) {
     this.details[i].quantity = Math.max(1, this.details[i].quantity - 1);
-    this.updateTotal();
+    this.dataSource.data = this.details;
   }
 
   keyupPrice(event: Event, i: number) {
     const input = event.target as HTMLInputElement;
     this.details[i].price = Number(input.value) || 1;
-    this.updateTotal();
+    this.dataSource.data = this.details;
   }
 
   keyupQuantity(event: Event, i: number) {
     const input = event.target as HTMLInputElement;
     this.details[i].quantity = Number(input.value) || 1;
-    this.updateTotal();
+    this.dataSource.data = this.details;
   }
 
   updateTotal() {
@@ -141,11 +137,6 @@ export class IndexSaleComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    const data: any = {
-      amount: this.total,
-      details: this.details,
-    };
-
-    console.log(data);
+    console.log(this.details);
   }
 }
