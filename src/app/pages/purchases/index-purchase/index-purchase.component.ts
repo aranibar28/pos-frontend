@@ -159,7 +159,6 @@ export class IndexPurchaseComponent implements OnInit, AfterViewInit {
 
     if (this.supplier.invalid) {
       this.supplier.markAsTouched();
-      this.loadButton = false;
       return;
     }
 

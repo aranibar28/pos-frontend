@@ -73,6 +73,14 @@ export interface Product {
   updated_at: Date;
 }
 
+export interface Details {
+  product: string;
+  title: string;
+  price: number;
+  quantity: number;
+  image?: string;
+}
+
 export interface Image {
   public_id: string;
   secure_url: string;

@@ -4,6 +4,21 @@
         <h1>Módulo de Ventas</h1>
         <button routerLink="list" mat-raised-button color="primary">Lista de Ventas</button>
      </div>
+     <div class="d-flex gap-2">
+      <mat-form-field appearance="fill">
+         <mat-label>Usuario</mat-label>
+         <input matInput [formControl]="user" [matAutocomplete]="matUser">
+         <button (click)="user.setValue('')" *ngIf="user.value" matSuffix mat-icon-button>
+         <mat-icon fontIcon="close"></mat-icon>
+         </button>
+         <mat-autocomplete #matUser="matAutocomplete" [displayWith]="displayFn">
+         <mat-option *ngFor="let item of usersOptions" [value]="item">{{ item.dni }} - {{ item.full_name }}</mat-option>
+         </mat-autocomplete>
+      </mat-form-field>
+      <button (click)="createUser()" mat-mini-fab color="primary" class="mt-2">
+         <mat-icon fontIcon="add"></mat-icon>
+      </button>
+     </div>
      <mat-form-field appearance="fill">
         <mat-label>Buscar Producto</mat-label>
         <input matInput [formControl]="product" [matAutocomplete]="matProduct">
@@ -79,7 +94,7 @@
          <div>Productos: <span class="text-danger fw-bold">({{ count }})</span></div>
          <div>Total Pagar: <span class="text-success fw-bold">{{ total | currency: 'PEN' }}</span></div>
       </div>
-      <button (click)="createSale()" type="button" mat-raised-button color="primary">Vender</button>
+      <button (click)="createSale()" [disabled]="loadButton" type="button" mat-raised-button color="primary">Vender</button>
    </ng-container>
   </mat-card-content>
 </mat-card>
