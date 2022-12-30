@@ -43,18 +43,18 @@ export class IndexSaleComponent implements OnInit, AfterViewInit {
   public count: number = 0;
 
   ngOnInit(): void {
+    this.getProducts();
     this.details = JSON.parse(localStorage.getItem('details') || '[]');
     this.dataSource = new MatTableDataSource(this.details);
-    this.getProducts();
-    this.dataSource.connect().subscribe((res) => {
-      this.updateTotal();
-    });
   }
 
   ngAfterViewInit(): void {
     this.product.valueChanges.subscribe((data) => {
       const value = String(data).trim();
       this.filterProduct(value);
+    });
+    this.dataSource.connect().subscribe((data) => {
+      this.updateTotal(data);
     });
   }
 
@@ -75,7 +75,7 @@ export class IndexSaleComponent implements OnInit, AfterViewInit {
   }
 
   addToShoppingCart(item: Product) {
-    const product = this.details.find((x: any) => x.product == item._id);
+    const product = this.details.find((x) => x.product == item._id);
     if (product) {
       product.quantity += 1;
       product.price = item.price;
@@ -119,20 +119,14 @@ export class IndexSaleComponent implements OnInit, AfterViewInit {
     this.dataSource.data = this.details;
   }
 
-  updateTotal() {
-    this.total = this.details.reduce(
-      (acc: any, item: any) => acc + item.price * item.quantity,
-      0
-    );
-    this.count = this.details.reduce(
-      (acc: any, item: any) => acc + item.quantity,
-      0
-    );
+  updateTotal(data: Details[]) {
+    this.total = data.reduce((acc, item) => acc + item.price * item.quantity,0);
+    this.count = data.reduce((acc, item) => acc + item.quantity, 0);
     localStorage.setItem('details', JSON.stringify(this.details));
   }
 
   createSale() {
-    if (!this.details.some((item: any) => item.quantity > 0)) {
+    if (!this.details.some((item) => item.quantity > 0)) {
       this.alertService.error('Seleccione un producto.');
       return;
     }
