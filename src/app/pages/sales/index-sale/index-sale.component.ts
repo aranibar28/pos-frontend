@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, inject } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
@@ -55,41 +55,35 @@ export class IndexSaleComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.user.valueChanges.subscribe((data) => {
-      const value = String(data).trim();
-      this.filterUser(value);
-    });
-    this.product.valueChanges.subscribe((data) => {
-      const value = String(data).trim();
-      this.filterProduct(value);
-    });
+    this.user.valueChanges.subscribe((value) => this.filterUser(value));
+    this.product.valueChanges.subscribe((value) => this.filterProduct(value));
     this.dataSource.connect().subscribe((data) => {
       this.updateTotal(data);
     });
   }
 
-  private filterUser(data: string) {
-    const value = data.toString().toLowerCase();
-    this.usersOptions = this.users.filter((item) => {
-      return item?.full_name.toLowerCase().indexOf(value) > -1;
-    });
+  private filterUser(value: string | null) {
+    const transformValue = String(value).trim().toLowerCase();
+    this.usersOptions = this.users.filter((item) =>
+      item.full_name.toLowerCase().includes(transformValue)
+    );
   }
 
-  private filterProduct(data: string) {
-    const value = data?.toString().toLowerCase();
-    this.productsOptions = this.products.filter((item) => {
-      return item?.title.toLowerCase().indexOf(value) > -1;
-    });
+  private filterProduct(value: string | null) {
+    const transformValue = String(value).trim().toLowerCase();
+    this.productsOptions = this.products.filter((item) =>
+      item.title.toLowerCase().includes(transformValue)
+    );
   }
 
   private updateTotal(data: Details[]) {
-    this.total = data.reduce((acc, item) => acc + item.price * item.quantity, 0);
+    this.total = data.reduce((acc, item) => acc + item.price * item.quantity,0 );
     this.count = data.reduce((acc, item) => acc + item.quantity, 0);
     localStorage.setItem('details', JSON.stringify(this.details));
   }
 
   displayFn(user: User) {
-    return user ? user.dni + ' - ' + user.full_name : user;
+    return user ? `${user.dni} - ${user.full_name}` : user;
   }
 
   getUsers() {
@@ -158,9 +152,7 @@ export class IndexSaleComponent implements OnInit, AfterViewInit {
       width: '400px',
     });
     dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        this.getUsers();
-      }
+      result ? this.getUsers() : null;
     });
   }
 
@@ -182,11 +174,10 @@ export class IndexSaleComponent implements OnInit, AfterViewInit {
     };
 
     this.loadButton = true;
-    
+
     setTimeout(() => {
       console.log(data);
       this.loadButton = false;
     }, 3000);
-   
   }
 }
