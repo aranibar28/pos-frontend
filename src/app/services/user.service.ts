@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { environment } from 'src/app/utils/enviroments';
 import { Response, User } from 'src/app/utils/intefaces';
 const base_url = environment.base_url + '/users';
@@ -38,7 +38,15 @@ export class UserService {
 
   read_all_users(): Observable<any> {
     const url = `${base_url}/read_all_users`;
-    return this.http.get(url, this.headers);
+    return this.http.get(url, this.headers).pipe(
+      map((res: any) =>
+        res.data
+          .map((res: any) => res)
+          .filter((item: User) => {
+            return item.status == true;
+          })
+      )
+    );
   }
 
   read_user_by_id(id: string): Observable<any> {

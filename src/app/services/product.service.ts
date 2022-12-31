@@ -47,7 +47,7 @@ export class ProductService {
       );
   }
 
-  read_products_sales(): Observable<any> {
+  read_all_products_active(): Observable<any> {
     const url = `${base_url}/read_all_products`;
     return this.http.get(url, this.headers).pipe(
       map((res: any) =>
@@ -55,6 +55,9 @@ export class ProductService {
           .map((res: any) => res)
           .filter((item: Product) => {
             return item.status == true && item.price > 0;
+          })
+          .sort((a: any, b: any) => {
+            return a.title.localeCompare(b.title);
           })
       )
     );

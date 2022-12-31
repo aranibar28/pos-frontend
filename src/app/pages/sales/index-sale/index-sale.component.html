@@ -51,7 +51,7 @@
                     <button (click)="decrementQuantity(i)" mat-icon-button matPrefix>
                        <mat-icon>remove</mat-icon>
                     </button>
-                    <input (keyup)="keyupQuantity($event, i)" [value]="element.quantity" type="number" matInput class="input-number mat-number"/>
+                    <input (keyup)="changedQuantity($event, i)" [value]="element.quantity" type="number" matInput class="input-number mat-number"/>
                     <button (click)="incrementQuantity(i)" mat-icon-button matSuffix>
                        <mat-icon>add</mat-icon>
                     </button>
@@ -62,7 +62,7 @@
             <th mat-header-cell *matHeaderCellDef> Precio de Compra </th>
             <td mat-cell *matCellDef="let element; let i = index">
              <mat-form-field appearance="outline" class="container-input my-2">
-                <input (keyup)="keyupPrice($event, i)" [value]="element.price | number : '1.2-2'" type="number" matInput class="input-number mat-number"/>
+                <input (keyup)="changedPrice($event, i)" [value]="element.price | number : '1.2-2'" type="number" matInput class="input-number mat-number"/>
              </mat-form-field>
             </td>
          </ng-container>
@@ -94,7 +94,7 @@
          <div>Productos: <span class="text-danger fw-bold">({{ count }})</span></div>
          <div>Total Pagar: <span class="text-success fw-bold">{{ total | currency: 'PEN' }}</span></div>
       </div>
-      <button (click)="createSale()" [disabled]="loadButton" type="button" mat-raised-button color="primary">Vender</button>
+      <button (click)="onSubmit()" [disabled]="loadButton" type="button" mat-raised-button color="primary">Vender</button>
    </ng-container>
   </mat-card-content>
 </mat-card>

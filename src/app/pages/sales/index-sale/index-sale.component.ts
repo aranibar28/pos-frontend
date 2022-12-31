@@ -2,6 +2,7 @@ import { Component, OnInit, AfterViewInit, inject } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
+import { forkJoin, shareReplay } from 'rxjs';
 
 import { UserService } from 'src/app/services/user.service';
 import { ProductService } from 'src/app/services/product.service';
@@ -48,8 +49,7 @@ export class IndexSaleComponent implements OnInit, AfterViewInit {
   public count: number = 0;
 
   ngOnInit(): void {
-    this.getUsers();
-    this.getProducts();
+    this.getData();
     this.details = JSON.parse(localStorage.getItem('details') || '[]');
     this.dataSource = new MatTableDataSource(this.details);
   }
@@ -86,17 +86,24 @@ export class IndexSaleComponent implements OnInit, AfterViewInit {
     return user ? `${user.dni} - ${user.full_name}` : user;
   }
 
-  getUsers() {
-    this.userService.read_all_users().subscribe((res) => {
-      this.users = res.data;
-      this.usersOptions = res.data;
-    });
+  getData() {
+    forkJoin([
+      this.userService.read_all_users(),
+      this.productService.read_all_products_active(),
+    ])
+      .pipe(shareReplay(1))
+      .subscribe(([users, products]) => {
+        this.users = users;
+        this.usersOptions = users;
+        this.products = products;
+        this.productsOptions = products;
+      });
   }
 
-  getProducts() {
-    this.productService.read_all_products().subscribe((res) => {
-      this.products = res;
-      this.productsOptions = res;
+  refreshUsers() {
+    this.userService.read_all_users().subscribe((users) => {
+      this.users = users;
+      this.usersOptions = users;
     });
   }
 
@@ -133,13 +140,13 @@ export class IndexSaleComponent implements OnInit, AfterViewInit {
     this.dataSource.data = this.details;
   }
 
-  keyupPrice(event: Event, i: number) {
+  changedPrice(event: Event, i: number) {
     const input = event.target as HTMLInputElement;
     this.details[i].price = Number(input.value) || 1;
     this.dataSource.data = this.details;
   }
 
-  keyupQuantity(event: Event, i: number) {
+  changedQuantity(event: Event, i: number) {
     const input = event.target as HTMLInputElement;
     this.details[i].quantity = Math.round(Number(input.value)) || 1;
     this.dataSource.data = this.details;
@@ -152,11 +159,11 @@ export class IndexSaleComponent implements OnInit, AfterViewInit {
       width: '400px',
     });
     dialogRef.afterClosed().subscribe((result) => {
-      result ? this.getUsers() : null;
+      result ? this.refreshUsers() : null;
     });
   }
 
-  createSale() {
+  onSubmit() {
     if (this.user.invalid) {
       this.user.markAsTouched();
       return;
