@@ -16,6 +16,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
   standalone: true,
   imports: [SHARED_MODULES, MatFormFieldModule, MatInputModule, MatButtonModule, MatSnackBarModule],
   templateUrl: './login.component.html',
+  styleUrls: ['./login.component.scss']
 })
 export class LoginComponent {
   private authService = inject(AuthService);

@@ -9,7 +9,9 @@ import { ProductService } from 'src/app/services/product.service';
 import { AlertService } from 'src/app/common/alert.service';
 import { User, Product, Details } from 'src/app/utils/intefaces';
 import { RequireMatch } from 'src/app/utils/require-match';
-import { FormsUserComponent } from '../../users/forms-user/forms-user.component';
+import { numberToCardinal } from 'src/app/utils/written-number';
+import { FormsUserComponent } from 'src/app/pages/users/forms-user/forms-user.component';
+import { BusinessCardComponent } from 'src/app/shared/business-card/business-card.component';
 
 import {
   SHARED_MODULES,
@@ -23,7 +25,12 @@ const validators = [Validators.required, RequireMatch];
 @Component({
   selector: 'app-index-sale',
   standalone: true,
-  imports: [SHARED_MODULES, FORMS_MODULES, TABLE_MODULES],
+  imports: [
+    SHARED_MODULES,
+    FORMS_MODULES,
+    TABLE_MODULES,
+    BusinessCardComponent,
+  ],
   templateUrl: './index-sale.component.html',
 })
 export class IndexSaleComponent implements OnInit, AfterViewInit {
@@ -47,6 +54,7 @@ export class IndexSaleComponent implements OnInit, AfterViewInit {
   public details: Details[] = [];
   public total: number = 0;
   public count: number = 0;
+  public import: string = '';
 
   ngOnInit(): void {
     this.getData();
@@ -57,9 +65,7 @@ export class IndexSaleComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     this.user.valueChanges.subscribe((value) => this.filterUser(value));
     this.product.valueChanges.subscribe((value) => this.filterProduct(value));
-    this.dataSource.connect().subscribe((data) => {
-      this.updateTotal(data);
-    });
+    this.dataSource.connect().subscribe((data) => this.updateTotal(data));
   }
 
   private filterUser(value: string | null) {
@@ -77,8 +83,9 @@ export class IndexSaleComponent implements OnInit, AfterViewInit {
   }
 
   private updateTotal(data: Details[]) {
-    this.total = data.reduce((acc, item) => acc + item.price * item.quantity,0 );
+    this.total = data.reduce((acc, item) => acc + item.price * item.quantity, 0);
     this.count = data.reduce((acc, item) => acc + item.quantity, 0);
+    this.import = numberToCardinal(this.total);
     localStorage.setItem('details', JSON.stringify(this.details));
   }
 

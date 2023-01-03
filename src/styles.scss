@@ -20,6 +20,7 @@ $dark-theme: mat.define-dark-theme(
 
 html {
   height: 100%;
+  overflow-y: hidden !important;
 }
 
 body {

@@ -4,6 +4,7 @@
         <h1>Módulo de Ventas</h1>
         <button routerLink="list" mat-raised-button color="primary">Lista de Ventas</button>
      </div>
+     <app-business-card></app-business-card>
      <div class="d-flex gap-2">
       <mat-form-field appearance="fill">
          <mat-label>Usuario</mat-label>
@@ -90,10 +91,13 @@
         </table>
      </div>
      <ng-container>
-      <div class="d-flex justify-content-around mt-3">
-         <div>Productos: <span class="text-danger fw-bold">({{ count }})</span></div>
-         <div>Total Pagar: <span class="text-success fw-bold">{{ total | currency: 'PEN' }}</span></div>
-      </div>
+      <ng-container>
+         <div class="text-center mb-3">
+            <div>Productos: <span class="text-danger fw-bold">({{ count }})</span></div>
+            <div>Total Pagar: <span class="text-success fw-bold">{{ total | currency: 'PEN' }}</span></div>
+            <div>Importe: <span class="text-warning fw-bold">{{ import | uppercase }}</span></div>
+         </div>
+      </ng-container>
       <button (click)="onSubmit()" [disabled]="loadButton" type="button" mat-raised-button color="primary">Vender</button>
    </ng-container>
   </mat-card-content>
