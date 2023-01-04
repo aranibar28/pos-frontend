@@ -105,9 +105,28 @@ mat-form-field {
   --mat-mdc-snack-bar-button-color: black;
 }
 
-input.input-number::-webkit-outer-spin-button,
-input.input-number::-webkit-inner-spin-button {
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
   display: none;
+}
+
+.container-input {
+  display: block;
+  width: 150px;
+  margin: 0 auto;
+}
+
+.mat-number {
+  width: 100%;
+  text-align: center;
+  -moz-appearance: textfield;
+  background-color: transparent !important;
+}
+
+.container-input {
+  .mat-mdc-form-field-subscript-wrapper {
+    height: 0 !important;
+  }
 }
 
 // Animations
@@ -136,24 +155,5 @@ input.input-number::-webkit-inner-spin-button {
   }
   to {
     transform: rotate(360deg);
-  }
-}
-
-.container-input {
-  display: block;
-  width: 150px;
-  margin: 0 auto;
-}
-
-.mat-number {
-  width: 100%;
-  text-align: center;
-  -moz-appearance: textfield;
-  background-color: transparent !important;
-}
-
-.container-input {
-  .mat-mdc-form-field-subscript-wrapper {
-    height: 0 !important;
   }
 }

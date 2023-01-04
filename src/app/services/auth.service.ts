@@ -77,4 +77,9 @@ export class AuthService {
     const url = `${sunat_url}/ruc/${number}?token=${token}`;
     return this.http.get<Ruc>(url);
   }
+
+  consulta_id(number: string, type: string): Observable<any> {
+    const url = `${sunat_url}/${type}/${number}?token=${token}`;
+    return this.http.get(url);
+  }
 }

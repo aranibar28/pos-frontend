@@ -1,4 +1,4 @@
-const writtenNumber = require('written-number');
+import writtenNumber from 'written-number';
 writtenNumber.defaults.lang = 'es';
 
 export function numberToCardinal(number: number): string {

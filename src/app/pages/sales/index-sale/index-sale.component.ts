@@ -1,17 +1,20 @@
 import { Component, OnInit, AfterViewInit, inject } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
+import {
+  FormControl,
+  Validators,
+  FormGroup,
+  FormBuilder,
+} from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
-import { MatDialog } from '@angular/material/dialog';
-import { forkJoin, shareReplay } from 'rxjs';
 
-import { UserService } from 'src/app/services/user.service';
+import { AuthService } from 'src/app/services/auth.service';
 import { ProductService } from 'src/app/services/product.service';
 import { AlertService } from 'src/app/common/alert.service';
-import { User, Product, Details } from 'src/app/utils/intefaces';
-import { RequireMatch } from 'src/app/utils/require-match';
+import { Product, Details } from 'src/app/utils/intefaces';
 import { numberToCardinal } from 'src/app/utils/written-number';
-import { FormsUserComponent } from 'src/app/pages/users/forms-user/forms-user.component';
 import { BusinessCardComponent } from 'src/app/shared/business-card/business-card.component';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 
 import {
   SHARED_MODULES,
@@ -20,7 +23,6 @@ import {
 } from 'src/app/utils/modules';
 
 const columns = ['image', 'title', 'quantity', 'price', 'subtotal', 'actions'];
-const validators = [Validators.required, RequireMatch];
 
 @Component({
   selector: 'app-index-sale',
@@ -30,22 +32,20 @@ const validators = [Validators.required, RequireMatch];
     FORMS_MODULES,
     TABLE_MODULES,
     BusinessCardComponent,
+    MatDatepickerModule,
+    MatNativeDateModule,
   ],
   templateUrl: './index-sale.component.html',
 })
 export class IndexSaleComponent implements OnInit, AfterViewInit {
-  private userService = inject(UserService);
+  private authService = inject(AuthService);
   private productService = inject(ProductService);
   private alertService = inject(AlertService);
-  private dialog = inject(MatDialog);
+  private fb = inject(FormBuilder);
 
   public displayedColumns: string[] = columns;
   public dataSource!: MatTableDataSource<any>;
   public loadButton: boolean = false;
-
-  public user = new FormControl('', validators);
-  public users: User[] = [];
-  public usersOptions: User[] = [];
 
   public product = new FormControl('');
   public products: Product[] = [];
@@ -56,23 +56,29 @@ export class IndexSaleComponent implements OnInit, AfterViewInit {
   public count: number = 0;
   public import: string = '';
 
+  public minDate = new Date();
+  public idCard = new FormControl('dni');
+  public maxLenght = 8;
+
+  public myForm: FormGroup = this.fb.group({
+    dni: [, [Validators.required]],
+    customer: [, [Validators.required, Validators.minLength(3)]],
+    address: [],
+    date: [this.minDate],
+    amount: [],
+    details: [],
+  });
+
   ngOnInit(): void {
     this.getData();
+    this.searchID();
     this.details = JSON.parse(localStorage.getItem('details') || '[]');
     this.dataSource = new MatTableDataSource(this.details);
   }
 
   ngAfterViewInit(): void {
-    this.user.valueChanges.subscribe((value) => this.filterUser(value));
     this.product.valueChanges.subscribe((value) => this.filterProduct(value));
     this.dataSource.connect().subscribe((data) => this.updateTotal(data));
-  }
-
-  private filterUser(value: string | null) {
-    const transformValue = String(value).trim().toLowerCase();
-    this.usersOptions = this.users.filter((item) =>
-      item.full_name.toLowerCase().includes(transformValue)
-    );
   }
 
   private filterProduct(value: string | null) {
@@ -89,28 +95,10 @@ export class IndexSaleComponent implements OnInit, AfterViewInit {
     localStorage.setItem('details', JSON.stringify(this.details));
   }
 
-  displayFn(user: User) {
-    return user ? `${user.dni} - ${user.full_name}` : user;
-  }
-
   getData() {
-    forkJoin([
-      this.userService.read_all_users(),
-      this.productService.read_all_products_active(),
-    ])
-      .pipe(shareReplay(1))
-      .subscribe(([users, products]) => {
-        this.users = users;
-        this.usersOptions = users;
-        this.products = products;
-        this.productsOptions = products;
-      });
-  }
-
-  refreshUsers() {
-    this.userService.read_all_users().subscribe((users) => {
-      this.users = users;
-      this.usersOptions = users;
+    this.productService.read_all_products_active().subscribe((res) => {
+      this.products = res;
+      this.productsOptions = res;
     });
   }
 
@@ -159,20 +147,9 @@ export class IndexSaleComponent implements OnInit, AfterViewInit {
     this.dataSource.data = this.details;
   }
 
-  createUser(): void {
-    const dialogRef = this.dialog.open(FormsUserComponent, {
-      data: { data: null, new_data: true },
-      autoFocus: false,
-      width: '400px',
-    });
-    dialogRef.afterClosed().subscribe((result) => {
-      result ? this.refreshUsers() : null;
-    });
-  }
-
   onSubmit() {
-    if (this.user.invalid) {
-      this.user.markAsTouched();
+    if (this.myForm.invalid) {
+      this.myForm.markAllAsTouched();
       return;
     }
 
@@ -181,17 +158,61 @@ export class IndexSaleComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    const data: any = {
-      user: this.user.value,
+    this.myForm.patchValue({
       amount: this.total,
       details: this.details,
-    };
+    });
 
     this.loadButton = true;
 
     setTimeout(() => {
-      console.log(data);
+      console.log(this.myForm.value);
       this.loadButton = false;
     }, 3000);
+  }
+
+  searchID() {
+    this.idCard.valueChanges.subscribe((value) => {
+      this.myForm.controls['dni'].reset();
+      this.myForm.controls['customer'].reset();
+      if (value == 'dni') {
+        this.maxLenght = 8;
+      } else if (value == 'ruc') {
+        this.maxLenght = 11;
+      }
+    });
+
+    this.myForm.controls['dni'].valueChanges.subscribe((res) => {
+      if (String(res).length == this.maxLenght) {
+        this.authService
+          .consulta_id(res, this.idCard.value!)
+          .subscribe((res) => {
+            if (res.dni) {
+              const first_name = res.nombres;
+              const last_name = res.apellidoPaterno + ' ' + res.apellidoMaterno;
+              this.myForm.patchValue({
+                customer: `${first_name} ${last_name}`,
+                address: res.direccion,
+              });
+            } else if (res.ruc) {
+              this.myForm.patchValue({
+                customer: res.razonSocial,
+                address: res.direccion,
+              });
+            } else {
+              this.alertService.error('No se encontraron resultados');
+              this.myForm.patchValue({ customer: '' });
+            }
+          });
+      }
+    });
+  }
+
+  onlyKeyNumber(event: KeyboardEvent) {
+    const regex = /[0-9]/;
+    const inputElement = event.target as HTMLInputElement;
+    if (!regex.test(event.key) || inputElement.value.length >= this.maxLenght) {
+      event.preventDefault();
+    }
   }
 }

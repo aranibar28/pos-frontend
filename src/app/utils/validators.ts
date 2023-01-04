@@ -1,4 +1,5 @@
 import { FormGroup } from '@angular/forms';
+import { AbstractControl, ValidatorFn } from '@angular/forms';
 
 export function getErrorMessage(name: string, myForm: FormGroup) {
   const control = myForm.controls[name];
@@ -22,4 +23,13 @@ export function getErrorMessage(name: string, myForm: FormGroup) {
   } else {
     return '';
   }
+}
+
+export function longitudMaximaValidator(longitudMaxima: number): ValidatorFn {
+  return (control: AbstractControl): {[key: string]: any} | null => {
+    if (control.value && control.value.toString().length > longitudMaxima) {
+      return {'longitudMaxima': {value: control.value}};
+    }
+    return null;
+  };
 }

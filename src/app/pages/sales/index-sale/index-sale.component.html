@@ -5,22 +5,43 @@
         <button routerLink="list" mat-raised-button color="primary">Lista de Ventas</button>
      </div>
      <app-business-card></app-business-card>
-     <div class="d-flex gap-2">
-      <mat-form-field appearance="fill">
-         <mat-label>Usuario</mat-label>
-         <input matInput [formControl]="user" [matAutocomplete]="matUser">
-         <button (click)="user.setValue('')" *ngIf="user.value" matSuffix mat-icon-button>
-         <mat-icon fontIcon="close"></mat-icon>
-         </button>
-         <mat-autocomplete #matUser="matAutocomplete" [displayWith]="displayFn">
-         <mat-option *ngFor="let item of usersOptions" [value]="item">{{ item.dni }} - {{ item.full_name }}</mat-option>
-         </mat-autocomplete>
-      </mat-form-field>
-      <button (click)="createUser()" mat-mini-fab color="primary" class="mt-2">
-         <mat-icon fontIcon="add"></mat-icon>
-      </button>
-     </div>
-     <mat-form-field appearance="fill">
+     <form [formGroup]="myForm" class="row" autocomplete="off">
+         <div class="col-md-6">
+            <mat-form-field>
+               <mat-label>Cliente</mat-label>
+               <input formControlName="customer" matInput placeholder="Cliente (opcional)">
+            </mat-form-field>
+         </div>
+         <div class="col-md-6">
+            <div class="d-flex">
+               <mat-form-field style="width: 150px;">
+                  <mat-select [formControl]="idCard">
+                    <mat-option value="dni">DNI</mat-option>
+                    <mat-option value="ruc">RUC</mat-option>
+                  </mat-select>
+               </mat-form-field>
+               <mat-form-field>
+                  <mat-label>Número Documento</mat-label>
+                  <input (keypress)="onlyKeyNumber($event)" formControlName="dni" matInput placeholder="Número de documento" type="number">
+               </mat-form-field>
+            </div>
+         </div>
+         <div class="col-md-6">
+            <mat-form-field>
+               <mat-label>Dirección</mat-label>
+               <input formControlName="address" matInput placeholder="Dirección (opcional)">
+            </mat-form-field>
+         </div>
+         <div class="col-md-6">
+            <mat-form-field>
+               <mat-label>Fecha de emisión</mat-label>
+               <input formControlName="date" matInput [matDatepicker]="picker" [min]="minDate">
+               <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+               <mat-datepicker #picker></mat-datepicker>
+             </mat-form-field>
+         </div>
+     </form>
+     <mat-form-field>
         <mat-label>Buscar Producto</mat-label>
         <input matInput [formControl]="product" [matAutocomplete]="matProduct">
         <button (click)="product.setValue('')" *ngIf="product.value" matSuffix mat-icon-button>
@@ -46,7 +67,7 @@
               <td mat-cell *matCellDef="let element"> {{ element.title }} </td>
            </ng-container>
            <ng-container matColumnDef="quantity">
-              <th mat-header-cell *matHeaderCellDef> Ingreso </th>
+              <th mat-header-cell *matHeaderCellDef> Cantidad </th>
               <td mat-cell *matCellDef="let element; let i = index">
                  <mat-form-field appearance="outline" class="container-input my-2">
                     <button (click)="decrementQuantity(i)" mat-icon-button matPrefix>
@@ -60,7 +81,7 @@
               </td>
            </ng-container>
            <ng-container matColumnDef="price">
-            <th mat-header-cell *matHeaderCellDef> Precio de Compra </th>
+            <th mat-header-cell *matHeaderCellDef> Precio Unidad </th>
             <td mat-cell *matCellDef="let element; let i = index">
              <mat-form-field appearance="outline" class="container-input my-2">
                 <input (keyup)="changedPrice($event, i)" [value]="element.price | number : '1.2-2'" type="number" matInput class="input-number mat-number"/>
