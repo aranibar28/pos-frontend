@@ -10,19 +10,21 @@
             <mat-form-field>
                <mat-label>Cliente</mat-label>
                <input formControlName="customer" matInput placeholder="Cliente (opcional)">
+               <mat-error *ngIf="isValid('customer')">{{ showMessage('customer') }}</mat-error>
             </mat-form-field>
          </div>
          <div class="col-md-6">
             <div class="d-flex">
                <mat-form-field style="width: 150px;">
-                  <mat-select [formControl]="idCard">
+                  <mat-select [formControl]="typeID">
                     <mat-option value="dni">DNI</mat-option>
                     <mat-option value="ruc">RUC</mat-option>
                   </mat-select>
                </mat-form-field>
                <mat-form-field>
                   <mat-label>Número Documento</mat-label>
-                  <input (keypress)="onlyKeyNumber($event)" formControlName="dni" matInput placeholder="Número de documento" type="number">
+                  <input (keypress)="onlyKeyNumber($event)" formControlName="document" matInput placeholder="Número de documento" type="number">
+                  <mat-error *ngIf="isValid('document')">{{ showMessage('document') }}</mat-error>
                </mat-form-field>
             </div>
          </div>

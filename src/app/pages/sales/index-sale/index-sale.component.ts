@@ -1,20 +1,17 @@
 import { Component, OnInit, AfterViewInit, inject } from '@angular/core';
-import {
-  FormControl,
-  Validators,
-  FormGroup,
-  FormBuilder,
-} from '@angular/forms';
+import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
+import { Validators } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 
 import { AuthService } from 'src/app/services/auth.service';
 import { ProductService } from 'src/app/services/product.service';
 import { AlertService } from 'src/app/common/alert.service';
 import { Product, Details } from 'src/app/utils/intefaces';
 import { numberToCardinal } from 'src/app/utils/written-number';
+import { getErrorMessage } from 'src/app/utils/validators';
 import { BusinessCardComponent } from 'src/app/shared/business-card/business-card.component';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatNativeDateModule } from '@angular/material/core';
 
 import {
   SHARED_MODULES,
@@ -23,6 +20,8 @@ import {
 } from 'src/app/utils/modules';
 
 const columns = ['image', 'title', 'quantity', 'price', 'subtotal', 'actions'];
+const validatorDNI = [Validators.required, Validators.pattern(/^[0-9]{8}$/)];
+const validatorRUC = [Validators.required, Validators.pattern(/^[0-9]{11}$/)];
 
 @Component({
   selector: 'app-index-sale',
@@ -57,12 +56,12 @@ export class IndexSaleComponent implements OnInit, AfterViewInit {
   public import: string = '';
 
   public minDate = new Date();
-  public idCard = new FormControl('dni');
+  public typeID = new FormControl('dni');
   public maxLenght = 8;
 
   public myForm: FormGroup = this.fb.group({
-    dni: [, [Validators.required]],
     customer: [, [Validators.required, Validators.minLength(3)]],
+    document: ['70800756', [Validators.required, Validators.pattern(/^[0-9]{8}$/)]],
     address: [],
     date: [this.minDate],
     amount: [],
@@ -147,6 +146,43 @@ export class IndexSaleComponent implements OnInit, AfterViewInit {
     this.dataSource.data = this.details;
   }
 
+  searchID() {
+    this.typeID.valueChanges.subscribe((value) => {
+      this.myForm.controls['customer'].reset();
+      this.myForm.controls['document'].reset();
+      if (value == 'dni') {
+        this.maxLenght = 8;
+        this.myForm.controls['document'].setValidators(validatorDNI);
+      } else if (value == 'ruc') {
+        this.myForm.controls['document'].setValidators(validatorRUC);
+        this.maxLenght = 11;
+      }
+    });
+
+    this.myForm.controls['document'].valueChanges.subscribe((res) => {
+      if (String(res).length == this.maxLenght) {
+        this.authService
+          .consulta_id(res, this.typeID.value!)
+          .subscribe((res) => {
+            if (res.dni) {
+              const { nombres, apellidoPaterno, apellidoMaterno } = res;
+              this.myForm.patchValue({
+                customer: `${nombres} ${apellidoPaterno} ${apellidoMaterno}`,
+              });
+            } else if (res.ruc) {
+              this.myForm.patchValue({
+                customer: res.razonSocial,
+                address: res.direccion,
+              });
+            } else {
+              this.alertService.error('No se encontraron resultados');
+              this.myForm.patchValue({ customer: '' });
+            }
+          });
+      }
+    });
+  }
+
   onSubmit() {
     if (this.myForm.invalid) {
       this.myForm.markAllAsTouched();
@@ -165,47 +201,11 @@ export class IndexSaleComponent implements OnInit, AfterViewInit {
 
     this.loadButton = true;
 
+    // SEND DATA SIMULATION
     setTimeout(() => {
       console.log(this.myForm.value);
       this.loadButton = false;
     }, 3000);
-  }
-
-  searchID() {
-    this.idCard.valueChanges.subscribe((value) => {
-      this.myForm.controls['dni'].reset();
-      this.myForm.controls['customer'].reset();
-      if (value == 'dni') {
-        this.maxLenght = 8;
-      } else if (value == 'ruc') {
-        this.maxLenght = 11;
-      }
-    });
-
-    this.myForm.controls['dni'].valueChanges.subscribe((res) => {
-      if (String(res).length == this.maxLenght) {
-        this.authService
-          .consulta_id(res, this.idCard.value!)
-          .subscribe((res) => {
-            if (res.dni) {
-              const first_name = res.nombres;
-              const last_name = res.apellidoPaterno + ' ' + res.apellidoMaterno;
-              this.myForm.patchValue({
-                customer: `${first_name} ${last_name}`,
-                address: res.direccion,
-              });
-            } else if (res.ruc) {
-              this.myForm.patchValue({
-                customer: res.razonSocial,
-                address: res.direccion,
-              });
-            } else {
-              this.alertService.error('No se encontraron resultados');
-              this.myForm.patchValue({ customer: '' });
-            }
-          });
-      }
-    });
   }
 
   onlyKeyNumber(event: KeyboardEvent) {
@@ -214,5 +214,14 @@ export class IndexSaleComponent implements OnInit, AfterViewInit {
     if (!regex.test(event.key) || inputElement.value.length >= this.maxLenght) {
       event.preventDefault();
     }
+  }
+
+  isValid(name: string) {
+    const input = this.myForm.controls[name];
+    return input.errors && input.touched;
+  }
+
+  showMessage(name: string) {
+    return getErrorMessage(name, this.myForm);
   }
 }

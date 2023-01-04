@@ -45,6 +45,7 @@
             "scripts": [],
             "allowedCommonJsDependencies": [
               "moment",
+              "written-number",
               "file-saver",
               "exceljs"
             ]
