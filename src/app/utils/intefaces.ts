@@ -42,6 +42,19 @@ export interface AllowsRoles {
   inventories: boolean;
 }
 
+export interface Business {
+  _id: string;
+  ruc: string;
+  title: string;
+  email: string;
+  phone: string;
+  address: string;
+  district: string;
+  province: string;
+  status: boolean;
+  image: any;
+}
+
 export interface UserRole {
   _id: string;
   user: User;

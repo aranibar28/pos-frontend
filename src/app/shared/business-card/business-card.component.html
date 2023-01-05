@@ -1,12 +1,12 @@
 <div class="row mb-3">
     <div class="col-md-8">
-        <h1>INRETAIL PHARMA S.A.</h1>
-        <p>AV. DEFENSORES DEL MORRO NRO. 1277, CHORRILLOS - LIMA - LIMA</p>
+        <h1>{{ company.title }}</h1>
+        <p>{{ company.address }}</p>
     </div>
     <div class="col-md-4">
         <div class="card">
             <div class="card-body text-center">
-                <h3>R.U.C. N° 20331066703</h3>
+                <h3>R.U.C. N° {{ company.ruc }}</h3>
                 <h4>FACTURA ELECTRÓNICA</h4>
                 <div class="d-flex gap-2">
                     <input value="F001" type="text" class="form-control" style="width: 100px;"> _ 

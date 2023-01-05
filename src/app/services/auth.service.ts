@@ -4,7 +4,8 @@ import { JwtHelperService } from '@auth0/angular-jwt';
 import { Observable, BehaviorSubject, ReplaySubject } from 'rxjs';
 import { catchError, map, of } from 'rxjs';
 import { environment } from 'src/app/utils/enviroments';
-import { Dni, Ruc, User } from 'src/app/utils/intefaces';
+import { Dni, Ruc, User, Business } from 'src/app/utils/intefaces';
+
 const base_url = environment.base_url + '/users';
 const sunat_url = environment.sunat;
 const token = environment.token;
@@ -18,6 +19,7 @@ export class AuthService {
   public isLoading = new BehaviorSubject<boolean>(false);
   public courier = new ReplaySubject<any>();
   public courierAllow = new ReplaySubject<any>();
+  public business: any = {};
 
   public emitter(res: any): void {
     this.courier.next(res);
@@ -53,6 +55,10 @@ export class AuthService {
     return this.payload['allows'];
   }
 
+  get company(): Business {
+    return this.business;
+  }
+
   login_user(data: User): Observable<any> {
     const url = `${base_url}/login_user`;
     return this.http.post(url, data, this.headers);
@@ -61,6 +67,7 @@ export class AuthService {
   isValidateToken(): Observable<boolean> {
     return this.http.get(`${base_url}/renew_token`, this.headers).pipe(
       map((res: any) => {
+        this.business = res.data.business;
         localStorage.setItem('token', res.token);
         return true;
       }),

@@ -154,8 +154,8 @@ export class IndexSaleComponent implements OnInit, AfterViewInit {
         this.maxLenght = 8;
         this.myForm.controls['document'].setValidators(validatorDNI);
       } else if (value == 'ruc') {
-        this.myForm.controls['document'].setValidators(validatorRUC);
         this.maxLenght = 11;
+        this.myForm.controls['document'].setValidators(validatorRUC);
       }
     });
 
@@ -164,6 +164,7 @@ export class IndexSaleComponent implements OnInit, AfterViewInit {
         this.authService
           .consulta_id(res, this.typeID.value!)
           .subscribe((res) => {
+            console.log(res);
             if (res.dni) {
               const { nombres, apellidoPaterno, apellidoMaterno } = res;
               this.myForm.patchValue({
