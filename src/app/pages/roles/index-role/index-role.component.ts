@@ -1,6 +1,5 @@
 import { Component, OnInit, inject } from '@angular/core';
-
-import { FormGroup, Validators, FormBuilder } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { MatTableDataSource } from '@angular/material/table';
@@ -13,8 +12,9 @@ import { BusinessService } from 'src/app/services/business.service';
 import { AlertService } from 'src/app/common/alert.service';
 
 import { ConfirmDialogComponent } from 'src/app/shared/confirm-dialog/confirm-dialog.component';
-import { FormsBusinessComponent } from '../forms-business/forms-business.component';
+import { FormsAllowsComponent } from '../forms-allows/forms-allows.component';
 import { FormsRoleComponent } from '../forms-role/forms-role.component';
+import { FormsBusinessComponent } from '../forms-business/forms-business.component';
 import { User, Rol, Business, UserRole } from 'src/app/utils/intefaces';
 import { RequireMatch } from 'src/app/utils/require-match';
 
@@ -33,10 +33,10 @@ const colums = ['user', 'role', 'business', 'status', 'created_at', 'actions'];
   templateUrl: './index-role.component.html',
 })
 export class IndexRoleComponent implements OnInit {
+  private authService = inject(AuthService);
+  private userService = inject(UserService);
   private roleService = inject(RoleService);
   private businessService = inject(BusinessService);
-  private userService = inject(UserService);
-  private authService = inject(AuthService);
   private alertService = inject(AlertService);
   private spinner = inject(NgxSpinnerService);
   private dialog = inject(MatDialog);
@@ -48,11 +48,11 @@ export class IndexRoleComponent implements OnInit {
   public users: User[] = [];
   public usersOptions: User[] = [];
 
-  public businesses: Business[] = [];
-  public business: any = {};
-
   public roles: Rol[] = [];
   public role: any = {};
+
+  public businesses: Business[] = [];
+  public business: any = {};
 
   public myForm: FormGroup = this.fb.group({
     user: [, [Validators.required, RequireMatch]],
@@ -66,8 +66,8 @@ export class IndexRoleComponent implements OnInit {
     this.init_roles();
     this.init_business();
 
-    this.myForm.controls['user'].valueChanges.subscribe((data) => {
-      this.filterUser(data);
+    this.myForm.controls['user'].valueChanges.subscribe((value) => {
+      this.filterUser(value);
     });
 
     this.myForm.controls['role'].valueChanges.subscribe((id) => {
@@ -79,11 +79,11 @@ export class IndexRoleComponent implements OnInit {
     });
   }
 
-  filterUser(data: string) {
-    const value = data.toString().toLowerCase();
-    this.usersOptions = this.users.filter((item) => {
-      return item?.full_name.toLowerCase().indexOf(value) > -1;
-    });
+  filterUser(value: string) {
+    const transformValue = String(value).trim().toLowerCase();
+    this.usersOptions = this.users.filter((item) =>
+      item?.full_name.toLowerCase().includes(transformValue)
+    );
   }
 
   displayFn(user: User) {
@@ -172,7 +172,7 @@ export class IndexRoleComponent implements OnInit {
   }
 
   //***** UPDATE *****//
-  update_data(item: MatSlideToggleChange, id: string) {
+  update_status(item: MatSlideToggleChange, id: string) {
     const status = item.checked;
     this.roleService.update_user_role(id, { status }).subscribe({
       next: (res) => {
@@ -183,6 +183,24 @@ export class IndexRoleComponent implements OnInit {
         this.alertService.success('Se cambió el estado correctamente.');
         this.init_data();
       },
+    });
+  }
+
+  update_data(item: any) {
+    const dialogRef = this.dialog.open(FormsAllowsComponent, {
+      data: {
+        data: item,
+        roles: this.roles,
+        business: this.businesses,
+        users: this.users,
+      },
+      autoFocus: false,
+      width: '400px',
+    });
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.init_data();
+      }
     });
   }
 

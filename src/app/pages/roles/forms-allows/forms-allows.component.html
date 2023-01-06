@@ -1,0 +1,32 @@
+<mat-card>
+    <mat-card-content>
+      <div mat-dialog-title class="text-center">{{ titleModal }}</div>
+      <form [formGroup]="myForm">
+         <mat-form-field appearance="outline">
+            <mat-label>Seleccionar Rol</mat-label>
+            <mat-select formControlName="user">
+               <mat-option [value]="" disabled>Seleccionar</mat-option>
+               <mat-option *ngFor="let item of users" [value]="item._id">{{ item.full_name }}</mat-option>
+            </mat-select>
+         </mat-form-field>
+         <mat-form-field appearance="outline">
+               <mat-label>Seleccionar Rol</mat-label>
+               <mat-select formControlName="role">
+                  <mat-option [value]="" disabled>Seleccionar</mat-option>
+                  <mat-option *ngFor="let item of roles" [value]="item._id">{{ item.title }}</mat-option>
+               </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+               <mat-label>Seleccionar Empresa</mat-label>
+               <mat-select formControlName="business">
+                  <mat-option [value]="" disabled>Seleccionar</mat-option>
+                  <mat-option *ngFor="let item of business" [value]="item._id">{{ item.title }}</mat-option>
+               </mat-select>
+            </mat-form-field>
+            <div mat-dialog-actions class="mt-3">
+            <button (click)="onClick()" mat-raised-button [color]="colorButton" [disabled]="onLoading()">{{ titleButton }}</button>
+            <button (click)="onClose()" mat-raised-button>Cerrar</button>
+            </div>
+      </form>
+    </mat-card-content>
+</mat-card>

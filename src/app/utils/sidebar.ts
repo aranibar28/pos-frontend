@@ -30,7 +30,7 @@ export const sidebar: any[] = [
     icon: 'shopping_cart',
   },
   {
-    title: 'Roles',
+    title: 'Permisos',
     path: 'roles',
     icon: 'security',
   },
