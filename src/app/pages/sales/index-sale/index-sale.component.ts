@@ -210,7 +210,7 @@ export class IndexSaleComponent implements OnInit, AfterViewInit {
   }
 
   onlyKeyNumber(event: KeyboardEvent) {
-    const regex = /[0-9]/;
+    const regex: RegExp = /[0-9]/;
     const inputElement = event.target as HTMLInputElement;
     if (!regex.test(event.key) || inputElement.value.length >= this.maxLenght) {
       event.preventDefault();

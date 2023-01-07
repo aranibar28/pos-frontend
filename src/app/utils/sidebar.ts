@@ -5,6 +5,16 @@ export const sidebar: any[] = [
     icon: 'person',
   },
   {
+    title: 'Permisos',
+    path: 'roles',
+    icon: 'security',
+  },
+  {
+    title: 'Configuración',
+    path: 'config',
+    icon: 'build',
+  },
+  {
     title: 'Proveedores',
     path: 'suppliers',
     icon: 'local_shipping',
@@ -29,11 +39,6 @@ export const sidebar: any[] = [
     path: 'sales',
     icon: 'shopping_cart',
   },
-  {
-    title: 'Permisos',
-    path: 'roles',
-    icon: 'security',
-  },
 ];
 
 export const modules: any = {
@@ -44,4 +49,5 @@ export const modules: any = {
   purchases: false,
   sales: false,
   roles: false,
+  config: false,
 };

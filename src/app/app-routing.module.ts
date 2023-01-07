@@ -19,6 +19,7 @@ const routes: Routes = [
       { path: 'purchases', loadChildren: () => import('./pages/routes').then((routes) => routes.Purchase) },
       { path: 'sales', loadChildren: () => import('./pages/routes').then((routes) => routes.Sales) },
       { path: 'roles', loadChildren: () => import('./pages/routes').then((routes) => routes.Roles) },
+      { path: 'config', loadChildren: () => import('./pages/routes').then((routes) => routes.Config) },
       { path: 'forbidden', component: ForbiddenComponent },
       { path: '**', redirectTo: 'users', pathMatch: 'full' },
     ],

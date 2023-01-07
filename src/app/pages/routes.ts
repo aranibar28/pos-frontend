@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { AllowedGuard } from '../guards/allowed.guard';
 
 import { IndexRoleComponent } from './roles/index-role/index-role.component';
+import { IndexConfigComponent } from './config/index-config/index-config.component';
 import { IndexUserComponent } from './users/index-user/index-user.component';
 import { IndexCategoryComponent } from './categories/index-category/index-category.component';
 import { IndexProductComponent } from './products/index-product/index-product.component';
@@ -43,5 +44,10 @@ export const Sales: Routes = [
 
 export const Roles: Routes = [
   { path: '', component: IndexRoleComponent, title: 'Roles', data: { module: 'roles' } },
+  { path: '**', redirectTo: '' },
+];
+
+export const Config: Routes = [
+  { path: '', component: IndexConfigComponent, title: 'Config', data: { module: 'config' } },
   { path: '**', redirectTo: '' },
 ];

@@ -1,4 +1,4 @@
-import { FormGroup } from '@angular/forms';
+import { FormGroup, FormControl } from '@angular/forms';
 import { AbstractControl, ValidatorFn } from '@angular/forms';
 
 export function getErrorMessage(name: string, myForm: FormGroup) {
@@ -20,6 +20,18 @@ export function getErrorMessage(name: string, myForm: FormGroup) {
     return `El formato debe ser RUC válido de 11 dígitos.`;
   } else if (control.getError('pattern')['requiredPattern'] == '/^9[0-9]{9}$/') {
     return `El formato debe ser un celular válido de 9 dígitos.`;
+  } else {
+    return '';
+  }
+}
+
+export function getErrorUnitControl(control: FormControl){
+  if (control.hasError('required')) {
+    return 'Este campo es obligatorio';
+  } else if (control.getError('pattern')['requiredPattern'] == '^F[A-Za-z0-9]{3}$') {
+    return `El formato debe tener 4 caracteres alfanuméricos y empezar con 'F'.`;
+  } else if (control.getError('pattern')['requiredPattern'] == '^B[A-Za-z0-9]{3}$') {
+    return `El formato debe tener 4 caracteres alfanuméricos y empezar con 'B'.`;
   } else {
     return '';
   }

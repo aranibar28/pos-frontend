@@ -28,6 +28,11 @@ export class BusinessService {
     return this.http.get(url, this.headers);
   }
 
+  read_business_config(): Observable<any> {
+    const url = `${base_url}/read_business_config`;
+    return this.http.get(url, this.headers);
+  }
+
   update_business(id: string, data: any): Observable<any> {
     const url = `${base_url}/update_business/${id}`;
     return this.http.put(url, data, this.headers);
