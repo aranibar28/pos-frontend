@@ -72,7 +72,7 @@ export class FormsAllowsComponent implements OnInit {
           return this.alertService.error(res.msg);
         }
 
-        this.dialogRef.close(true);
+        this.dialogRef.close(res);
         this.alertService.success('Se actualizó correctamente');
       },
       error: (err) => {

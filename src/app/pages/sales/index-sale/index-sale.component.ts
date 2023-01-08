@@ -60,7 +60,7 @@ export class IndexSaleComponent implements OnInit, AfterViewInit {
   public maxLenght = 8;
 
   public myForm: FormGroup = this.fb.group({
-    customer: [, [Validators.required, Validators.minLength(3)]],
+    customer: [, [Validators.minLength(3)]],
     document: ['70800756', [Validators.required, Validators.pattern(/^[0-9]{8}$/)]],
     address: [],
     date: [this.minDate],

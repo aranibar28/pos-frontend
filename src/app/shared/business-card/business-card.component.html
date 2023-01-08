@@ -2,6 +2,7 @@
     <div class="col-md-8">
         <h1>{{ company.title }}</h1>
         <p>{{ company.address }}</p>
+        <button (click)="sendData()">Button Prueba</button>
     </div>
     <div class="col-md-4">
         <mat-card>
@@ -18,12 +19,12 @@
                     <mat-form-field style="width: 150px;">
                         <mat-label>Serie</mat-label>
                         <mat-select [formControl]="serieVoucher">
-                            <mat-option *ngFor="let item of serie" [value]="item" selected>{{ item }}</mat-option>
+                            <mat-option *ngFor="let item of serie" [value]="item">{{ item }}</mat-option>
                         </mat-select>
                       </mat-form-field>
                     <mat-form-field>
                         <mat-label>Número</mat-label>
-                        <input [formControl]="serieNumber" matInput>
+                        <input [formControl]="numberVoucher" (keypress)="onlyKeyNumber($event)" matInput>
                     </mat-form-field>
                 </div>
             </mat-card-content>

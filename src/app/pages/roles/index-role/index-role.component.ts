@@ -199,6 +199,10 @@ export class IndexRoleComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
+        if (this.authService.id == result.data.user) {
+          this.authService.business = result.data.business;
+          this.authService.business_config = result.config;
+        }
         this.init_data();
       }
     });

@@ -10,8 +10,10 @@ import { BusinessService } from 'src/app/services/business.service';
 import { FORMS_MODULES } from 'src/app/utils/modules';
 import { Business } from 'src/app/utils/intefaces';
 import { getErrorUnitControl } from 'src/app/utils/validators';
+import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 
-const validators = [Validators.required, Validators.minLength(4)];
+const validatorSerie = [Validators.required, Validators.minLength(4)];
+const validatorNumber = [Validators.required, Validators.minLength(7)];
 
 @Component({
   selector: 'app-index-config',
@@ -31,7 +33,7 @@ export class IndexConfigComponent implements OnInit, OnDestroy {
   public businesses_config: Array<any> = [];
 
   public typeVoucher = new FormControl('ticket');
-  public valueVoucher = new FormControl(null, validators);
+  public valueVoucher = new FormControl(null, validatorSerie);
   public loadButton = false;
 
   public myForm: FormGroup = this.fb.group({
@@ -39,14 +41,16 @@ export class IndexConfigComponent implements OnInit, OnDestroy {
     currency: [, [Validators.required]],
     ticket: this.fb.array([
       this.fb.group({
-        serie: ['', validators],
-        number: ['', Validators.required],
+        serie: ['', validatorSerie],
+        number: ['', validatorNumber],
+        status: [false],
       }),
     ]),
     invoice: this.fb.array([
       this.fb.group({
-        serie: ['', validators],
-        number: ['', Validators.required],
+        serie: ['', validatorSerie],
+        number: ['', validatorNumber],
+        status: [false],
       }),
     ]),
   });
@@ -107,10 +111,31 @@ export class IndexConfigComponent implements OnInit, OnDestroy {
     for (const item of items) {
       (this.myForm.get(arrayName) as FormArray).push(
         this.fb.group({
-          serie: [item.serie, validators],
-          number: [item.number, Validators.required],
+          serie: [item.serie, validatorSerie],
+          number: [item.number, validatorNumber],
+          status: [item.status],
         })
       );
+    }
+  }
+
+  changeStatus(i: number, type: string) {
+    if (type == 'B') {
+      this.tickets.forEach((item, index) => {
+        if (index == i) {
+          item.patchValue({ status: true });
+        } else {
+          item.patchValue({ status: false });
+        }
+      });
+    } else {
+      this.invoices.forEach((item, index) => {
+        if (index == i) {
+          item.patchValue({ status: true });
+        } else {
+          item.patchValue({ status: false });
+        }
+      });
     }
   }
 
@@ -122,8 +147,9 @@ export class IndexConfigComponent implements OnInit, OnDestroy {
     }
     (this.myForm.get(String(this.typeVoucher.value)) as FormArray).push(
       this.fb.group({
-        serie: [value, validators],
-        number: [1, Validators.required],
+        serie: [value, validatorSerie],
+        number: ['0000001', validatorNumber],
+        status: [false],
       })
     );
     this.valueVoucher.reset();
@@ -143,6 +169,7 @@ export class IndexConfigComponent implements OnInit, OnDestroy {
       return;
     }
     this.loadButton = true;
+
     this.businessService
       .update_business_config(this.business.value!, this.myForm.value)
       .subscribe({
@@ -170,6 +197,14 @@ export class IndexConfigComponent implements OnInit, OnDestroy {
     }
     if (inputElement.value.length === 0) {
       inputElement.value = type;
+    }
+  }
+
+  onlyKeyNumber(event: KeyboardEvent) {
+    const regex: RegExp = /[0-9]/;
+    const inputElement = event.target as HTMLInputElement;
+    if (!regex.test(event.key) || inputElement.value.length >= 7) {
+      event.preventDefault();
     }
   }
 

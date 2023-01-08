@@ -72,8 +72,9 @@
                     </mat-form-field>
                     <mat-form-field>
                       <mat-label>Número</mat-label>
-                      <input formControlName="number" matInput placeholder="Número" type="number">
+                      <input formControlName="number" (keypress)="onlyKeyNumber($event)" matInput placeholder="Número">
                     </mat-form-field>
+                    <mat-slide-toggle formControlName="status" (change)="changeStatus(i, 'B')" class="mt-4" color="primary"></mat-slide-toggle>
                     <button (click)="removeTicket(i)" mat-mini-fab color="warn" type="button" class="mt-2">
                       <mat-icon fontIcon="delete"></mat-icon>
                     </button>
@@ -93,8 +94,9 @@
                     </mat-form-field>
                     <mat-form-field>
                       <mat-label>Número</mat-label>
-                      <input formControlName="number" matInput placeholder="Número" type="number">
+                      <input formControlName="number" (keypress)="onlyKeyNumber($event)" matInput placeholder="Número">
                     </mat-form-field>
+                    <mat-slide-toggle formControlName="status" (change)="changeStatus(i, 'F')" class="align-self-center" color="primary"></mat-slide-toggle>
                     <button (click)="removeInvoice(i)" mat-mini-fab color="warn" type="button" class="mt-2">
                        <mat-icon fontIcon="delete"></mat-icon>
                     </button>
