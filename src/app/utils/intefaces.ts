@@ -55,6 +55,15 @@ export interface Business {
   image: any;
 }
 
+export interface Config {
+  _id: string;
+  business: string;
+  currency: string;
+  tax: number;
+  invoice: any;
+  ticket: any;
+}
+
 export interface UserRole {
   _id: string;
   user: User;
