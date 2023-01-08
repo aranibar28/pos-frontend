@@ -9,9 +9,9 @@ export function getErrorMessage(name: string, myForm: FormGroup) {
   } else if (control.hasError('email')) {
     return 'Dirección de correo electrónico no válida';
   } else if (control.hasError('minlength')) {
-    return `La longitud mínima es ${control.getError('minlength')['requiredLength']}`;
+    return `La longitud mínima es ${control.getError('minlength')['requiredLength']} caracteres.`;
   } else if (control.hasError('maxlength')) {
-    return `La longitud máxima es ${control.getError('maxlength')['requiredLength']}`;
+    return `La longitud máxima es ${control.getError('maxlength')['requiredLength']} caracteres.`;
   } else if (control.getError('pattern')['requiredPattern'] == '/^[0-9]+(\\.[0-9]+)?$/') {
     return `El formato debe ser númerico y con un valor positivo.`;
   } else if (control.getError('pattern')['requiredPattern'] == '/^[0-9]{8}$/') {
@@ -28,6 +28,10 @@ export function getErrorMessage(name: string, myForm: FormGroup) {
 export function getErrorUnitControl(control: FormControl){
   if (control.hasError('required')) {
     return 'Este campo es obligatorio';
+  } else if (control.hasError('minlength')) {
+    return `La longitud mínima es ${control.getError('minlength')['requiredLength']} caracteres.`;
+  } else if (control.hasError('maxlength')) {
+    return `La longitud máxima es ${control.getError('maxlength')['requiredLength']} caracteres.`;
   } else if (control.getError('pattern')['requiredPattern'] == '^F[A-Za-z0-9]{3}$') {
     return `El formato debe tener 4 caracteres alfanuméricos y empezar con 'F'.`;
   } else if (control.getError('pattern')['requiredPattern'] == '^B[A-Za-z0-9]{3}$') {

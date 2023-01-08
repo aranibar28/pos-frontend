@@ -38,6 +38,11 @@ export class BusinessService {
     return this.http.put(url, data, this.headers);
   }
 
+  update_business_config(id: string, data: any): Observable<any> {
+    const url = `${base_url}/update_business_config/${id}`;
+    return this.http.put(url, data, this.headers);
+  }
+
   delete_business(id: string): Observable<any> {
     const url = `${base_url}/delete_business/${id}`;
     return this.http.delete(url, this.headers);
