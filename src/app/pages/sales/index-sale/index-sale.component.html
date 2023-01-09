@@ -1,9 +1,5 @@
 <mat-card class="px-3">
    <mat-card-content>
-      <div class="centered mb-2">
-         <h1>Módulo de Ventas</h1>
-         <button routerLink="list" mat-raised-button color="primary">Lista de Ventas</button>
-      </div>
       <app-business-card (formData)="getFormData($event)"></app-business-card>
       <form [formGroup]="myForm" class="row" autocomplete="off">
          <div class="col-md-6">
@@ -52,7 +48,7 @@
          <mat-autocomplete #matProduct="matAutocomplete">
             <mat-option (click)="addToShoppingCart(item)" *ngFor="let item of productsOptions" [value]="item">
             <img [src]="item.image?.secure_url | image: 'products'" loading="lazy" alt="user" style="width: 40px; margin-right: 5px;">
-            {{ item.title | titlecase }} - {{ item.price | currency: 'PEN' }}
+            {{ item.title | titlecase }} - {{ item.price | currency: currency }}
             </mat-option>
          </mat-autocomplete>
       </mat-form-field>
@@ -71,7 +67,7 @@
             <ng-container matColumnDef="quantity">
                <th mat-header-cell *matHeaderCellDef> Cantidad </th>
                <td mat-cell *matCellDef="let element; let i = index">
-                  <mat-form-field appearance="outline" class="container-input my-2">
+                  <mat-form-field appearance="outline" class="container-input mat-md-h my-2">
                      <button (click)="decrementQuantity(i)" mat-icon-button matPrefix>
                         <mat-icon>remove</mat-icon>
                      </button>
@@ -85,14 +81,14 @@
             <ng-container matColumnDef="price">
                <th mat-header-cell *matHeaderCellDef> Precio Unidad </th>
                <td mat-cell *matCellDef="let element; let i = index">
-                  <mat-form-field appearance="outline" class="container-input my-2">
+                  <mat-form-field appearance="outline" class="container-input mat-md-h my-2">
                      <input (keyup)="changedPrice($event, i)" [value]="element.price | number : '1.2-2'" type="number" matInput class="input-number mat-number"/>
                   </mat-form-field>
                </td>
             </ng-container>
             <ng-container matColumnDef="subtotal">
                <th mat-header-cell *matHeaderCellDef> Subtotal </th>
-               <td mat-cell *matCellDef="let element"> {{ element.quantity * element.price | currency: 'PEN' }} </td>
+               <td mat-cell *matCellDef="let element"> {{ element.quantity * element.price | currency: currency }} </td>
             </ng-container>
             <ng-container matColumnDef="actions">
                <th mat-header-cell *matHeaderCellDef> Actions </th>
@@ -117,7 +113,7 @@
          <ng-container>
             <div class="text-center mb-3">
                <div>Productos: <span class="text-danger fw-bold">({{ count }})</span></div>
-               <div>Total Pagar: <span class="text-success fw-bold">{{ total | currency: 'PEN' }}</span></div>
+               <div>Total Pagar: <span class="text-success fw-bold">{{ total | currency: currency }}</span></div>
                <div>Importe: <span class="text-warning fw-bold">{{ import | uppercase }}</span></div>
             </div>
          </ng-container>

@@ -116,17 +116,17 @@ input[type="number"]::-webkit-inner-spin-button {
   margin: 0 auto;
 }
 
+.mat-md-h {
+  .mat-mdc-form-field-subscript-wrapper {
+    height: 0 !important;
+  }
+}
+
 .mat-number {
   width: 100%;
   text-align: center;
   -moz-appearance: textfield;
   background-color: transparent !important;
-}
-
-.container-input {
-  .mat-mdc-form-field-subscript-wrapper {
-    height: 0 !important;
-  }
 }
 
 // Animations

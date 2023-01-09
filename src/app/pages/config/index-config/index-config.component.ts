@@ -95,6 +95,7 @@ export class IndexConfigComponent implements OnInit, OnDestroy {
       next: (res) => {
         this.businesses_config = res.data;
         this.data = this.getData(this.business.value);
+        this.authService.business_config = this.data
       },
     });
   }

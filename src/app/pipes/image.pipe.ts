@@ -15,7 +15,7 @@ export class ImagePipe implements PipeTransform {
   private getDefaultImagePath(type: string): string {
     switch (type) {
       case 'business':
-        return `${this.DEFAULT_IMAGES_PATH}user.png`;
+        return `${this.DEFAULT_IMAGES_PATH}business.png`;
       case 'categories':
         return `${this.DEFAULT_IMAGES_PATH}category.png`;
       case 'products':

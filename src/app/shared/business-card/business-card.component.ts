@@ -46,8 +46,6 @@ export class BusinessCardComponent implements OnInit {
   public number = [];
 
   ngOnInit(): void {
-    console.log(this.config);
-
     this.initData();
     this.form['type'].setValue('ticket');
   }
@@ -71,7 +69,8 @@ export class BusinessCardComponent implements OnInit {
     });
 
     formChanges.subscribe((value) => {
-      this.formData.emit(value);
+      const { tax, currency } = this.config;
+      this.formData.emit({ ...value, tax, currency });
     });
   }
 

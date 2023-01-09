@@ -1,10 +1,10 @@
 <div class="row mb-3">
     <div class="col-md-8 align-self-center">
         <div class="row">
-            <div class="col-md-3">
+            <div class="col-md-3 align-self-center">
                 <img [src]="config.image?.secure_url | image: 'business'" alt="business" class="w-100 rounded-3">
             </div>
-            <div class="col-md-9">
+            <div class="col-md-9 align-self-center">
                 <h1>{{ company.title }}</h1>
                 <h3>RUC: {{ company.ruc }}</h3>
                 <p>{{ company.address }}</p>
@@ -23,13 +23,13 @@
                         </mat-select>
                     </mat-form-field>
                     <div class="d-flex gap-2">
-                        <mat-form-field style="width: 150px;">
+                        <mat-form-field class="mat-md-h" style="width: 150px;">
                             <mat-label>Serie</mat-label>
                             <mat-select formControlName="serie">
                                 <mat-option *ngFor="let item of serie" [value]="item">{{ item }}</mat-option>
                             </mat-select>
                         </mat-form-field>
-                        <mat-form-field>
+                        <mat-form-field class="mat-md-h">
                             <mat-label>Número</mat-label>
                             <input formControlName="number" (keypress)="onlyKeyNumber($event)" matInput>
                         </mat-form-field>

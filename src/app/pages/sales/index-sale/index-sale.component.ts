@@ -57,6 +57,7 @@ export class IndexSaleComponent implements OnInit, AfterViewInit {
 
   public minDate = new Date();
   public typeID = new FormControl('dni');
+  public currency = this.authService.config.currency;
   public maxLenght = 8;
 
   public myForm: FormGroup = this.fb.group({
@@ -68,6 +69,7 @@ export class IndexSaleComponent implements OnInit, AfterViewInit {
     number: [],
     type: [],
     amount: [],
+    tax: [],
     details: [],
   });
 
@@ -93,7 +95,7 @@ export class IndexSaleComponent implements OnInit, AfterViewInit {
   private updateTotal(data: Details[]) {
     this.total = data.reduce((acc, item) => acc + item.price * item.quantity, 0);
     this.count = data.reduce((acc, item) => acc + item.quantity, 0);
-    this.import = numberToCardinal(this.total);
+    this.import = numberToCardinal(this.total, this.currency);
     localStorage.setItem('details', JSON.stringify(this.details));
   }
 
@@ -150,8 +152,8 @@ export class IndexSaleComponent implements OnInit, AfterViewInit {
   }
 
   getFormData(data: any) {
-    const { serie, number, type } = data;
-    this.myForm.patchValue({ serie, number, type });
+    const { serie, number, type, tax } = data;
+    this.myForm.patchValue({ serie, number, type, tax });
   }
 
   searchID() {
