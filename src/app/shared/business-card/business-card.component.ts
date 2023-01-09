@@ -1,19 +1,24 @@
-import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AuthService } from 'src/app/services/auth.service';
-import { Business, Config } from 'src/app/utils/intefaces';
+import { Component, inject, OnInit, Output, EventEmitter } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { debounceTime } from 'rxjs';
+
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { ReactiveFormsModule, FormControl } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
-
 import { MatCardModule } from '@angular/material/card';
+
+import { AuthService } from 'src/app/services/auth.service';
+import { Business, Config } from 'src/app/utils/intefaces';
+import { ImagePipe } from 'src/app/pipes/image.pipe';
 
 @Component({
   selector: 'app-business-card',
   standalone: true,
   imports: [
     CommonModule,
+    ImagePipe,
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
@@ -23,33 +28,50 @@ import { MatCardModule } from '@angular/material/card';
   templateUrl: './business-card.component.html',
 })
 export class BusinessCardComponent implements OnInit {
+  @Output() formData = new EventEmitter<FormGroup>();
   private authService = inject(AuthService);
+  private fb = inject(FormBuilder);
 
   public company: Business = this.authService.company;
   public config: Config = this.authService.config;
 
-  public typeVoucher = new FormControl();
-  public serieVoucher = new FormControl();
-  public numberVoucher = new FormControl();
+  public myForm: FormGroup = this.fb.group({
+    type: [null, Validators.required],
+    serie: [null, Validators.required],
+    number: [null, Validators.required],
+  });
+
+  public form = this.myForm.controls;
   public serie = [];
   public number = [];
 
   ngOnInit(): void {
-    this.valueChanges();
-    this.typeVoucher.setValue('ticket');
+    console.log(this.config);
+
+    this.initData();
+    this.form['type'].setValue('ticket');
   }
 
-  valueChanges() {
-    this.typeVoucher.valueChanges.subscribe((value: 'invoice' | 'ticket') => {
-      this.serie = this.config[value].map((item: any) => item.serie);
-      this.number = this.config[value].map((item: any) => item.number);
-      const index = this.config[value].findIndex((x: any) => x.status === true);
-      this.serieVoucher.setValue(this.serie[index] || '');
+  initData() {
+    const typeChanges = this.form['type'].valueChanges;
+    const serieChanges = this.form['serie'].valueChanges;
+    const formChanges = this.myForm.valueChanges.pipe(debounceTime(1000));
+
+    typeChanges.subscribe((type: 'invoice' | 'ticket') => {
+      const config = this.config[type];
+      this.serie = config.map((item: any) => item.serie);
+      this.number = config.map((item: any) => item.number);
+      const index = config.findIndex((x: any) => x.status === true);
+      this.form['serie'].setValue(this.serie[index] || '');
     });
 
-    this.serieVoucher.valueChanges.subscribe((value) => {
-      const index = this.serie.findIndex((item) => item === value);
-      this.numberVoucher.setValue(this.number[index]);
+    serieChanges.subscribe((serie) => {
+      const index = this.serie.findIndex((item) => item === serie);
+      this.form['number'].setValue(this.number[index]);
+    });
+
+    formChanges.subscribe((value) => {
+      this.formData.emit(value);
     });
   }
 
@@ -59,11 +81,5 @@ export class BusinessCardComponent implements OnInit {
     if (!regex.test(event.key) || inputElement.value.length >= 7) {
       event.preventDefault();
     }
-  }
-
-  sendData() {
-    console.log(this.typeVoucher.value);
-    console.log(this.serieVoucher.value);
-    console.log(this.numberVoucher.value);
   }
 }

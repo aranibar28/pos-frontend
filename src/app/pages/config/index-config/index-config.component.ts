@@ -10,7 +10,9 @@ import { BusinessService } from 'src/app/services/business.service';
 import { FORMS_MODULES } from 'src/app/utils/modules';
 import { Business } from 'src/app/utils/intefaces';
 import { getErrorUnitControl } from 'src/app/utils/validators';
-import { MatSlideToggleChange } from '@angular/material/slide-toggle';
+import { ImagePipe } from 'src/app/pipes/image.pipe';
+import { ImageDialogComponent } from 'src/app/shared/image-dialog/image-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
 
 const validatorSerie = [Validators.required, Validators.minLength(4)];
 const validatorNumber = [Validators.required, Validators.minLength(7)];
@@ -18,7 +20,7 @@ const validatorNumber = [Validators.required, Validators.minLength(7)];
 @Component({
   selector: 'app-index-config',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FORMS_MODULES],
+  imports: [CommonModule, ReactiveFormsModule, ImagePipe, FORMS_MODULES],
   templateUrl: './index-config.component.html',
 })
 export class IndexConfigComponent implements OnInit, OnDestroy {
@@ -26,15 +28,17 @@ export class IndexConfigComponent implements OnInit, OnDestroy {
   private authService = inject(AuthService);
   private businessService = inject(BusinessService);
   private alertService = inject(AlertService);
+  private dialog = inject(MatDialog);
   private fb = inject(FormBuilder);
 
+  public data: any = {};
   public business = new FormControl('');
   public businesses: Business[] = [];
   public businesses_config: Array<any> = [];
+  public loadButton = false;
 
   public typeVoucher = new FormControl('ticket');
   public valueVoucher = new FormControl(null, validatorSerie);
-  public loadButton = false;
 
   public myForm: FormGroup = this.fb.group({
     tax: [, [Validators.required]],
@@ -90,19 +94,35 @@ export class IndexConfigComponent implements OnInit, OnDestroy {
     this.businessService.read_business_config().subscribe({
       next: (res) => {
         this.businesses_config = res.data;
+        this.data = this.getData(this.business.value);
       },
     });
   }
 
   value_changes() {
     this.business.valueChanges.subscribe((id) => {
-      const data = this.businesses_config.find((item) => item.business === id);
-      this.myForm.patchValue({ tax: data.tax, currency: data.currency });
-      this.addItems(data.invoice, 'invoice');
-      this.addItems(data.ticket, 'ticket');
+      this.data = this.getData(id);
+      const { tax, currency } = this.data;
+      this.myForm.patchValue({ tax, currency });
+      this.addItems(this.data.invoice, 'invoice');
+      this.addItems(this.data.ticket, 'ticket');
     });
     this.typeVoucher.valueChanges.subscribe(() => {
       this.valueVoucher.reset();
+    });
+  }
+
+  update_image() {
+    this.data._id = this.business.value;
+    const dialogRef = this.dialog.open(ImageDialogComponent, {
+      data: { data: this.data, type: 'business' },
+      width: '400px',
+    });
+    dialogRef.afterClosed().subscribe((result) => {
+      if (this.authService.config.business == this.getData(this.business.value).business) {
+        this.authService.business_config = this.getData(this.business.value);
+      }
+      return result && this.refreshBusinessConfig();
     });
   }
 
@@ -117,6 +137,10 @@ export class IndexConfigComponent implements OnInit, OnDestroy {
         })
       );
     }
+  }
+
+  private getData(id: string | null) {
+    return this.businesses_config.find((item) => item.business === id);
   }
 
   changeStatus(i: number, type: string) {
@@ -156,10 +180,18 @@ export class IndexConfigComponent implements OnInit, OnDestroy {
   }
 
   removeTicket(index: number) {
+    if (this.tickets[index].value.status == true) {
+      this.alertService.error('No puedes eliminar un comprobante activado.');
+      return;
+    }
     (this.myForm.get('ticket') as FormArray).removeAt(index);
   }
 
   removeInvoice(index: number) {
+    if (this.invoices[index].value.status == true) {
+      this.alertService.error('No puedes eliminar un comprobante activado.');
+      return;
+    }
     (this.myForm.get('invoice') as FormArray).removeAt(index);
   }
 

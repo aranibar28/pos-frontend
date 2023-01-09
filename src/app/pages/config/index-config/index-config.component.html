@@ -3,13 +3,16 @@
      <h1>Empresa</h1>
   </mat-card-header>
   <mat-card-content>
-     <mat-form-field appearance="outline">
-        <mat-label>Seleccionar Empresa</mat-label>
-        <mat-select [formControl]="business">
-           <mat-option [value]="" disabled>Seleccionar</mat-option>
-           <mat-option *ngFor="let item of businesses" [value]="item._id">{{ item.title }}</mat-option>
-        </mat-select>
-     </mat-form-field>
+     <div class="d-flex gap-3">
+      <mat-form-field appearance="outline">
+         <mat-label>Seleccionar Empresa</mat-label>
+         <mat-select [formControl]="business">
+            <mat-option [value]="" disabled>Seleccionar</mat-option>
+            <mat-option *ngFor="let item of businesses" [value]="item._id">{{ item.title }}</mat-option>
+         </mat-select>
+      </mat-form-field>
+      <button (click)="update_image()" mat-raised-button color="warn" type="button" style="width: 250px; height: 55px;">Subir Logo</button>
+     </div>
   </mat-card-content>
 </mat-card>
 
@@ -44,7 +47,7 @@
            </div>
         </div>
         <div class="row">
-           <div class="col-md-6 d-flex">
+           <div class="col-md-6 d-flex mx-auto">
               <mat-form-field style="width: 150px;">
                  <mat-select [formControl]="typeVoucher">
                     <mat-option value="ticket">Boleta</mat-option>
@@ -107,7 +110,9 @@
             </div>
            </div>
         </div>
-        <button (click)="onSubmit()" [disabled]="loadButton" mat-raised-button color="primary" type="button">Guardar</button>
+        <div class="col-md-6 mx-auto text-center">
+         <button (click)="onSubmit()" [disabled]="loadButton" mat-raised-button color="primary" type="button">Guardar</button>
+        </div>
      </form>
   </mat-card-content>
 </mat-card>

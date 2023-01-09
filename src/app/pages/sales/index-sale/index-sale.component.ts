@@ -61,9 +61,12 @@ export class IndexSaleComponent implements OnInit, AfterViewInit {
 
   public myForm: FormGroup = this.fb.group({
     customer: [, [Validators.minLength(3)]],
-    document: ['70800756', [Validators.required, Validators.pattern(/^[0-9]{8}$/)]],
+    document: ['70800756', validatorDNI],
     address: [],
     date: [this.minDate],
+    serie: [],
+    number: [],
+    type: [],
     amount: [],
     details: [],
   });
@@ -144,6 +147,11 @@ export class IndexSaleComponent implements OnInit, AfterViewInit {
     const input = event.target as HTMLInputElement;
     this.details[i].quantity = Math.round(Number(input.value)) || 1;
     this.dataSource.data = this.details;
+  }
+
+  getFormData(data: any) {
+    const { serie, number, type } = data;
+    this.myForm.patchValue({ serie, number, type });
   }
 
   searchID() {

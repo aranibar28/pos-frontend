@@ -62,6 +62,7 @@ export interface Config {
   tax: number;
   invoice: any;
   ticket: any;
+  image: any;
 }
 
 export interface UserRole {

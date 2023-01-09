@@ -4,7 +4,7 @@
          <h1>Módulo de Ventas</h1>
          <button routerLink="list" mat-raised-button color="primary">Lista de Ventas</button>
       </div>
-      <app-business-card></app-business-card>
+      <app-business-card (formData)="getFormData($event)"></app-business-card>
       <form [formGroup]="myForm" class="row" autocomplete="off">
          <div class="col-md-6">
             <div class="d-flex">
