@@ -4,6 +4,7 @@ import { Validators } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
+import { MatListModule } from '@angular/material/list';
 
 import { AuthService } from 'src/app/services/auth.service';
 import { ProductService } from 'src/app/services/product.service';
@@ -33,6 +34,7 @@ const validatorRUC = [Validators.required, Validators.pattern(/^[0-9]{11}$/)];
     BusinessCardComponent,
     MatDatepickerModule,
     MatNativeDateModule,
+    MatListModule
   ],
   templateUrl: './index-sale.component.html',
 })
@@ -51,31 +53,32 @@ export class IndexSaleComponent implements OnInit, AfterViewInit {
   public productsOptions: Product[] = [];
 
   public details: Details[] = [];
-  public total: number = 0;
-  public count: number = 0;
-  public import: string = '';
+  public opGrav: number = 0;
+  public amount: number = 0;
+  public amountLetters: string = '';
 
   public minDate = new Date();
   public typeID = new FormControl('dni');
+  public tax = this.authService.config.tax;
   public currency = this.authService.config.currency;
   public maxLenght = 8;
 
   public myForm: FormGroup = this.fb.group({
-    customer: [, [Validators.minLength(3)]],
     document: ['70800756', validatorDNI],
-    address: [],
+    customer: [, [Validators.minLength(3)]],
     date: [this.minDate],
-    serie: [],
-    number: [],
-    type: [],
-    amount: [],
-    tax: [],
+    address: null,
+    serie: null,
+    number: null,
+    type: null,
+    tax: null,
+    amount: null,
     details: [],
   });
 
   ngOnInit(): void {
-    this.getData();
-    this.searchID();
+    this.getProducts();
+    this.getSunatData();
     this.details = JSON.parse(localStorage.getItem('details') || '[]');
     this.dataSource = new MatTableDataSource(this.details);
   }
@@ -93,13 +96,13 @@ export class IndexSaleComponent implements OnInit, AfterViewInit {
   }
 
   private updateTotal(data: Details[]) {
-    this.total = data.reduce((acc, item) => acc + item.price * item.quantity, 0);
-    this.count = data.reduce((acc, item) => acc + item.quantity, 0);
-    this.import = numberToCardinal(this.total, this.currency);
+    this.amount = data.reduce((acc, item) => acc + item.price * item.quantity, 0);
+    this.opGrav = this.amount * (1 - this.tax);
+    this.amountLetters = numberToCardinal(this.amount, this.currency);
     localStorage.setItem('details', JSON.stringify(this.details));
   }
 
-  getData() {
+  getProducts() {
     this.productService.read_all_products_active().subscribe((res) => {
       this.products = res;
       this.productsOptions = res;
@@ -156,7 +159,7 @@ export class IndexSaleComponent implements OnInit, AfterViewInit {
     this.myForm.patchValue({ serie, number, type, tax });
   }
 
-  searchID() {
+  getSunatData() {
     this.typeID.valueChanges.subscribe((value) => {
       this.myForm.controls['customer'].reset();
       this.myForm.controls['document'].reset();
@@ -206,7 +209,7 @@ export class IndexSaleComponent implements OnInit, AfterViewInit {
     }
 
     this.myForm.patchValue({
-      amount: this.total,
+      amount: this.amount,
       details: this.details,
     });
 

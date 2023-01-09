@@ -110,14 +110,13 @@
          </table>
       </div>
       <ng-container>
-         <ng-container>
-            <div class="text-center mb-3">
-               <div>Productos: <span class="text-danger fw-bold">({{ count }})</span></div>
-               <div>Total Pagar: <span class="text-success fw-bold">{{ total | currency: currency }}</span></div>
-               <div>Importe: <span class="text-warning fw-bold">{{ import | uppercase }}</span></div>
-            </div>
-         </ng-container>
-         <button (click)="onSubmit()" [disabled]="loadButton" type="button" mat-raised-button color="primary">Vender</button>
+         <mat-list role="list" class="text-end me-5">
+            <mat-list-item role="listitem">Operación Gravada: {{ opGrav | currency: currency }}</mat-list-item>
+            <mat-list-item role="listitem">IGV: {{ amount * tax | currency: currency }}</mat-list-item>
+            <mat-list-item role="listitem">Importe Total: {{ amount | currency: currency }}</mat-list-item>
+            <mat-list-item role="listitem">Importe en Letras: {{ amountLetters | uppercase }}</mat-list-item>
+            <mat-list-item role="listitem"><button (click)="onSubmit()" [disabled]="loadButton" type="button" mat-raised-button color="primary">Vender</button></mat-list-item>
+          </mat-list>
       </ng-container>
    </mat-card-content>
 </mat-card>

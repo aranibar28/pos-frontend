@@ -95,7 +95,7 @@ export class IndexConfigComponent implements OnInit, OnDestroy {
       next: (res) => {
         this.businesses_config = res.data;
         this.data = this.getData(this.business.value);
-        this.authService.business_config = this.data
+        this.authService.business_config = this.data;
       },
     });
   }
@@ -120,7 +120,10 @@ export class IndexConfigComponent implements OnInit, OnDestroy {
       width: '400px',
     });
     dialogRef.afterClosed().subscribe((result) => {
-      if (this.authService.config.business == this.getData(this.business.value).business) {
+      if (
+        this.authService.config.business ==
+        this.getData(this.business.value).business
+      ) {
         this.authService.business_config = this.getData(this.business.value);
       }
       return result && this.refreshBusinessConfig();
@@ -164,7 +167,7 @@ export class IndexConfigComponent implements OnInit, OnDestroy {
     }
   }
 
-  addItem() {
+  addVoucher() {
     const value = this.valueVoucher.value;
     if (!value || this.valueVoucher.invalid) {
       this.valueVoucher.markAsTouched();
@@ -180,20 +183,13 @@ export class IndexConfigComponent implements OnInit, OnDestroy {
     this.valueVoucher.reset();
   }
 
-  removeTicket(index: number) {
-    if (this.tickets[index].value.status == true) {
+  removeVoucher(index: number, type: string) {
+    let voucher = type == 'ticket' ? this.tickets : this.invoices;
+    if (voucher[index].value.status === true) {
       this.alertService.error('No puedes eliminar un comprobante activado.');
       return;
     }
-    (this.myForm.get('ticket') as FormArray).removeAt(index);
-  }
-
-  removeInvoice(index: number) {
-    if (this.invoices[index].value.status == true) {
-      this.alertService.error('No puedes eliminar un comprobante activado.');
-      return;
-    }
-    (this.myForm.get('invoice') as FormArray).removeAt(index);
+    (this.myForm.get(type) as FormArray).removeAt(index);
   }
 
   onSubmit() {
@@ -219,7 +215,7 @@ export class IndexConfigComponent implements OnInit, OnDestroy {
       });
   }
 
-  onlyKeys(event: KeyboardEvent, type?: string) {
+  onlyKeysVoucher(event: KeyboardEvent, type?: string) {
     if (!type) {
       type = this.typeVoucher.value == 'invoice' ? 'F' : 'B';
     }
@@ -233,10 +229,10 @@ export class IndexConfigComponent implements OnInit, OnDestroy {
     }
   }
 
-  onlyKeyNumber(event: KeyboardEvent) {
+  onlyKeysNumber(event: KeyboardEvent, length: number) {
     const regex: RegExp = /[0-9]/;
     const inputElement = event.target as HTMLInputElement;
-    if (!regex.test(event.key) || inputElement.value.length >= 7) {
+    if (!regex.test(event.key) || inputElement.value.length >= length) {
       event.preventDefault();
     }
   }
