@@ -8,7 +8,7 @@ import { AlertService } from 'src/app/common/alert.service';
 import { BusinessService } from 'src/app/services/business.service';
 
 import { FORMS_MODULES } from 'src/app/utils/modules';
-import { Business } from 'src/app/utils/intefaces';
+import { Business, Config } from 'src/app/utils/intefaces';
 import { getErrorUnitControl } from 'src/app/utils/validators';
 import { ImagePipe } from 'src/app/pipes/image.pipe';
 import { ImageDialogComponent } from 'src/app/shared/image-dialog/image-dialog.component';
@@ -31,11 +31,12 @@ export class IndexConfigComponent implements OnInit, OnDestroy {
   private dialog = inject(MatDialog);
   private fb = inject(FormBuilder);
 
-  public data: any = {};
+  public loadButton = false;
+  public image: string = '';
+
   public business = new FormControl('');
   public businesses: Business[] = [];
-  public businesses_config: Array<any> = [];
-  public loadButton = false;
+  public businesses_config: Config[] = [];
 
   public typeVoucher = new FormControl('ticket');
   public valueVoucher = new FormControl(null, validatorSerie);
@@ -86,7 +87,9 @@ export class IndexConfigComponent implements OnInit, OnDestroy {
       .subscribe(([res1, res2]) => {
         this.businesses = res1.data;
         this.businesses_config = res2.data;
-        this.business.setValue(this.authService.company._id);
+        this.business.setValue(this.authService.company._id, {
+          emitEvent: true,
+        });
       });
   }
 
@@ -94,19 +97,31 @@ export class IndexConfigComponent implements OnInit, OnDestroy {
     this.businessService.read_business_config().subscribe({
       next: (res) => {
         this.businesses_config = res.data;
-        this.data = this.getData(this.business.value);
-        this.authService.business_config = this.data;
+        this.sendChangesToConfigSession();
+        this.image = this.matchBusiness(this.business.value).image;
       },
     });
   }
 
+  private matchBusiness(id: string | null): any {
+    return this.businesses_config.find((item) => item.business === id);
+  }
+
+  private sendChangesToConfigSession() {
+    let curr1 = this.authService.business._id;
+    let curr2 = this.business.value;
+    if (curr1 == curr2) {
+      this.authService.business_config = this.matchBusiness(curr1);
+    }
+  }
+
   value_changes() {
     this.business.valueChanges.subscribe((id) => {
-      this.data = this.getData(id);
-      const { tax, currency } = this.data;
-      this.myForm.patchValue({ tax, currency });
-      this.addItems(this.data.invoice, 'invoice');
-      this.addItems(this.data.ticket, 'ticket');
+      const data = this.matchBusiness(id);
+      this.myForm.patchValue({ tax: data?.tax, currency: data?.currency });
+      this.image = data?.image;
+      this.addItems(data?.invoice, 'invoice');
+      this.addItems(data?.ticket, 'ticket');
     });
     this.typeVoucher.valueChanges.subscribe(() => {
       this.valueVoucher.reset();
@@ -114,19 +129,15 @@ export class IndexConfigComponent implements OnInit, OnDestroy {
   }
 
   update_image() {
-    this.data._id = this.business.value;
+    const data = { _id: this.business.value, image: this.image };
     const dialogRef = this.dialog.open(ImageDialogComponent, {
-      data: { data: this.data, type: 'business' },
+      data: { data, type: 'business' },
       width: '400px',
     });
     dialogRef.afterClosed().subscribe((result) => {
-      if (
-        this.authService.config.business ==
-        this.getData(this.business.value).business
-      ) {
-        this.authService.business_config = this.getData(this.business.value);
+      if (result) {
+        this.refreshBusinessConfig();
       }
-      return result && this.refreshBusinessConfig();
     });
   }
 
@@ -140,30 +151,6 @@ export class IndexConfigComponent implements OnInit, OnDestroy {
           status: [item.status],
         })
       );
-    }
-  }
-
-  private getData(id: string | null) {
-    return this.businesses_config.find((item) => item.business === id);
-  }
-
-  changeStatus(i: number, type: string) {
-    if (type == 'B') {
-      this.tickets.forEach((item, index) => {
-        if (index == i) {
-          item.patchValue({ status: true });
-        } else {
-          item.patchValue({ status: false });
-        }
-      });
-    } else {
-      this.invoices.forEach((item, index) => {
-        if (index == i) {
-          item.patchValue({ status: true });
-        } else {
-          item.patchValue({ status: false });
-        }
-      });
     }
   }
 
@@ -190,6 +177,17 @@ export class IndexConfigComponent implements OnInit, OnDestroy {
       return;
     }
     (this.myForm.get(type) as FormArray).removeAt(index);
+  }
+
+  changeStatus(i: number, type: string) {
+    let voucher = type == 'B' ? this.tickets : this.invoices;
+    voucher.forEach((item, index) => {
+      if (index == i) {
+        item.patchValue({ status: true });
+      } else {
+        item.patchValue({ status: false });
+      }
+    });
   }
 
   onSubmit() {
