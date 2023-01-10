@@ -34,9 +34,9 @@ export class IndexConfigComponent implements OnInit, OnDestroy {
   public loadButton = false;
   public image: string = '';
 
-  public business = new FormControl('');
-  public businesses: Business[] = [];
-  public businesses_config: Config[] = [];
+  public id = new FormControl('');
+  public business: Business[] = [];
+  public business_config: Config[] = [];
 
   public typeVoucher = new FormControl('ticket');
   public valueVoucher = new FormControl(null, validatorSerie);
@@ -85,59 +85,43 @@ export class IndexConfigComponent implements OnInit, OnDestroy {
     ])
       .pipe(takeUntil(this.destroyed$))
       .subscribe(([res1, res2]) => {
-        this.businesses = res1.data;
-        this.businesses_config = res2.data;
-        this.business.setValue(this.authService.company._id, {
-          emitEvent: true,
-        });
+        this.business = res1.data;
+        this.business_config = res2.data;
+        this.id.setValue(this.authService.company._id);
       });
   }
 
   refreshBusinessConfig() {
     this.businessService.read_business_config().subscribe({
       next: (res) => {
-        this.businesses_config = res.data;
+        this.business_config = res.data;
         this.sendChangesToConfigSession();
-        this.image = this.matchBusiness(this.business.value).image;
+        this.image = this.matchBusiness(this.id.value).image;
       },
     });
   }
 
-  private matchBusiness(id: string | null): any {
-    return this.businesses_config.find((item) => item.business === id);
-  }
-
   private sendChangesToConfigSession() {
-    let curr1 = this.authService.business._id;
-    let curr2 = this.business.value;
-    if (curr1 == curr2) {
-      this.authService.business_config = this.matchBusiness(curr1);
+    let { _id } = this.authService.company;
+    if (this.id.value == _id) {
+      this.authService.business_config = this.matchBusiness(_id);
     }
   }
 
+  private matchBusiness(id: string | null): any {
+    return this.business_config.find((item) => item.business === id);
+  }
+
   value_changes() {
-    this.business.valueChanges.subscribe((id) => {
-      const data = this.matchBusiness(id);
-      this.myForm.patchValue({ tax: data?.tax, currency: data?.currency });
-      this.image = data?.image;
-      this.addItems(data?.invoice, 'invoice');
-      this.addItems(data?.ticket, 'ticket');
+    this.id.valueChanges.subscribe((id) => {
+      const { tax, currency, ...data }: Config = this.matchBusiness(id);
+      this.myForm.patchValue({ tax, currency });
+      this.image = data.image;
+      this.addItems(data.invoice, 'invoice');
+      this.addItems(data.ticket, 'ticket');
     });
     this.typeVoucher.valueChanges.subscribe(() => {
       this.valueVoucher.reset();
-    });
-  }
-
-  update_image() {
-    const data = { _id: this.business.value, image: this.image };
-    const dialogRef = this.dialog.open(ImageDialogComponent, {
-      data: { data, type: 'business' },
-      width: '400px',
-    });
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        this.refreshBusinessConfig();
-      }
     });
   }
 
@@ -190,6 +174,19 @@ export class IndexConfigComponent implements OnInit, OnDestroy {
     });
   }
 
+  update_image() {
+    const data = { _id: this.id.value, image: this.image };
+    const dialogRef = this.dialog.open(ImageDialogComponent, {
+      data: { data, type: 'business' },
+      width: '400px',
+    });
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.refreshBusinessConfig();
+      }
+    });
+  }
+
   onSubmit() {
     if (this.myForm.invalid) {
       this.myForm.markAllAsTouched();
@@ -198,7 +195,7 @@ export class IndexConfigComponent implements OnInit, OnDestroy {
     this.loadButton = true;
 
     this.businessService
-      .update_business_config(this.business.value!, this.myForm.value)
+      .update_business_config(this.id.value!, this.myForm.value)
       .subscribe({
         next: (res) => {
           this.loadButton = false;

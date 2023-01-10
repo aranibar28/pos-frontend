@@ -6,9 +6,9 @@
      <div class="d-flex gap-3">
       <mat-form-field appearance="outline">
          <mat-label>Seleccionar Empresa</mat-label>
-         <mat-select [formControl]="business">
+         <mat-select [formControl]="id">
             <mat-option [value]="" disabled>Seleccionar</mat-option>
-            <mat-option *ngFor="let item of businesses" [value]="item._id">{{ item.title }}</mat-option>
+            <mat-option *ngFor="let item of business" [value]="item._id">{{ item.title }}</mat-option>
          </mat-select>
       </mat-form-field>
       <button (click)="update_image()" mat-raised-button color="warn" type="button" style="width: 250px; height: 55px;">Subir Logo</button>
