@@ -64,7 +64,7 @@ export class FormsAllowsComponent implements OnInit {
     }
 
     this.loadButton = true;
-    this.roleService.update_user_role(this.id, this.myForm.value).subscribe({
+    this.roleService.update_branch(this.id, this.myForm.value).subscribe({
       next: (res) => {
         this.loadButton = false;
 

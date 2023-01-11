@@ -229,7 +229,7 @@ export class IndexSaleComponent implements OnInit, AfterViewInit {
     this.saleService.create_sale(this.myForm.value).subscribe({
       next: (res) => {
         this.loadButton = false;
-        if (!res) {
+        if (!res.data) {
           return this.alertService.error(res.msg);
         }
         this.myForm.reset({ date: this.minDate });

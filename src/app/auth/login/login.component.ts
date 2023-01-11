@@ -44,7 +44,7 @@ export class LoginComponent {
       next: (res) => {
         this.load_btn = false;
         if (!res.data) {
-          return this.alertService.success(res.msg);
+          return this.alertService.error(res.msg);
         }
         this.router.navigateByUrl('/dashboard');
         this.alertService.success('Bienvenido usuario');

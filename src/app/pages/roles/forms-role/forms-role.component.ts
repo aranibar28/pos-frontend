@@ -85,6 +85,8 @@ export class FormsRoleComponent implements OnInit {
           return this.alertService.error(res.msg);
         }
         this.dialogRef.close(true);
+        Object.keys(modules).map((key) => (modules[key] = false));
+        this.myForm.controls['allows'].setValue(modules);
         this.alertService.success('Se registró correctamente');
       },
       error: (err) => {

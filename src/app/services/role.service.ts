@@ -39,23 +39,23 @@ export class RoleService {
     return this.http.delete(url, this.headers);
   }
 
-  create_user_role(data: UserRole): Observable<any> {
-    const url = `${base_url}/create_user_role`;
+  create_branch(data: UserRole): Observable<any> {
+    const url = `${base_url}/create_branch`;
     return this.http.post(url, data, this.headers);
   }
 
-  read_user_role(): Observable<any> {
-    const url = `${base_url}/read_user_role`;
+  read_branch(): Observable<any> {
+    const url = `${base_url}/read_branch`;
     return this.http.get(url, this.headers);
   }
 
-  update_user_role(id: string, data: any): Observable<any> {
-    const url = `${base_url}/update_user_role/${id}`;
+  update_branch(id: string, data: any): Observable<any> {
+    const url = `${base_url}/update_branch/${id}`;
     return this.http.put(url, data, this.headers);
   }
 
-  delete_user_role(id: string): Observable<any> {
-    const url = `${base_url}/delete_user_role/${id}`;
+  delete_branch(id: string): Observable<any> {
+    const url = `${base_url}/delete_branch/${id}`;
     return this.http.delete(url, this.headers);
   }
 }

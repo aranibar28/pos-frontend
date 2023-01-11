@@ -92,7 +92,7 @@ export class IndexRoleComponent implements OnInit {
 
   init_data() {
     this.spinner.show();
-    this.roleService.read_user_role().subscribe({
+    this.roleService.read_branch().subscribe({
       next: (res) => {
         this.dataSource = res.data;
         this.spinner.hide();
@@ -131,7 +131,7 @@ export class IndexRoleComponent implements OnInit {
       this.myForm.markAllAsTouched();
       return;
     }
-    this.roleService.create_user_role(this.myForm.value).subscribe({
+    this.roleService.create_branch(this.myForm.value).subscribe({
       next: (res) => {
         if (!res.data) {
           return this.alertService.error(res.msg);
@@ -174,7 +174,7 @@ export class IndexRoleComponent implements OnInit {
   //***** UPDATE *****//
   update_status(item: MatSlideToggleChange, id: string) {
     const status = item.checked;
-    this.roleService.update_user_role(id, { status }).subscribe({
+    this.roleService.update_branch(id, { status }).subscribe({
       next: (res) => {
         if (!res.data) {
           item.source.checked = !item.source.checked;
@@ -252,7 +252,7 @@ export class IndexRoleComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        this.roleService.delete_user_role(item._id).subscribe({
+        this.roleService.delete_branch(item._id).subscribe({
           next: (res) => {
             if (!res.data) {
               return this.alertService.error(res.msg);

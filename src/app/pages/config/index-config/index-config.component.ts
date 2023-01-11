@@ -198,8 +198,10 @@ export class IndexConfigComponent implements OnInit, OnDestroy {
       .update_business_config(this.id.value!, this.myForm.value)
       .subscribe({
         next: (res) => {
+          console.log(res);
+          
           this.loadButton = false;
-          if (!res) return this.alertService.error(res.msg);
+          if (!res.data) return this.alertService.error(res.msg);
           this.refreshBusinessConfig();
           this.alertService.success('Se actualizó correctamente');
         },
