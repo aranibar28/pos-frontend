@@ -1,5 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject, OnChanges, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  OnChanges,
+  SimpleChanges,
+  inject,
+} from '@angular/core';
 import { Input, Output, EventEmitter } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
@@ -55,7 +61,19 @@ export class BusinessCardComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['newCorrelative']) {
-      this.form['number'].setValue(changes['newCorrelative'].currentValue);
+      let correlative = changes['newCorrelative'].currentValue;
+      this.form['number'].setValue(correlative);
+      this.updateConfig(this.form['type'].value, correlative);
+    }
+  }
+
+  updateConfig(type: 'invoice' | 'ticket', number: string) {
+    if (this.form['serie'].value) {
+      const config = this.config[type];
+      let index = config.findIndex(
+        (x: any) => x.serie === this.form['serie'].value
+      );
+      config[index].number = number;
     }
   }
 
