@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, inject, OnChanges, SimpleChanges } from '@angular/core';
+import { Input, Output, EventEmitter } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { debounceTime } from 'rxjs';
@@ -27,8 +28,10 @@ import { ImagePipe } from 'src/app/pipes/image.pipe';
   ],
   templateUrl: './business-card.component.html',
 })
-export class BusinessCardComponent implements OnInit {
+export class BusinessCardComponent implements OnInit, OnChanges {
   @Output() formData = new EventEmitter<FormGroup>();
+  @Input() newCorrelative!: string;
+
   private authService = inject(AuthService);
   private fb = inject(FormBuilder);
 
@@ -50,6 +53,12 @@ export class BusinessCardComponent implements OnInit {
     this.form['type'].setValue('ticket');
   }
 
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['newCorrelative']) {
+      this.form['number'].setValue(changes['newCorrelative'].currentValue);
+    }
+  }
+
   initData() {
     const typeChanges = this.form['type'].valueChanges;
     const serieChanges = this.form['serie'].valueChanges;
@@ -69,8 +78,8 @@ export class BusinessCardComponent implements OnInit {
     });
 
     formChanges.subscribe((value) => {
-      const { tax, currency } = this.config;
-      this.formData.emit({ ...value, tax, currency });
+      const { tax, currency, business } = this.config;
+      this.formData.emit({ ...value, tax, currency, business });
     });
   }
 

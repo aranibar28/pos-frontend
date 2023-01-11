@@ -8,6 +8,7 @@ import { MatListModule } from '@angular/material/list';
 
 import { AuthService } from 'src/app/services/auth.service';
 import { ProductService } from 'src/app/services/product.service';
+import { SaleService } from 'src/app/services/sale.service';
 import { AlertService } from 'src/app/common/alert.service';
 import { Product, Details } from 'src/app/utils/intefaces';
 import { numberToCardinal } from 'src/app/utils/written-number';
@@ -34,13 +35,14 @@ const validatorRUC = [Validators.required, Validators.pattern(/^[0-9]{11}$/)];
     BusinessCardComponent,
     MatDatepickerModule,
     MatNativeDateModule,
-    MatListModule
+    MatListModule,
   ],
   templateUrl: './index-sale.component.html',
 })
 export class IndexSaleComponent implements OnInit, AfterViewInit {
   private authService = inject(AuthService);
   private productService = inject(ProductService);
+  private saleService = inject(SaleService);
   private alertService = inject(AlertService);
   private fb = inject(FormBuilder);
 
@@ -59,15 +61,16 @@ export class IndexSaleComponent implements OnInit, AfterViewInit {
 
   public minDate = new Date();
   public typeID = new FormControl('dni');
-  public tax = this.authService.config.tax;
-  public currency = this.authService.config.currency;
-  public maxLenght = 8;
+  public tax: number = this.authService.config.tax;
+  public currency: string = this.authService.config.currency;
+  public maxLenght: number = 8;
 
   public myForm: FormGroup = this.fb.group({
-    document: ['70800756', validatorDNI],
+    document: [, validatorDNI],
     customer: [, [Validators.minLength(3)]],
     date: [this.minDate],
     address: null,
+    business: null,
     serie: null,
     number: null,
     type: null,
@@ -132,8 +135,11 @@ export class IndexSaleComponent implements OnInit, AfterViewInit {
     this.dataSource.data = this.details;
   }
 
-  incrementQuantity(i: number) {
-    this.details[i].quantity = this.details[i].quantity + 1;
+  incrementQuantity(item: any, i: number) {
+    const product = this.products.find((x) => x._id === item.product);
+    const stock = product?.stock;
+    if (!stock) return;
+    this.details[i].quantity = Math.min(this.details[i].quantity + 1, stock);
     this.dataSource.data = this.details;
   }
 
@@ -148,15 +154,21 @@ export class IndexSaleComponent implements OnInit, AfterViewInit {
     this.dataSource.data = this.details;
   }
 
-  changedQuantity(event: Event, i: number) {
+  changedQuantity(event: Event, item: any, i: number) {
     const input = event.target as HTMLInputElement;
-    this.details[i].quantity = Math.round(Number(input.value)) || 1;
+    const product = this.products.find((x) => x._id === item.product);
+    let value = Math.round(Number(input.value)) || (input.value === "" ? 0 : 1);
+    value = Math.min(value, product?.stock || 1);
+    this.details[i].quantity = value;
     this.dataSource.data = this.details;
+    input.value = value.toString();
   }
 
+  public newCorrelative: string = '';
   getFormData(data: any) {
-    const { serie, number, type, tax } = data;
-    this.myForm.patchValue({ serie, number, type, tax });
+    const { business, serie, number, type, tax } = data;
+    this.myForm.patchValue({ business, serie, number, type, tax });
+    this.newCorrelative = number;
   }
 
   getSunatData() {
@@ -177,7 +189,6 @@ export class IndexSaleComponent implements OnInit, AfterViewInit {
         this.authService
           .consulta_id(res, this.typeID.value!)
           .subscribe((res) => {
-            console.log(res);
             if (res.dni) {
               const { nombres, apellidoPaterno, apellidoMaterno } = res;
               this.myForm.patchValue({
@@ -215,11 +226,25 @@ export class IndexSaleComponent implements OnInit, AfterViewInit {
 
     this.loadButton = true;
 
-    // SEND DATA SIMULATION
-    setTimeout(() => {
-      console.log(this.myForm.value);
-      this.loadButton = false;
-    }, 3000);
+    this.saleService.create_sale(this.myForm.value).subscribe({
+      next: (res) => {
+        this.loadButton = false;
+        if (!res) {
+          return this.alertService.error(res.msg);
+        }
+        this.myForm.reset({ date: this.minDate });
+        this.details = [];
+        this.dataSource.data = this.details;
+        this.alertService.success('Venta generada.');
+        this.getProducts();
+        this.newCorrelative = this.nextCorrelative(this.newCorrelative);
+      },
+    });
+  }
+
+  private nextCorrelative(number: string) {
+    let num = Number(number) + 1;
+    return num.toString().padStart(number.length, '0');
   }
 
   onlyKeyNumber(event: KeyboardEvent) {

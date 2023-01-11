@@ -141,12 +141,15 @@ export interface PurchaseDetail {
 
 export interface Sale {
   _id: string;
-  user: User;
-  status: string;
-  origin: string;
+  document: string;
+  customer: string;
+  address: string;
   amount: number;
-  created_at: Date;
-  updated_at: Date;
+  tax: number;
+  type: string;
+  serie: string;
+  number: string;
+  date: Date;
 }
 
 export interface SaleDetail {

@@ -54,7 +54,7 @@ export class ProductService {
         res.data
           .map((res: any) => res)
           .filter((item: Product) => {
-            return item.status == true && item.price > 0;
+            return item.status == true && item.stock > 0;
           })
           .sort((a: any, b: any) => {
             return a.title.localeCompare(b.title);

@@ -1,6 +1,6 @@
 <mat-card class="px-3">
    <mat-card-content>
-      <app-business-card (formData)="getFormData($event)"></app-business-card>
+      <app-business-card (formData)="getFormData($event)" [newCorrelative]="newCorrelative"></app-business-card>
       <form [formGroup]="myForm" class="row" autocomplete="off">
          <div class="col-md-6">
             <div class="d-flex">
@@ -48,7 +48,7 @@
          <mat-autocomplete #matProduct="matAutocomplete">
             <mat-option (click)="addToShoppingCart(item)" *ngFor="let item of productsOptions" [value]="item">
             <img [src]="item.image?.secure_url | image: 'products'" loading="lazy" alt="user" style="width: 40px; margin-right: 5px;">
-            {{ item.title | titlecase }} - {{ item.price | currency: currency }}
+            {{ item.title | titlecase }} - {{ item.price | currency: currency }} - STOCK: {{ item.stock }}
             </mat-option>
          </mat-autocomplete>
       </mat-form-field>
@@ -71,8 +71,8 @@
                      <button (click)="decrementQuantity(i)" mat-icon-button matPrefix>
                         <mat-icon>remove</mat-icon>
                      </button>
-                     <input (keyup)="changedQuantity($event, i)" [value]="element.quantity" type="number" matInput class="input-number mat-number"/>
-                     <button (click)="incrementQuantity(i)" mat-icon-button matSuffix>
+                     <input (keyup)="changedQuantity($event, element,  i)" [value]="element.quantity" type="number" matInput class="input-number mat-number"/>
+                     <button (click)="incrementQuantity(element, i)" mat-icon-button matSuffix>
                         <mat-icon>add</mat-icon>
                      </button>
                   </mat-form-field>
