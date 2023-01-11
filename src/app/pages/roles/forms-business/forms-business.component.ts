@@ -134,10 +134,10 @@ export class FormsBusinessComponent implements OnInit {
     return (this.myForm.pristine && this.myForm.valid) || this.loadButton;
   }
 
-  onlyKeyNumber(event: KeyboardEvent) {
+  onlyKeyNumber(event: KeyboardEvent, length: number) {
     const regex = /[0-9]/;
     const inputElement = event.target as HTMLInputElement;
-    if (!regex.test(event.key) || inputElement.value.length >= 11) {
+    if (!regex.test(event.key) || inputElement.value.length >= length) {
       event.preventDefault();
     }
   }

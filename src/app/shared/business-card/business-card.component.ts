@@ -1,11 +1,6 @@
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  OnInit,
-  OnChanges,
-  SimpleChanges,
-  inject,
-} from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
+import { OnChanges, SimpleChanges } from '@angular/core';
 import { Input, Output, EventEmitter } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
@@ -19,6 +14,7 @@ import { MatCardModule } from '@angular/material/card';
 import { AuthService } from 'src/app/services/auth.service';
 import { Business, Config } from 'src/app/utils/intefaces';
 import { ImagePipe } from 'src/app/pipes/image.pipe';
+import { getErrorMessage } from 'src/app/utils/validators';
 
 @Component({
   selector: 'app-business-card',
@@ -36,7 +32,7 @@ import { ImagePipe } from 'src/app/pipes/image.pipe';
 })
 export class BusinessCardComponent implements OnInit, OnChanges {
   @Output() formData = new EventEmitter<FormGroup>();
-  @Input() newCorrelative!: string;
+  @Input() msgEmitter: string = '';
 
   private authService = inject(AuthService);
   private fb = inject(FormBuilder);
@@ -47,7 +43,7 @@ export class BusinessCardComponent implements OnInit, OnChanges {
   public myForm: FormGroup = this.fb.group({
     type: [null, Validators.required],
     serie: [null, Validators.required],
-    number: [null, Validators.required],
+    number: [null, [Validators.required, Validators.minLength(7)]],
   });
 
   public form = this.myForm.controls;
@@ -60,20 +56,19 @@ export class BusinessCardComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes['newCorrelative']) {
-      let correlative = changes['newCorrelative'].currentValue;
+    if (changes['msgEmitter']) {
+      let correlative = changes['msgEmitter'].currentValue;
       this.form['number'].setValue(correlative);
-      this.updateConfig(this.form['type'].value, correlative);
+      this.updateCorrelative(this.form['type'].value, correlative);
     }
   }
 
-  updateConfig(type: 'invoice' | 'ticket', number: string) {
+  updateCorrelative(type: 'ticket' | 'invoice', number: string) {
     if (this.form['serie'].value) {
-      const config = this.config[type];
-      let index = config.findIndex(
+      let i = this.config[type].findIndex(
         (x: any) => x.serie === this.form['serie'].value
       );
-      config[index].number = number;
+      this.config[type][i].number = number;
     }
   }
 
@@ -82,7 +77,7 @@ export class BusinessCardComponent implements OnInit, OnChanges {
     const serieChanges = this.form['serie'].valueChanges;
     const formChanges = this.myForm.valueChanges.pipe(debounceTime(1000));
 
-    typeChanges.subscribe((type: 'invoice' | 'ticket') => {
+    typeChanges.subscribe((type: 'ticket' | 'invoice') => {
       const config = this.config[type];
       this.serie = config.map((item: any) => item.serie);
       this.number = config.map((item: any) => item.number);
@@ -101,11 +96,20 @@ export class BusinessCardComponent implements OnInit, OnChanges {
     });
   }
 
-  onlyKeyNumber(event: KeyboardEvent) {
+  onlyKeyNumber(event: KeyboardEvent, length: number) {
     const regex: RegExp = /[0-9]/;
     const inputElement = event.target as HTMLInputElement;
-    if (!regex.test(event.key) || inputElement.value.length >= 7) {
+    if (!regex.test(event.key) || inputElement.value.length >= length) {
       event.preventDefault();
     }
+  }
+
+  isValid(name: string) {
+    const input = this.myForm.controls[name];
+    return input.errors && input.touched;
+  }
+
+  showMessage(name: string) {
+    return getErrorMessage(name, this.myForm);
   }
 }

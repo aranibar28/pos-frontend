@@ -63,6 +63,7 @@ export class IndexSaleComponent implements OnInit, AfterViewInit {
   public typeID = new FormControl('dni');
   public tax: number = this.authService.config.tax;
   public currency: string = this.authService.config.currency;
+  public correlative: string = '';
   public maxLenght: number = 8;
 
   public myForm: FormGroup = this.fb.group({
@@ -71,8 +72,8 @@ export class IndexSaleComponent implements OnInit, AfterViewInit {
     date: [this.minDate],
     address: null,
     business: null,
-    serie: null,
-    number: null,
+    serie: [null, [Validators.minLength(4)]],
+    number: [null, [Validators.minLength(7)]],
     type: null,
     tax: null,
     amount: null,
@@ -103,13 +104,6 @@ export class IndexSaleComponent implements OnInit, AfterViewInit {
     this.opGrav = this.amount * (1 - this.tax);
     this.amountLetters = numberToCardinal(this.amount, this.currency);
     localStorage.setItem('details', JSON.stringify(this.details));
-  }
-
-  getProducts() {
-    this.productService.read_all_products_active().subscribe((res) => {
-      this.products = res;
-      this.productsOptions = res;
-    });
   }
 
   addToShoppingCart(item: Product) {
@@ -157,18 +151,24 @@ export class IndexSaleComponent implements OnInit, AfterViewInit {
   changedQuantity(event: Event, item: any, i: number) {
     const input = event.target as HTMLInputElement;
     const product = this.products.find((x) => x._id === item.product);
-    let value = Math.round(Number(input.value)) || (input.value === "" ? 0 : 1);
+    let value = Math.round(Number(input.value)) || (input.value === '' ? 0 : 1);
     value = Math.min(value, product?.stock || 1);
     this.details[i].quantity = value;
     this.dataSource.data = this.details;
     input.value = value.toString();
   }
 
-  public newCorrelative: string = '';
   getFormData(data: any) {
     const { business, serie, number, type, tax } = data;
+    this.correlative = number; //Send data from Father to Children.
     this.myForm.patchValue({ business, serie, number, type, tax });
-    this.newCorrelative = number;
+  }
+
+  getProducts() {
+    this.productService.read_all_products_active().subscribe((res) => {
+      this.products = res;
+      this.productsOptions = res;
+    });
   }
 
   getSunatData() {
@@ -237,7 +237,7 @@ export class IndexSaleComponent implements OnInit, AfterViewInit {
         this.dataSource.data = this.details;
         this.alertService.success('Venta generada.');
         this.getProducts();
-        this.newCorrelative = this.nextCorrelative(this.newCorrelative);
+        this.correlative = this.nextCorrelative(this.correlative);
       },
     });
   }
@@ -247,10 +247,10 @@ export class IndexSaleComponent implements OnInit, AfterViewInit {
     return num.toString().padStart(number.length, '0');
   }
 
-  onlyKeyNumber(event: KeyboardEvent) {
+  onlyKeyNumber(event: KeyboardEvent, length: number) {
     const regex: RegExp = /[0-9]/;
     const inputElement = event.target as HTMLInputElement;
-    if (!regex.test(event.key) || inputElement.value.length >= this.maxLenght) {
+    if (!regex.test(event.key) || inputElement.value.length >= length) {
       event.preventDefault();
     }
   }

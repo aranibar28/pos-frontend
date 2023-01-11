@@ -8,7 +8,6 @@
                 <h1>{{ company.title }}</h1>
                 <h3>RUC: {{ company.ruc }}</h3>
                 <p>{{ company.address }}</p>
-                {{ newCorrelative }}
             </div>
         </div>
     </div>
@@ -16,7 +15,7 @@
         <mat-card>
             <mat-card-content>
                 <form [formGroup]="myForm">
-                    <mat-form-field>
+                    <mat-form-field class="mt-3">
                         <mat-label>Tipo de Comprobante</mat-label>
                         <mat-select formControlName="type">
                         <mat-option value="ticket">BOLETA ELECTRÓNICA</mat-option>
@@ -24,15 +23,16 @@
                         </mat-select>
                     </mat-form-field>
                     <div class="d-flex gap-2">
-                        <mat-form-field class="mat-md-h" style="width: 150px;">
+                        <mat-form-field style="width: 150px;">
                             <mat-label>Serie</mat-label>
                             <mat-select formControlName="serie">
                                 <mat-option *ngFor="let item of serie" [value]="item">{{ item }}</mat-option>
                             </mat-select>
                         </mat-form-field>
-                        <mat-form-field class="mat-md-h">
+                        <mat-form-field>
                             <mat-label>Número</mat-label>
-                            <input formControlName="number" (keypress)="onlyKeyNumber($event)" matInput>
+                            <input formControlName="number" (keypress)="onlyKeyNumber($event, 7)" matInput>
+                            <mat-error *ngIf="isValid('number')">{{ showMessage('number') }}</mat-error>
                         </mat-form-field>
                     </div>
                 </form>

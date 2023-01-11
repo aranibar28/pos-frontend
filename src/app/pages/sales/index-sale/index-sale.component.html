@@ -1,6 +1,6 @@
 <mat-card class="px-3">
    <mat-card-content>
-      <app-business-card (formData)="getFormData($event)" [newCorrelative]="newCorrelative"></app-business-card>
+      <app-business-card (formData)="getFormData($event)" [msgEmitter]="correlative"></app-business-card>
       <form [formGroup]="myForm" class="row" autocomplete="off">
          <div class="col-md-6">
             <div class="d-flex">
@@ -12,7 +12,7 @@
                </mat-form-field>
                <mat-form-field>
                   <mat-label>Número Documento</mat-label>
-                  <input (keypress)="onlyKeyNumber($event)" formControlName="document" matInput placeholder="Número de documento" type="number">
+                  <input (keypress)="onlyKeyNumber($event, maxLenght)" formControlName="document" matInput placeholder="Número de documento" type="number">
                   <mat-error *ngIf="isValid('document')">{{ showMessage('document') }}</mat-error>
                </mat-form-field>
             </div>

@@ -4,7 +4,7 @@
        <form [formGroup]="myForm" autocomplete="off">
           <mat-form-field>
              <mat-label>RUC</mat-label>
-             <input formControlName="ruc" (keypress)="onlyKeyNumber($event)" matInput />
+             <input formControlName="ruc" (keypress)="onlyKeyNumber($event, 11)" matInput />
              <mat-error *ngIf="isValid('ruc')">{{ showMessage('ruc') }}</mat-error>
           </mat-form-field>
           <mat-form-field>
