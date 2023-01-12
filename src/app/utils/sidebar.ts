@@ -27,17 +27,37 @@ export const sidebar: any[] = [
   {
     title: 'Productos',
     path: 'products',
-    icon: 'liquor',
+    icon: 'all_inbox',
   },
   {
     title: 'Compras',
     path: 'purchases',
     icon: 'inventory',
+    children: [
+      {
+        title: 'Lista de Compras',
+        path: 'purchases',
+      },
+      {
+        title: 'Realizar Compra',
+        path: 'purchases/create',
+      },
+    ],
   },
   {
     title: 'Ventas',
     path: 'sales',
     icon: 'shopping_cart',
+    children: [
+      {
+        title: 'Lista de Ventas',
+        path: 'sales',
+      },
+      {
+        title: 'Realizar Venta',
+        path: 'sales/create',
+      },
+    ],
   },
 ];
 

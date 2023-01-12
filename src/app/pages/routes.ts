@@ -7,9 +7,11 @@ import { IndexUserComponent } from './users/index-user/index-user.component';
 import { IndexCategoryComponent } from './categories/index-category/index-category.component';
 import { IndexProductComponent } from './products/index-product/index-product.component';
 import { IndexSupplierComponent } from './suppliers/index-supplier/index-supplier.component';
+
 import { IndexPurchaseComponent } from './purchases/index-purchase/index-purchase.component';
+import { FormsPurchaseComponent } from './purchases/forms-purchase/forms-purchase.component';
 import { IndexSaleComponent } from './sales/index-sale/index-sale.component';
-import { ListPurchasesComponent } from './purchases/list-purchases/list-purchases.component';
+import { FormsSaleComponent } from './sales/forms-sale/forms-sale.component';
 
 export const User: Routes = [
   { path: '', component: IndexUserComponent, canActivate: [AllowedGuard], title: 'Usuarios', data: { module: 'users' } },
@@ -33,12 +35,13 @@ export const Product: Routes = [
 
 export const Purchase: Routes = [
   { path: '', component: IndexPurchaseComponent, canActivate: [AllowedGuard], title: 'Compras', data: { module: 'purchases' } },
-  { path: 'list', component: ListPurchasesComponent, canActivate: [AllowedGuard], title: 'Compras', data: { module: 'purchases' } },
+  { path: 'create', component: FormsPurchaseComponent, canActivate: [AllowedGuard], title: 'Compras', data: { module: 'purchases' } },
   { path: '**', redirectTo: '' },
 ];
 
 export const Sales: Routes = [
   { path: '', component: IndexSaleComponent, canActivate: [AllowedGuard], title: 'Ventas', data: { module: 'sales' } },
+  { path: 'create', component: FormsSaleComponent, canActivate: [AllowedGuard], title: 'Ventas', data: { module: 'sales' } },
   { path: '**', redirectTo: '' },
 ];
 

@@ -17,6 +17,7 @@ import { map, shareReplay } from 'rxjs/operators';
   imports: [CommonModule, RouterModule, DASHBOARD_MODULES],
   providers: [TRANSLATE_PAGINATOR],
   templateUrl: './dashboard.component.html',
+  styleUrls: ['./dashboard.component.scss'],
 })
 export class DashboardComponent {
   private authService = inject(AuthService);
@@ -46,6 +47,12 @@ export class DashboardComponent {
     this.authService.courierAllow.subscribe((res) => {
       this.allows = res.value;
     });
+  }
+
+  isExpanded(children: any[]): boolean {
+    return children.some((child) =>
+      this.router.url.endsWith('/dashboard/' + child.path)
+    );
   }
 
   isAllowed(module: any) {

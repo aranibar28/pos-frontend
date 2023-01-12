@@ -1,222 +1,146 @@
-import { Component, OnInit, AfterViewInit, inject } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
+import { Component, OnInit, ViewChild, inject } from '@angular/core';
+import { ActivatedRoute, Params, Router } from '@angular/router';
+import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
+import { NgxSpinnerService } from 'ngx-spinner';
+import { Subscription, pairwise } from 'rxjs';
+import * as moment from 'moment';
+
 import { MatTableDataSource } from '@angular/material/table';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { PageEvent } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
 
-import { ProductService } from 'src/app/services/product.service';
-import { SupplierService } from 'src/app/services/supplier.service';
 import { PurchaseService } from 'src/app/services/purchase.service';
-import { AlertService } from 'src/app/common/alert.service';
-import { FormsSupplierComponent } from '../../suppliers/forms-supplier/forms-supplier.component';
-import { RequireMatch } from 'src/app/utils/require-match';
-import { Supplier, Product } from 'src/app/utils/intefaces';
-
-import {
-  SHARED_MODULES,
-  TABLE_MODULES,
-  FORMS_MODULES,
-} from 'src/app/utils/modules';
-
-const columns = ['image', 'title', 'quantity', 'price', 'subtotal', 'actions'];
+import { Purchase } from 'src/app/utils/intefaces';
+import { SHARED_MODULES, TABLE_MODULES } from 'src/app/utils/modules';
+const columns = ['supplier', 'amount', 'created_at'];
 
 @Component({
   selector: 'app-index-purchase',
   standalone: true,
-  imports: [SHARED_MODULES, FORMS_MODULES, TABLE_MODULES],
+  imports: [
+    SHARED_MODULES,
+    TABLE_MODULES,
+    MatFormFieldModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+  ],
   templateUrl: './index-purchase.component.html',
 })
-export class IndexPurchaseComponent implements OnInit, AfterViewInit {
-  private supplierService = inject(SupplierService);
+export class IndexPurchaseComponent implements OnInit {
+  @ViewChild(MatSort) sort!: MatSort;
+  private subscription: Subscription = new Subscription();
   private purchaseService = inject(PurchaseService);
-  private productService = inject(ProductService);
-  private alertService = inject(AlertService);
-  private dialog = inject(MatDialog);
+  private activatedRoute = inject(ActivatedRoute);
+  private spinner = inject(NgxSpinnerService);
+  private router = inject(Router);
+  private fb = inject(FormBuilder);
 
   public displayedColumns: string[] = columns;
-  public dataSource!: MatTableDataSource<any>;
-  public loadButton: boolean = false;
-  public loadSearch: boolean = false;
+  public dataSource!: MatTableDataSource<Purchase[]>;
 
-  public suppliers: Supplier[] = [];
-  public products: Product[] = [];
-  public suppliersOptions: Supplier[] = [];
-  public productsOptions: Product[] = [];
-  public details = JSON.parse(localStorage.getItem('details') || '[]');
+  public totalItems: number = 0;
+  public currentPage: number = 1;
+  public pageIndex: number = 1;
+  public pageSize: number = 10;
+  public start: string = '';
+  public end: string = '';
 
-  public total: number = 0;
-  public count: number = 0;
-
-  public product = new FormControl('');
-  public supplier = new FormControl('', [Validators.required, RequireMatch]);
+  public range: FormGroup = this.fb.group({
+    start: new FormControl<Date | null>(null),
+    end: new FormControl<Date | null>(null),
+  });
 
   ngOnInit(): void {
-    this.init_products();
-    this.init_suppliers();
-    this.calculate_total();
+    this.subscription = this.activatedRoute.queryParams.subscribe(
+      (params: Params) => {
+        const { page, limit, start, end } = params;
+        this.currentPage = page || 1;
+        this.pageSize = limit || 10;
+        this.start = start;
+        this.end = end;
+        this.init_purchases(
+          this.currentPage,
+          this.pageSize,
+          this.start,
+          this.end
+        );
+      }
+    );
+    this.rangeChanged();
+    this.setValuesDate();
   }
 
-  ngAfterViewInit(): void {
-    this.dataSource = new MatTableDataSource(this.details);
-
-    this.supplier.valueChanges.subscribe((data) => {
-      const value = String(data).trim();
-      this.filterSupplier(value);
-    });
-
-    this.product.valueChanges.subscribe((data) => {
-      const value = String(data).trim();
-      this.filterProduct(value);
-    });
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 
-  filterSupplier(data: string) {
-    const value = data.toString().toLowerCase();
-    this.suppliersOptions = this.suppliers.filter((item) => {
-      return item?.name.toLowerCase().indexOf(value) > -1;
-    });
-  }
-
-  filterProduct(data: string) {
-    const value = data?.toString().toLowerCase();
-    this.productsOptions = this.products.filter((item) => {
-      return item?.title.toLowerCase().indexOf(value) > -1;
-    });
-  }
-
-  displayFn(supplier: Supplier) {
-    return supplier ? supplier.ruc + ' - ' + supplier.name : supplier;
-  }
-
-  add_item(item: Product) {
-    const product = this.details.find((x: any) => x.product == item._id);
-
-    if (product) {
-      product.quantity += 1;
-      product.price = item.price;
-    } else {
-      this.details.unshift({
-        product: item._id,
-        title: item.title,
-        price: item.price,
-        image: item.image?.secure_url,
-        quantity: 1,
-      });
-    }
-    this.dataSource._updateChangeSubscription();
-    this.product.reset('');
-    this.calculate_total();
-  }
-
-  del_item(i: number) {
-    this.details.splice(i, 1);
-    this.dataSource._updateChangeSubscription();
-    this.calculate_total();
-  }
-
-  increase_qty(i: number) {
-    this.details[i].quantity = this.details[i].quantity + 1;
-    this.calculate_total();
-  }
-
-  decrease_qty(i: number) {
-    if (this.details[i].quantity <= 1) {
-      this.details[i].quantity = 1;
-    } else {
-      this.details[i].quantity = this.details[i].quantity - 1;
-    }
-    this.calculate_total();
-  }
-
-  keyupPrice(event: Event, i: number) {
-    const input = event.target as HTMLInputElement;
-    this.details[i].price = Number(input.value) || 1;
-    this.calculate_total();
-  }
-
-  keyupQuantity(event: Event, i: number) {
-    const input = event.target as HTMLInputElement;
-    this.details[i].quantity = Number(input.value) || 1;
-    this.calculate_total();
-  }
-
-  calculate_total() {
-    let total = 0;
-    let count = 0;
-    for (let item of this.details) {
-      total += item.price * item.quantity;
-      count += item.quantity;
-    }
-    this.total = total;
-    this.count = count;
-    localStorage.setItem('details', JSON.stringify(this.details));
-  }
-
-  create_data() {
-    if (this.details.length === 0) {
-      this.alertService.error('Seleccione un producto.');
-      return;
-    }
-
-    if (this.supplier.invalid) {
-      this.supplier.markAsTouched();
-      return;
-    }
-
-    const data: any = {
-      supplier: this.supplier.value,
-      amount: this.total,
-      details: this.details,
-    };
-
-    this.loadButton = true;
-    this.purchaseService.create_purchase(data).subscribe({
+  init_purchases(page?: number, limit?: number, start?: string, end?: string) {
+    const params = start && end ? { page, limit, start, end } : { page, limit };
+    this.spinner.show();
+    this.purchaseService.read_purchases(params).subscribe({
       next: (res) => {
-        this.loadButton = false;
-        if (!res.data) {
-          return this.alertService.error(res.msg);
-        }
-        this.supplier.reset('');
-        this.details = [];
-        this.dataSource = new MatTableDataSource(this.details);
-        this.alertService.success('Se registró correctamente');
-        localStorage.setItem('details', JSON.stringify(this.details));
-        this.calculate_total();
+        res.docs.map((item) => (item.supplier = item.supplier.name));
+        this.dataSource = new MatTableDataSource(res.docs);
+        this.dataSource.sort = this.sort;
+        this.totalItems = res.totalDocs;
+        this.pageIndex = res.page - 1;
+        this.pageSize = res.limit;
+        this.spinner.hide();
       },
       error: (err) => {
-        this.loadButton = false;
         console.log(err);
+        this.spinner.hide();
       },
     });
   }
 
-  init_suppliers() {
-    this.supplierService.read_all_suppliers().subscribe({
-      next: (res) => {
-        this.suppliers = res.data;
-        this.suppliersOptions = res.data;
-      },
+  pageChanged(event: PageEvent) {
+    this.currentPage = event.pageIndex + 1;
+    this.pageSize = event.pageSize;
+
+    const queryParams = {
+      page: this.currentPage === 1 ? undefined : this.currentPage,
+      limit: this.pageSize === 10 ? undefined : this.pageSize,
+    };
+
+    this.router.navigate([], {
+      queryParams,
+      queryParamsHandling: 'merge',
     });
   }
 
-  init_products() {
-    this.productService.read_all_products().subscribe({
-      next: (res) => {
-        this.products = res;
-        this.productsOptions = res;
-      },
-    });
-  }
-
-  create_supplier(): void {
-    const dialogRef = this.dialog.open(FormsSupplierComponent, {
-      data: { data: null, new_data: true },
-      autoFocus: false,
-      width: '400px',
-    });
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        this.init_suppliers();
+  rangeChanged() {
+    this.range.valueChanges.pipe(pairwise()).subscribe(([prev, curr]) => {
+      if (curr.start && curr.end && curr.end !== prev.end) {
+        this.start = moment(curr.start).format('DD-MM-YYYY');
+        this.end = moment(curr.end).format('DD-MM-YYYY');
+        this.router.navigate([], {
+          queryParams: { start: this.start, end: this.end },
+          queryParamsHandling: 'merge',
+        });
       }
     });
+  }
+
+  onReset() {
+    this.range.reset();
+    this.router.navigate([], { queryParams: {} });
+  }
+
+  private setValuesDate() {
+    if (this.start && this.end) {
+      const startDate = this.transformDate(this.start);
+      const endDate = this.transformDate(this.end);
+      this.range.setValue({ start: startDate, end: endDate });
+    }
+  }
+
+  private transformDate(date: string): Date {
+    const dateParts = date.split('-');
+    const fixedDate = `${dateParts[1]}-${dateParts[0]}-${dateParts[2]}`;
+    return new Date(fixedDate);
   }
 }

@@ -1,0 +1,44 @@
+mat-list-item {
+  cursor: pointer !important;
+}
+
+mat-icon {
+  margin-right: 10px !important;
+}
+
+.active {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.expansion-active {
+  background-color: white !important;
+  .mat-expansion-panel-header {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+}
+
+// Mat Expansion styles
+::ng-deep .mat-expansion-panel {
+  border-radius: 0px !important ;
+}
+
+::ng-deep .mat-expansion-panel-header {
+  height: 48px !important;
+  padding: 0 16px !important;
+  font-size: 16px;
+  font-weight: normal;
+}
+
+::ng-deep .mat-expansion-panel-body {
+  padding: 0 !important;
+}
+
+::ng-deep .mat-expansion-panel-content {
+  span {
+    margin-left: 15px !important;
+  }
+  mat-nav-list {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
+}

@@ -1,45 +1,57 @@
 <mat-sidenav-container class="sidenav-container" [ngClass]="{ 'dark-theme': isDarkTheme }">
-  
-    <mat-sidenav #drawer class="sidenav" fixedInViewport
-        [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
-        [mode]="(isHandset$ | async) ? 'over' : 'side'"
-        [opened]="(isHandset$ | async) === false">
-      <mat-toolbar routerLink="/dashboard">
-        <span>POS SYSTEM</span>
-      </mat-toolbar>
-      <mat-nav-list>
-        <ng-container *ngFor="let item of sidebar">
-          <mat-list-item *ngIf="isAllowed(item.path)" [routerLink]="item.path" routerLinkActive="active">
-           <div class="d-flex gap-2">
-              <mat-icon [fontIcon]="item.icon"></mat-icon><span class="mt-1">{{ item.title }}</span>
-           </div>
-          </mat-list-item>
-        </ng-container>
-      </mat-nav-list>
-    </mat-sidenav>
-    
-    <mat-sidenav-content class="mat-app-background">
-      <mat-toolbar color="primary">
+  <mat-sidenav #drawer class="sidenav" fixedInViewport
+  [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
+  [mode]="(isHandset$ | async) ? 'over' : 'side'"
+  [opened]="(isHandset$ | async) === false">
+  <mat-toolbar routerLink="/dashboard">
+     <span>POS SYSTEM</span>
+  </mat-toolbar>
+  <mat-nav-list>
+     <ng-container *ngFor="let item of sidebar">
+        <ng-container *ngIf="isAllowed(item.path)" [ngTemplateOutlet]="item.children ?  childMenu : parentMenu" [ngTemplateOutletContext]="{ menu : item }"></ng-container>
+     </ng-container>
+  </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content class="mat-app-background">
+     <mat-toolbar color="primary">
         <button mat-icon-button mat-icon-button (click)="drawer.toggle()">
-          <mat-icon fontIcon="menu"></mat-icon>
+           <mat-icon fontIcon="menu"></mat-icon>
         </button>
         <span class="spacer"></span>
         <button mat-icon-button (click)="changeTheme()">
-          <mat-icon *ngIf="isDarkTheme" fontIcon="sunny"></mat-icon>
-          <mat-icon *ngIf="!isDarkTheme" fontIcon="bedtime"></mat-icon>
+           <mat-icon *ngIf="isDarkTheme" fontIcon="sunny"></mat-icon>
+           <mat-icon *ngIf="!isDarkTheme" fontIcon="bedtime"></mat-icon>
         </button>
         <button mat-button [matMenuTriggerFor]="menu">{{ user.full_name | titlecase }}</button>
         <mat-menu #menu="matMenu">
-          <button mat-menu-item>Mi Perfil</button>
-          <button (click)="logout()" mat-menu-item>Salir</button>
+           <button mat-menu-item>Mi Perfil</button>
+           <button (click)="logout()" mat-menu-item>Salir</button>
         </mat-menu>
-      </mat-toolbar>
-      <div class="progress-container">
+     </mat-toolbar>
+     <div class="progress-container">
         <mat-progress-bar *ngIf="loading | async" mode="indeterminate" color="warn"></mat-progress-bar>
-      </div>
-      <div class="container mt-5">
+     </div>
+     <div class="container mt-5">
         <ng-content></ng-content>
-      </div>
-    </mat-sidenav-content>
-  
-  </mat-sidenav-container>
+     </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>
+
+<ng-template #parentMenu let-item="menu">
+  <mat-list-item [routerLink]="item.path" routerLinkActive="active">
+     <mat-icon [fontIcon]="item.icon"></mat-icon>{{ item.title }}
+  </mat-list-item>
+</ng-template>
+
+<ng-template #childMenu let-item="menu">
+  <mat-expansion-panel [expanded]="isExpanded(item.children)" [class.mat-elevation-z0]="true" routerLinkActive="expansion-active">
+     <mat-expansion-panel-header>
+        <mat-icon [fontIcon]="item.icon"></mat-icon>{{ item.title }}
+     </mat-expansion-panel-header>
+     <mat-nav-list>
+        <mat-list-item *ngFor="let subitem of item.children" [routerLink]="subitem.path" routerLinkActive="active" [routerLinkActiveOptions]="{ exact : true }">
+         {{ subitem.title }}
+        </mat-list-item>
+     </mat-nav-list>
+  </mat-expansion-panel>
+</ng-template>

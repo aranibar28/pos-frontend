@@ -2,9 +2,13 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-index-sale',
+  selector: 'app-details-sale',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './index-sale.component.html',
+  templateUrl: './details-sale.component.html',
+  styles: [
+  ]
 })
-export class IndexSaleComponent {}
+export class DetailsSaleComponent {
+
+}
