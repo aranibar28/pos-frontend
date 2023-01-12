@@ -180,6 +180,7 @@ export class IndexPurchaseComponent implements OnInit, AfterViewInit {
         this.dataSource = new MatTableDataSource(this.details);
         this.alertService.success('Se registró correctamente');
         localStorage.setItem('details', JSON.stringify(this.details));
+        this.calculate_total();
       },
       error: (err) => {
         this.loadButton = false;

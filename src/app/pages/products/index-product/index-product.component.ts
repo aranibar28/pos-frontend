@@ -26,7 +26,6 @@ const columns = [
   'stock',
   'price',
   'status',
-  'created_at',
   'actions',
 ];
 
@@ -112,10 +111,8 @@ export class IndexProductComponent implements OnInit {
   }
 
   init_categories() {
-    this.categoryService.read_all_categories().subscribe({
-      next: (res) => {
-        this.categories = res.data;
-      },
+    this.categoryService.read_all_categories().subscribe((res) => {
+      this.categories = res;
     });
   }
 
