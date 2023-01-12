@@ -51,7 +51,7 @@ export class DashboardComponent {
 
   isExpanded(children: any[]): boolean {
     return children.some((child) =>
-      this.router.url.endsWith('/dashboard/' + child.path)
+      this.router.url.startsWith('/dashboard/' + child.path)
     );
   }
 
