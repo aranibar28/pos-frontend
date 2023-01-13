@@ -6,7 +6,7 @@ import { Directive, Input, HostListener } from '@angular/core';
 })
 export class LengthNumberDirective {
   @Input('lengthNumber') length: number = 0;
-  @Input('typeLetter') type: string = '';
+  @Input('typeLetter') letter: string = '';
 
   @HostListener('keypress', ['$event']) onKeyPress(event: KeyboardEvent) {
     this.onlyNumber(event);
@@ -19,8 +19,8 @@ export class LengthNumberDirective {
       event.preventDefault();
     }
 
-    if (this.type && inputElement.value.length === 0) {
-      inputElement.value = this.type;
+    if (this.letter && inputElement.value.length === 0) {
+      inputElement.value = this.letter;
     }
   }
 }

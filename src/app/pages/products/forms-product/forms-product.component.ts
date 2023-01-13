@@ -56,16 +56,15 @@ export class FormsProductComponent implements OnInit {
   }
 
   emitDataToFilter() {
-    this.myForm.controls['category'].valueChanges.subscribe((data) => {
-      this.filterData(data);
-    });
+    const category = this.myForm.controls['category'];
+    category.valueChanges.subscribe((value) => this.filterData(value));
   }
 
-  filterData(data: string) {
-    const value = data.toString().toLowerCase();
-    this.categoriesOptions = this.categories.filter((item) => {
-      return item?.title.toLowerCase().indexOf(value) > -1;
-    });
+  private filterData(value: string | null) {
+    const transformValue = String(value).trim().toLowerCase();
+    this.categoriesOptions = this.categories.filter((item) =>
+      item.title.toLowerCase().includes(transformValue)
+    );
   }
 
   displayFn(category: Category) {
@@ -145,12 +144,13 @@ export class FormsProductComponent implements OnInit {
     return (this.myForm.pristine && this.myForm.valid) || this.loadButton;
   }
 
+  public message: { [key: string]: string } = {};
   isValid(name: string) {
     const input = this.myForm.controls[name];
-    return input.errors && input.touched;
-  }
-
-  showMessage(name: string) {
-    return getErrorMessage(name, this.myForm);
+    if (input.errors && input.touched) {
+      return (this.message[name] = getErrorMessage(name, this.myForm));
+    } else {
+      return (this.message[name] = '');
+    }
   }
 }
