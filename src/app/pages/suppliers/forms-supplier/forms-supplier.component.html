@@ -5,22 +5,22 @@
         <mat-form-field appearance="fill">
            <mat-label>RUC</mat-label>
            <input formControlName="ruc" [lengthNumber]="11" type="text" matInput />
-           <mat-error *ngIf="isValid('ruc')">{{ showMessage('ruc') }}</mat-error>
+           <mat-error *ngIf="showError('ruc')">{{ message['ruc'] }}</mat-error>
         </mat-form-field>
         <mat-form-field appearance="fill">
            <mat-label>Razón Social</mat-label>
            <input formControlName="name" matInput />
-           <mat-error *ngIf="isValid('name')">{{ showMessage('name') }}</mat-error>
+           <mat-error *ngIf="showError('name')">{{ message['name'] }}</mat-error>
         </mat-form-field>
         <mat-form-field appearance="fill">
            <mat-label>Dirección</mat-label>
            <input formControlName="address" matInput />
-           <mat-error *ngIf="isValid('address')">{{ showMessage('address') }}</mat-error>
+           <mat-error *ngIf="showError('address')">{{ message['address'] }}</mat-error>
         </mat-form-field>
         <mat-form-field appearance="fill">
            <mat-label>Teléfono</mat-label>
            <input formControlName="phone" matInput />
-           <mat-error *ngIf="isValid('phone')">{{ showMessage('phone') }}</mat-error>
+           <mat-error *ngIf="showError('phone')">{{ message['phone'] }}</mat-error>
         </mat-form-field>
      </form>
      <div mat-dialog-actions class="mt-3">

@@ -213,13 +213,4 @@ export class IndexConfigComponent implements OnInit, OnDestroy {
         },
       });
   }
-
-  isValid() {
-    const input = this.valueVoucher;
-    return input.errors && input.touched;
-  }
-
-  showMessage() {
-    return getErrorUnitControl(this.valueVoucher);
-  }
 }

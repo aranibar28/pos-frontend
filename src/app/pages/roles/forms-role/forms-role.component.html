@@ -6,6 +6,7 @@
         <mat-form-field appearance="outline">
           <mat-label>Título</mat-label>
           <input formControlName="title" matInput />
+          <mat-error *ngIf="showError('title')">{{ message['title'] }}</mat-error>
         </mat-form-field>
         <section formGroupName="allows" class="list-group">
           <h4 class="mb-0">Módulos:</h4>

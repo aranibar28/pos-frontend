@@ -12,11 +12,12 @@ import { BusinessService } from 'src/app/services/business.service';
 import { AlertService } from 'src/app/common/alert.service';
 
 import { ConfirmDialogComponent } from 'src/app/shared/confirm-dialog/confirm-dialog.component';
-import { FormsAllowsComponent } from '../forms-allows/forms-allows.component';
+import { FormsBranchComponent } from '../forms-branch/forms-branch.component';
 import { FormsRoleComponent } from '../forms-role/forms-role.component';
 import { FormsBusinessComponent } from '../forms-business/forms-business.component';
 import { User, Rol, Business, UserRole } from 'src/app/utils/intefaces';
 import { RequireMatch } from 'src/app/utils/require-match';
+import { getErrorMessage } from 'src/app/utils/validators';
 
 import {
   SHARED_MODULES,
@@ -187,7 +188,7 @@ export class IndexRoleComponent implements OnInit {
   }
 
   update_data(item: any) {
-    const dialogRef = this.dialog.open(FormsAllowsComponent, {
+    const dialogRef = this.dialog.open(FormsBranchComponent, {
       data: {
         data: item,
         roles: this.roles,
@@ -303,5 +304,15 @@ export class IndexRoleComponent implements OnInit {
         });
       }
     });
+  }
+
+  public message: { [key: string]: string } = {};
+  showError(name: string) {
+    const input = this.myForm.controls[name];
+    if (input.errors && input.touched) {
+      return (this.message[name] = getErrorMessage(name, this.myForm));
+    } else {
+      return (this.message[name] = '');
+    }
   }
 }

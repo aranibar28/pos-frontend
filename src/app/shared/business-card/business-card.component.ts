@@ -39,15 +39,15 @@ export class BusinessCardComponent implements OnInit, OnChanges {
   private authService = inject(AuthService);
   private fb = inject(FormBuilder);
 
-  public company: Business = this.authService.company;
-  public config: Config = this.authService.config;
-
   public myForm: FormGroup = this.fb.group({
     type: [null, Validators.required],
     serie: [null, Validators.required],
     number: [null, [Validators.required, Validators.minLength(7)]],
   });
 
+  public company: Business = this.authService.company;
+  public config: Config = this.authService.config;
+  public message: { [key: string]: string } = {};
   public form = this.myForm.controls;
   public serie = [];
   public number = [];
@@ -98,12 +98,12 @@ export class BusinessCardComponent implements OnInit, OnChanges {
     });
   }
 
-  isValid(name: string) {
+  showError(name: string) {
     const input = this.myForm.controls[name];
-    return input.errors && input.touched;
-  }
-
-  showMessage(name: string) {
-    return getErrorMessage(name, this.myForm);
+    if (input.errors && input.touched) {
+      return (this.message[name] = getErrorMessage(name, this.myForm));
+    } else {
+      return (this.message[name] = '');
+    }
   }
 }

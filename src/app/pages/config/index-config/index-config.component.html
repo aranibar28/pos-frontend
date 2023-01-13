@@ -57,7 +57,7 @@
               <mat-form-field>
                  <mat-label>Serie</mat-label>
                  <input [formControl]="valueVoucher" [lengthNumber]="4" [typeLetter]="letter" #input matInput placeholder="Ejemplo: F001">
-                 <mat-error *ngIf="isValid()">{{ showMessage() }}</mat-error>
+                 <mat-error *ngIf="valueVoucher.errors && valueVoucher.touched">Este campo es obligatorio con un mínimo de 4 caracteres.</mat-error>
               </mat-form-field>
               <button (click)="addVoucher()" mat-mini-fab color="primary" type="button" class="mt-2 ms-3">
                  <mat-icon fontIcon="add"></mat-icon>
@@ -111,7 +111,7 @@
            </div>
         </div>
         <div class="col-md-6 mx-auto text-center">
-         <button (click)="onSubmit()" [disabled]="loadButton" mat-raised-button color="primary" type="button">Guardar</button>
+         <button (click)="onSubmit()" [disabled]="loadButton" color="primary" type="button" mat-raised-button>Guardar</button>
         </div>
      </form>
   </mat-card-content>

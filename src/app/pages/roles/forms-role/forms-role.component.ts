@@ -8,6 +8,7 @@ import { RoleService } from 'src/app/services/role.service';
 import { AlertService } from 'src/app/common/alert.service';
 import { sidebar, modules } from 'src/app/utils/sidebar';
 import { FORMS_MODULES } from 'src/app/utils/modules';
+import { getErrorMessage } from 'src/app/utils/validators';
 
 @Component({
   selector: 'app-forms-role',
@@ -133,5 +134,15 @@ export class FormsRoleComponent implements OnInit {
 
   onLoading(): boolean {
     return (this.myForm.pristine && this.myForm.valid) || this.loadButton;
+  }
+
+  public message: { [key: string]: string } = {};
+  showError(name: string) {
+    const input = this.myForm.controls[name];
+    if (input.errors && input.touched) {
+      return (this.message[name] = getErrorMessage(name, this.myForm));
+    } else {
+      return (this.message[name] = '');
+    }
   }
 }

@@ -5,12 +5,12 @@
         <mat-form-field appearance="fill">
            <mat-label>Título</mat-label>
            <input formControlName="title" matInput />
-           <mat-error *ngIf="isValid('title')">{{ message['title'] }}</mat-error>
+           <mat-error *ngIf="showError('title')">{{ message['title'] }}</mat-error>
         </mat-form-field>
         <mat-form-field appearance="fill">
            <mat-label>Categoría</mat-label>
            <input matInput formControlName="category" [matAutocomplete]="auto">
-           <mat-error *ngIf="isValid('category')">{{ message['category'] }}</mat-error>
+           <mat-error *ngIf="showError('category')">{{ message['category'] }}</mat-error>
            <button (click)="myForm.controls['category'].setValue('')" *ngIf="myForm.controls['category'].value" matSuffix mat-icon-button>
            <mat-icon fontIcon="close"></mat-icon>
            </button>
@@ -21,12 +21,12 @@
         <mat-form-field appearance="fill">
            <mat-label>Descripción</mat-label>
            <textarea formControlName="description" matInput></textarea>
-           <mat-error *ngIf="isValid('description')">{{ message['description'] }}</mat-error>
+           <mat-error *ngIf="showError('description')">{{ message['description'] }}</mat-error>
         </mat-form-field>
         <mat-form-field appearance="fill">
            <mat-label>Precio</mat-label>
            <input formControlName="price" type="number" matInput class="input-number"/>
-           <mat-error *ngIf="isValid('price')">{{ message['price'] }}</mat-error>
+           <mat-error *ngIf="showError('price')">{{ message['price'] }}</mat-error>
            <mat-icon matSuffix fontIcon="attach_money"></mat-icon>
         </mat-form-field>
         <mat-slide-toggle formControlName="status" color="primary">Estado</mat-slide-toggle>

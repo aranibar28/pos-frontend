@@ -4,23 +4,19 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
-import { ProductService } from 'src/app/services/product.service';
-import { AlertService } from 'src/app/common/alert.service';
-import { RequireMatch } from 'src/app/utils/require-match';
-import { getErrorMessage } from 'src/app/utils/validators';
-import { FORMS_MODULES } from 'src/app/utils/modules';
-import { Category, User } from 'src/app/utils/intefaces';
-import { Rol, Business } from '../../../utils/intefaces';
 import { RoleService } from 'src/app/services/role.service';
+import { AlertService } from 'src/app/common/alert.service';
+import { User, Rol, Business } from 'src/app/utils/intefaces';
+import { FORMS_MODULES } from 'src/app/utils/modules';
 
 @Component({
-  selector: 'app-forms-allows',
+  selector: 'app-forms-branch',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, FORMS_MODULES],
-  templateUrl: './forms-allows.component.html',
+  templateUrl: './forms-branch.component.html',
 })
-export class FormsAllowsComponent implements OnInit {
-  private dialogRef = inject(MatDialogRef<FormsAllowsComponent>);
+export class FormsBranchComponent implements OnInit {
+  private dialogRef = inject(MatDialogRef<FormsBranchComponent>);
   private dialogData = inject(MAT_DIALOG_DATA);
 
   private roleService = inject(RoleService);
@@ -88,14 +84,5 @@ export class FormsAllowsComponent implements OnInit {
 
   onLoading(): boolean {
     return (this.myForm.pristine && this.myForm.valid) || this.loadButton;
-  }
-
-  isValid(name: string) {
-    const input = this.myForm.controls[name];
-    return input.errors && input.touched;
-  }
-
-  showMessage(name: string) {
-    return getErrorMessage(name, this.myForm);
   }
 }

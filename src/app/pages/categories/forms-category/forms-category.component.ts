@@ -103,12 +103,13 @@ export class FormsCategoryComponent implements OnInit {
     return (this.myForm.pristine && this.myForm.valid) || this.loadButton;
   }
 
-  isValid(name: string) {
+  public message: { [key: string]: string } = {};
+  showError(name: string) {
     const input = this.myForm.controls[name];
-    return input.errors && input.touched;
-  }
-
-  showMessage(name: string) {
-    return getErrorMessage(name, this.myForm);
+    if (input.errors && input.touched) {
+      return (this.message[name] = getErrorMessage(name, this.myForm));
+    } else {
+      return (this.message[name] = '');
+    }
   }
 }

@@ -145,7 +145,7 @@ export class FormsProductComponent implements OnInit {
   }
 
   public message: { [key: string]: string } = {};
-  isValid(name: string) {
+  showError(name: string) {
     const input = this.myForm.controls[name];
     if (input.errors && input.touched) {
       return (this.message[name] = getErrorMessage(name, this.myForm));

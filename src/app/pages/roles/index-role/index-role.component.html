@@ -12,6 +12,7 @@
                      <mat-option [value]="" disabled>Seleccionar</mat-option>
                      <mat-option *ngFor="let item of roles" [value]="item._id">{{ item.title }}</mat-option>
                   </mat-select>
+                  <mat-error *ngIf="showError('role')">{{ message['role'] }}</mat-error>
                </mat-form-field>
                <div class="d-flex gap-2 mx-3 mt-2">
                   <button (click)="create_role()" mat-mini-fab color="primary" type="button">
@@ -32,6 +33,7 @@
                      <mat-option [value]="" disabled>Seleccionar</mat-option>
                      <mat-option *ngFor="let item of businesses" [value]="item._id">{{ item.title }}</mat-option>
                   </mat-select>
+                  <mat-error *ngIf="showError('business')">{{ message['business'] }}</mat-error>
                </mat-form-field>
                <div  class="d-flex gap-2 mx-3 mt-2">
                   <button (click)="create_business()" mat-mini-fab color="primary" type="button">
@@ -49,6 +51,7 @@
                <mat-form-field  appearance="outline">
                   <mat-label>Buscar Usuario</mat-label>
                   <input matInput formControlName="user" [matAutocomplete]="auto">
+                  <mat-error *ngIf="showError('user')">{{ message['user'] }}</mat-error>
                   <button (click)="myForm.controls['user'].setValue('')" *ngIf="myForm.controls['user'].value" matSuffix mat-icon-button>
                      <mat-icon fontIcon="close"></mat-icon>
                   </button>

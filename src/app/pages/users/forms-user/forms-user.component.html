@@ -5,7 +5,7 @@
         <mat-form-field appearance="fill">
            <mat-label>DNI</mat-label>
            <input formControlName="dni" [lengthNumber]="8" type="text" matInput />
-           <mat-error *ngIf="isValid('dni')">{{ showMessage('dni') }}</mat-error>
+           <mat-error *ngIf="showError('dni')">{{ message['dni'] }}</mat-error>
         </mat-form-field>
         <mat-form-field appearance="fill">
            <mat-label>Nombres</mat-label>
@@ -18,7 +18,7 @@
         <mat-form-field appearance="fill">
            <mat-label>Email</mat-label>
            <input formControlName="email" matInput placeholder="example@gmail.com">
-           <mat-error *ngIf="isValid('email')">{{ showMessage('email') }}</mat-error>
+           <mat-error *ngIf="showError('email')">{{ message['email'] }}</mat-error>
         </mat-form-field>
         <mat-form-field appearance="fill">
            <mat-label>Password</mat-label>
@@ -26,7 +26,7 @@
            <button mat-icon-button matSuffix (click)="hide = !hide">
               <mat-icon>{{ hide ? 'visibility_off' : 'visibility' }}</mat-icon>
            </button>
-           <mat-error *ngIf="isValid('password')">{{ showMessage('password') }}</mat-error>
+           <mat-error *ngIf="showError('password')">{{ message['password'] }}</mat-error>
         </mat-form-field>
         <mat-slide-toggle formControlName="status" color="primary">Estado</mat-slide-toggle>
      </form>
