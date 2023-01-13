@@ -134,14 +134,6 @@ export class FormsBusinessComponent implements OnInit {
     return (this.myForm.pristine && this.myForm.valid) || this.loadButton;
   }
 
-  onlyKeyNumber(event: KeyboardEvent, length: number) {
-    const regex = /[0-9]/;
-    const inputElement = event.target as HTMLInputElement;
-    if (!regex.test(event.key) || inputElement.value.length >= length) {
-      event.preventDefault();
-    }
-  }
-
   isValid(name: string) {
     const input = this.myForm.controls[name];
     return input.errors && input.touched;

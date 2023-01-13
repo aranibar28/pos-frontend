@@ -40,6 +40,7 @@ export class IndexConfigComponent implements OnInit, OnDestroy {
 
   public typeVoucher = new FormControl('ticket');
   public valueVoucher = new FormControl(null, validatorSerie);
+  public letter = 'B';
 
   public myForm: FormGroup = this.fb.group({
     tax: [, [Validators.required]],
@@ -121,6 +122,7 @@ export class IndexConfigComponent implements OnInit, OnDestroy {
       this.addItems(data.ticket, 'ticket');
     });
     this.typeVoucher.valueChanges.subscribe(() => {
+      this.letter = this.typeVoucher.value == 'invoice' ? 'F' : 'B';
       this.valueVoucher.reset();
     });
   }
@@ -199,7 +201,7 @@ export class IndexConfigComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (res) => {
           console.log(res);
-          
+
           this.loadButton = false;
           if (!res.data) return this.alertService.error(res.msg);
           this.refreshBusinessConfig();
@@ -210,28 +212,6 @@ export class IndexConfigComponent implements OnInit, OnDestroy {
           console.log(err);
         },
       });
-  }
-
-  onlyKeysVoucher(event: KeyboardEvent, type?: string) {
-    if (!type) {
-      type = this.typeVoucher.value == 'invoice' ? 'F' : 'B';
-    }
-    const regex: RegExp = /[0-9]/;
-    const inputElement = event.target as HTMLInputElement;
-    if (!regex.test(event.key) || inputElement.value.length >= 4) {
-      event.preventDefault();
-    }
-    if (inputElement.value.length === 0) {
-      inputElement.value = type;
-    }
-  }
-
-  onlyKeysNumber(event: KeyboardEvent, length: number) {
-    const regex: RegExp = /[0-9]/;
-    const inputElement = event.target as HTMLInputElement;
-    if (!regex.test(event.key) || inputElement.value.length >= length) {
-      event.preventDefault();
-    }
   }
 
   isValid() {

@@ -36,10 +36,10 @@ export class FormsSupplierComponent implements OnInit {
   public titleButton: string = 'Registrar';
   public colorButton: string = 'primary';
   public loadButton: boolean = false;
-  public loadSearch: boolean = false;
   public id: string = '';
 
   ngOnInit(): void {
+    this.getSunatData();
     const { data, new_data } = this.dialogData;
     if (!new_data) {
       this.titleModal = 'Actualizar Proveedor';
@@ -102,33 +102,22 @@ export class FormsSupplierComponent implements OnInit {
     });
   }
 
-  onSearchRuc() {
-    this.loadSearch = true;
+  getSunatData() {
     const ruc = this.myForm.controls['ruc'];
-
-    if (ruc.invalid) {
-      ruc.markAsTouched();
-      this.loadSearch = false;
-      return;
-    }
-
-    this.authService.consulta_ruc(ruc.value).subscribe({
-      next: (res) => {
-        this.loadSearch = false;
-        if (res.ruc) {
-          this.myForm.patchValue({
-            name: res.razonSocial,
-            address: res.direccion,
-          });
-        } else {
-          this.alertService.error('No se encontraron resultados');
-          this.myForm.patchValue({ name: '', address: '' });
-        }
-      },
-      error: (err) => {
-        this.loadSearch = false;
-        this.alertService.success('Ocurrió un error con la búsqueda.');
-      },
+    ruc.valueChanges.subscribe((res) => {
+      if (String(res).length == 11) {
+        this.authService.consulta_id(res, 'ruc').subscribe((res) => {
+          if (res.ruc) {
+            this.myForm.patchValue({
+              name: res.razonSocial,
+              address: res.direccion,
+            });
+          } else {
+            this.alertService.error('No se encontraron resultados');
+            this.myForm.patchValue({ name: '', address: '' });
+          }
+        });
+      }
     });
   }
 
@@ -151,14 +140,6 @@ export class FormsSupplierComponent implements OnInit {
 
   onLoading(): boolean {
     return (this.myForm.pristine && this.myForm.valid) || this.loadButton;
-  }
-
-  onlyNumber(event: KeyboardEvent) {
-    const regex = /[0-9]/;
-    const inputElement = event.target as HTMLInputElement;
-    if (!regex.test(event.key) || inputElement.value.length >= 11) {
-      event.preventDefault();
-    }
   }
 
   isValid(name: string) {

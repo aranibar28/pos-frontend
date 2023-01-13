@@ -15,6 +15,7 @@ import { AuthService } from 'src/app/services/auth.service';
 import { Business, Config } from 'src/app/utils/intefaces';
 import { ImagePipe } from 'src/app/pipes/image.pipe';
 import { getErrorMessage } from 'src/app/utils/validators';
+import { LengthNumberDirective } from 'src/app/directives/length-number.directive';
 
 @Component({
   selector: 'app-business-card',
@@ -27,6 +28,7 @@ import { getErrorMessage } from 'src/app/utils/validators';
     MatInputModule,
     MatSelectModule,
     MatCardModule,
+    LengthNumberDirective,
   ],
   templateUrl: './business-card.component.html',
 })
@@ -94,14 +96,6 @@ export class BusinessCardComponent implements OnInit, OnChanges {
       const { tax, currency, business } = this.config;
       this.formData.emit({ ...value, tax, currency, business });
     });
-  }
-
-  onlyKeyNumber(event: KeyboardEvent, length: number) {
-    const regex: RegExp = /[0-9]/;
-    const inputElement = event.target as HTMLInputElement;
-    if (!regex.test(event.key) || inputElement.value.length >= length) {
-      event.preventDefault();
-    }
   }
 
   isValid(name: string) {

@@ -31,7 +31,7 @@
                         </mat-form-field>
                         <mat-form-field>
                             <mat-label>Número</mat-label>
-                            <input formControlName="number" (keypress)="onlyKeyNumber($event, 7)" matInput>
+                            <input formControlName="number" [lengthNumber]="7" matInput>
                             <mat-error *ngIf="isValid('number')">{{ showMessage('number') }}</mat-error>
                         </mat-form-field>
                     </div>

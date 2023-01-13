@@ -4,11 +4,7 @@
      <form [formGroup]="myForm" autocomplete="off">
         <mat-form-field appearance="fill">
            <mat-label>DNI</mat-label>
-           <input formControlName="dni" (keypress)="onlyNumber($event)" type="text" matInput />
-           <button (click)="onSearchDni()" type="button" [disabled]="loadSearch" mat-icon-button matSuffix >
-            <mat-icon *ngIf="!loadSearch" color="primary" fontIcon="search"></mat-icon>
-            <mat-icon *ngIf="loadSearch" class="spinning" fontIcon="loop"></mat-icon>
-           </button>
+           <input formControlName="dni" [lengthNumber]="8" type="text" matInput />
            <mat-error *ngIf="isValid('dni')">{{ showMessage('dni') }}</mat-error>
         </mat-form-field>
         <mat-form-field appearance="fill">

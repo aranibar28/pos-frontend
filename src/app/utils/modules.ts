@@ -33,6 +33,7 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatPaginatorIntl } from '@angular/material/paginator';
 import { getEsPaginatorIntl } from '../utils/paginator-intl';
 import { MatDialogModule } from '@angular/material/dialog';
+import { LengthNumberDirective } from 'src/app/directives/length-number.directive';
 
 export const SHARED_MODULES = [
   CommonModule,
@@ -64,6 +65,7 @@ export const FORMS_MODULES = [
   MatSlideToggleModule,
   MatAutocompleteModule,
   MatSelectModule,
+  LengthNumberDirective,
 ];
 
 export const DASHBOARD_MODULES = [

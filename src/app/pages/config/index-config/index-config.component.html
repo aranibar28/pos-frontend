@@ -56,7 +56,7 @@
               </mat-form-field>
               <mat-form-field>
                  <mat-label>Serie</mat-label>
-                 <input [formControl]="valueVoucher" (keypress)="onlyKeysVoucher($event)" #input matInput placeholder="Ejemplo: F001">
+                 <input [formControl]="valueVoucher" [lengthNumber]="4" [typeLetter]="letter" #input matInput placeholder="Ejemplo: F001">
                  <mat-error *ngIf="isValid()">{{ showMessage() }}</mat-error>
               </mat-form-field>
               <button (click)="addVoucher()" mat-mini-fab color="primary" type="button" class="mt-2 ms-3">
@@ -71,11 +71,11 @@
                 <div class="d-flex gap-3" [formGroupName]="i">
                     <mat-form-field>
                       <mat-label>Serie</mat-label>
-                      <input formControlName="serie" (keypress)="onlyKeysVoucher($event, 'B')" matInput placeholder="Serie">
+                      <input formControlName="serie" [lengthNumber]="4" [typeLetter]="'B'" matInput placeholder="Serie">
                     </mat-form-field>
                     <mat-form-field>
                       <mat-label>Número</mat-label>
-                      <input formControlName="number" (keypress)="onlyKeysNumber($event, 7)" matInput placeholder="Número">
+                      <input formControlName="number" [lengthNumber]="7" matInput placeholder="Número">
                     </mat-form-field>
                     <mat-slide-toggle formControlName="status" (change)="changeStatus(i, 'B')" class="mt-4" color="primary"></mat-slide-toggle>
                     <button (click)="removeVoucher(i, 'ticket')" mat-mini-fab color="warn" type="button" class="mt-2">
@@ -93,11 +93,11 @@
                  <div class="d-flex gap-3" [formGroupName]="i">
                     <mat-form-field>
                       <mat-label>Serie</mat-label>
-                      <input formControlName="serie" (keypress)="onlyKeysVoucher($event, 'F')" matInput placeholder="Serie">
+                      <input formControlName="serie" [lengthNumber]="4" [typeLetter]="'F'" matInput placeholder="Serie">
                     </mat-form-field>
                     <mat-form-field>
                       <mat-label>Número</mat-label>
-                      <input formControlName="number" (keypress)="onlyKeysNumber($event, 7)" matInput placeholder="Número">
+                      <input formControlName="number" [lengthNumber]="7" matInput placeholder="Número">
                     </mat-form-field>
                     <mat-slide-toggle formControlName="status" (change)="changeStatus(i, 'F')" class="align-self-center" color="primary"></mat-slide-toggle>
                     <button (click)="removeVoucher(i, 'invoice')" mat-mini-fab color="warn" type="button" class="mt-2">

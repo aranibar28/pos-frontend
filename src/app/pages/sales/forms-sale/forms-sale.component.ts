@@ -247,14 +247,6 @@ export class FormsSaleComponent implements OnInit, AfterViewInit {
     return num.toString().padStart(number.length, '0');
   }
 
-  onlyKeyNumber(event: KeyboardEvent, length: number) {
-    const regex: RegExp = /[0-9]/;
-    const inputElement = event.target as HTMLInputElement;
-    if (!regex.test(event.key) || inputElement.value.length >= length) {
-      event.preventDefault();
-    }
-  }
-
   isValid(name: string) {
     const input = this.myForm.controls[name];
     return input.errors && input.touched;

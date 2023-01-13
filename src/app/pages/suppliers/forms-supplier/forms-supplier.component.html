@@ -4,12 +4,8 @@
      <form [formGroup]="myForm" autocomplete="off">
         <mat-form-field appearance="fill">
            <mat-label>RUC</mat-label>
-           <input formControlName="ruc" (keypress)="onlyNumber($event)" type="text" matInput />
+           <input formControlName="ruc" [lengthNumber]="11" type="text" matInput />
            <mat-error *ngIf="isValid('ruc')">{{ showMessage('ruc') }}</mat-error>
-           <button (click)="onSearchRuc()" type="button" [disabled]="loadSearch" mat-icon-button matSuffix >
-            <mat-icon *ngIf="!loadSearch" color="primary" fontIcon="search"></mat-icon>
-            <mat-icon *ngIf="loadSearch" class="spinning" fontIcon="loop"></mat-icon>
-           </button>
         </mat-form-field>
         <mat-form-field appearance="fill">
            <mat-label>Razón Social</mat-label>

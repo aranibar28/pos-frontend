@@ -8,6 +8,7 @@ import { AuthService } from 'src/app/services/auth.service';
 import { UserService } from 'src/app/services/user.service';
 import { AlertService } from 'src/app/common/alert.service';
 import { getErrorMessage } from 'src/app/utils/validators';
+
 import { FORMS_MODULES } from 'src/app/utils/modules';
 
 @Component({
@@ -46,6 +47,7 @@ export class FormsUserComponent implements OnInit {
   public user: any = {};
 
   ngOnInit(): void {
+    this.getSunatData();
     const { data, new_data } = this.dialogData;
     if (!new_data) {
       this.titleModal = 'Actualizar Usuario';
@@ -57,32 +59,21 @@ export class FormsUserComponent implements OnInit {
     }
   }
 
-  onSearchDni() {
-    this.loadSearch = true;
+  getSunatData() {
     const dni = this.myForm.controls['dni'];
-
-    if (dni.invalid) {
-      dni.markAsTouched();
-      this.loadSearch = false;
-      return;
-    }
-
-    this.authService.consulta_dni(dni.value).subscribe({
-      next: (res) => {
-        this.loadSearch = false;
-        if (res.dni) {
-          const first_name = res.nombres;
-          const last_name = res.apellidoPaterno + ' ' + res.apellidoMaterno;
-          this.myForm.patchValue({ first_name, last_name });
-        } else {
-          this.alertService.error('No se encontraron resultados');
-          this.myForm.patchValue({ first_name: '', last_name: '' });
-        }
-      },
-      error: (err) => {
-        this.loadSearch = false;
-        this.alertService.error('Ocurrió un error con la búsqueda.');
-      },
+    dni.valueChanges.subscribe((res) => {
+      if (String(res).length == 8) {
+        this.authService.consulta_id(res, 'dni').subscribe((res) => {
+          if (res.dni) {
+            const first_name = res.nombres;
+            const last_name = res.apellidoPaterno + ' ' + res.apellidoMaterno;
+            this.myForm.patchValue({ first_name, last_name });
+          } else {
+            this.alertService.error('No se encontraron resultados');
+            this.myForm.patchValue({ first_name: '', last_name: '' });
+          }
+        });
+      }
     });
   }
 
@@ -160,14 +151,6 @@ export class FormsUserComponent implements OnInit {
 
   onClose() {
     this.dialogRef.close(false);
-  }
-
-  onlyNumber(event: KeyboardEvent) {
-    const regex = /[0-9]/;
-    const inputElement = event.target as HTMLInputElement;
-    if (!regex.test(event.key) || inputElement.value.length >= 8) {
-      event.preventDefault();
-    }
   }
 
   isValid(name: string) {
