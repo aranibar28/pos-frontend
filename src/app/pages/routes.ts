@@ -13,13 +13,18 @@ import { FormsPurchaseComponent } from './purchases/forms-purchase/forms-purchas
 import { IndexSaleComponent } from './sales/index-sale/index-sale.component';
 import { FormsSaleComponent } from './sales/forms-sale/forms-sale.component';
 
-export const User: Routes = [
-  { path: '', component: IndexUserComponent, canActivate: [AllowedGuard], title: 'Usuarios', data: { module: 'users' } },
+export const Roles: Routes = [
+  { path: '', component: IndexRoleComponent, canActivate: [AllowedGuard], title: 'Roles', data: { module: 'system' } },
   { path: '**', redirectTo: '' },
 ];
 
-export const Supplier: Routes = [
-  { path: '', component: IndexSupplierComponent, canActivate: [AllowedGuard], title: 'Proveedores', data: { module: 'suppliers' } },
+export const Config: Routes = [
+  { path: '', component: IndexConfigComponent, canActivate: [AllowedGuard], title: 'Config', data: { module: 'system' } },
+  { path: '**', redirectTo: '' },
+];
+
+export const User: Routes = [
+  { path: '', component: IndexUserComponent, canActivate: [AllowedGuard], title: 'Usuarios', data: { module: 'users' } },
   { path: '**', redirectTo: '' },
 ];
 
@@ -30,6 +35,11 @@ export const Category: Routes = [
 
 export const Product: Routes = [
   { path: '', component: IndexProductComponent, canActivate: [AllowedGuard], title: 'Producto', data: { module: 'products' } },
+  { path: '**', redirectTo: '' },
+];
+
+export const Supplier: Routes = [
+  { path: '', component: IndexSupplierComponent, canActivate: [AllowedGuard], title: 'Proveedores', data: { module: 'purchases' } },
   { path: '**', redirectTo: '' },
 ];
 
@@ -45,12 +55,3 @@ export const Sales: Routes = [
   { path: '**', redirectTo: '' },
 ];
 
-export const Roles: Routes = [
-  { path: '', component: IndexRoleComponent, title: 'Roles', data: { module: 'roles' } },
-  { path: '**', redirectTo: '' },
-];
-
-export const Config: Routes = [
-  { path: '', component: IndexConfigComponent, title: 'Config', data: { module: 'config' } },
-  { path: '**', redirectTo: '' },
-];

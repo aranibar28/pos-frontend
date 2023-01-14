@@ -1,23 +1,23 @@
 export const sidebar: any[] = [
   {
+    title: 'Sistema',
+    path: 'system',
+    icon: 'computer',
+    children: [
+      {
+        title: 'Configuración',
+        path: 'config',
+      },
+      {
+        title: 'Permisos',
+        path: 'roles',
+      },
+    ],
+  },
+  {
     title: 'Usuarios',
     path: 'users',
     icon: 'person',
-  },
-  {
-    title: 'Permisos',
-    path: 'roles',
-    icon: 'security',
-  },
-  {
-    title: 'Configuración',
-    path: 'config',
-    icon: 'build',
-  },
-  {
-    title: 'Proveedores',
-    path: 'suppliers',
-    icon: 'local_shipping',
   },
   {
     title: 'Categorias',
@@ -27,7 +27,7 @@ export const sidebar: any[] = [
   {
     title: 'Productos',
     path: 'products',
-    icon: 'all_inbox',
+    icon: 'liquor',
   },
   {
     title: 'Compras',
@@ -41,6 +41,10 @@ export const sidebar: any[] = [
       {
         title: 'Realizar Compra',
         path: 'purchases/create',
+      },
+      {
+        title: 'Proveedores',
+        path: 'suppliers',
       },
     ],
   },
@@ -62,12 +66,10 @@ export const sidebar: any[] = [
 ];
 
 export const modules: any = {
+  system: false,
   users: false,
-  suppliers: false,
   categories: false,
   products: false,
   purchases: false,
   sales: false,
-  roles: false,
-  config: false,
 };
