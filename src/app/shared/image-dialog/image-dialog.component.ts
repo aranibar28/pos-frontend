@@ -55,13 +55,14 @@ export class ImageDialogComponent {
 
   fileChanged(event: Event) {
     const input = event.target as HTMLInputElement;
+    const path = `assets/img/${this.type}.png`;
     const file: File = input.files![0];
     const pattern: RegExp = /image-*/;
     const maxSize = 4000000;
 
     if (!this.isValidFile(file, pattern, maxSize)) {
       this.file = undefined;
-      this.imgSelected = this.imgCurrent;
+      this.imgSelected = this.imgCurrent || path;
       this.disabled = true;
       return;
     }

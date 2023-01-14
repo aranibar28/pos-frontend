@@ -11,8 +11,6 @@ export class DefaultImageDirective {
 
   ngOnInit() {
     const src = this.el.nativeElement.src;
-    console.log(src);
-    
     if (this.type && !src.endsWith('.webp')) {
       this.el.nativeElement.src = `assets/img/${this.type}.png`;
     }
