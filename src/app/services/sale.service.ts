@@ -39,7 +39,7 @@ export class SaleService {
   }
 
   read_sale_by_id(id: string): Observable<any> {
-    const url = `${base_url}/read_sale_by_id/${id}`;
+    const url = `${base_url}/read_sales_by_id/${id}`;
     return this.http.get(url, this.headers);
   }
 }

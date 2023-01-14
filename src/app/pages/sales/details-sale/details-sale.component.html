@@ -1,1 +1,67 @@
-<p>details-sale works!</p>
+<mat-card>
+  <mat-card-content>
+    <ng-container>
+      <h3>Detalles de la venta: {{ data.serie }} - {{ data.number }} del {{ data.created_at | date }}</h3>
+      <p>Cliente: {{ data.customer }} ({{ data.document }}) </p>
+    </ng-container>
+    <table mat-table [dataSource]="dataSource" matSort>
+      <ng-container matColumnDef="image">
+        <th mat-header-cell *matHeaderCellDef>Imagen</th>
+        <td mat-cell *matCellDef="let element">
+           <img [src]="element.image | image: 'products'" loading="lazy" alt="product" class="pointer" style="width: 40px;">
+        </td>
+     </ng-container>
+      <ng-container matColumnDef="product">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Producto</th>
+        <td mat-cell *matCellDef="let element"> {{ element.product }} </td>
+      </ng-container>
+      <ng-container matColumnDef="quantity">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Cantidad</th>
+        <td mat-cell *matCellDef="let element"> {{ element.quantity }} </td>
+      </ng-container>
+      <ng-container matColumnDef="price">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Precio</th>
+        <td mat-cell *matCellDef="let element"> {{ element.price | currency: 'PEN' }} </td>
+      </ng-container>
+      <ng-container matColumnDef="subtotal">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Subtotal</th>
+        <td mat-cell *matCellDef="let element"> {{ element.price * element.quantity | currency: 'PEN' }} </td>
+      </ng-container>
+      <ng-container>
+         <tr *matNoDataRow>
+            <td class="text-center py-4" [attr.colspan]="displayedColumns.length">No se encontraron datos.</td>
+         </tr>
+      </ng-container>
+      <ng-container>
+         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+         <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </ng-container>
+    </table>
+    <div class="row text-center">
+      <div class="col-md-4">
+        <mat-list>
+          <mat-list-item>
+            <span matListItemTitle>Importe:</span>
+            <span matListItemLine>{{ data.amount * (1 - data.tax) | currency: 'PEN' }}</span>
+          </mat-list-item>
+        </mat-list>
+      </div>
+      <div class="col-md-4">
+        <mat-list>
+          <mat-list-item>
+            <span matListItemTitle>IGV: ({{ data.tax * 100 }}%)</span>
+            <span matListItemLine>{{ data.amount * data.tax | currency: 'PEN' }}</span>
+          </mat-list-item>
+        </mat-list>
+      </div>
+      <div class="col-md-4">
+        <mat-list>
+          <mat-list-item>
+            <span matListItemTitle>Total:</span>
+            <span matListItemLine>{{ data.amount | currency: 'PEN' }}</span>
+          </mat-list-item>
+        </mat-list>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>

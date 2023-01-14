@@ -38,7 +38,7 @@ export class PurchaseService {
   }
 
   read_purchase_by_id(id: string): Observable<any> {
-    const url = `${base_url}/read_purchase_by_id/${id}`;
+    const url = `${base_url}/read_purchases_by_id/${id}`;
     return this.http.get(url, this.headers);
   }
 }

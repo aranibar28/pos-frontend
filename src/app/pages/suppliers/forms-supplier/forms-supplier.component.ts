@@ -36,10 +36,10 @@ export class FormsSupplierComponent implements OnInit {
   public titleButton: string = 'Registrar';
   public colorButton: string = 'primary';
   public loadButton: boolean = false;
+
   public id: string = '';
 
   ngOnInit(): void {
-    this.getSunatData();
     const { data, new_data } = this.dialogData;
     if (!new_data) {
       this.titleModal = 'Actualizar Proveedor';
@@ -48,6 +48,7 @@ export class FormsSupplierComponent implements OnInit {
       this.myForm.patchValue(data);
       this.id = data._id;
     }
+    this.getSunatData();
   }
 
   create_data() {

@@ -11,11 +11,13 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
+import { MatDialog } from '@angular/material/dialog';
 
+import { DetailsPurchaseComponent } from '../details-purchase/details-purchase.component';
 import { PurchaseService } from 'src/app/services/purchase.service';
 import { Purchase } from 'src/app/utils/intefaces';
 import { SHARED_MODULES, TABLE_MODULES } from 'src/app/utils/modules';
-const columns = ['supplier', 'amount', 'created_at'];
+const columns = ['supplier', 'amount', 'created_at', 'actions'];
 
 @Component({
   selector: 'app-index-purchase',
@@ -35,6 +37,7 @@ export class IndexPurchaseComponent implements OnInit {
   private purchaseService = inject(PurchaseService);
   private activatedRoute = inject(ActivatedRoute);
   private spinner = inject(NgxSpinnerService);
+  private dialog = inject(MatDialog);
   private router = inject(Router);
   private fb = inject(FormBuilder);
 
@@ -82,7 +85,10 @@ export class IndexPurchaseComponent implements OnInit {
     this.spinner.show();
     this.purchaseService.read_purchases(params).subscribe({
       next: (res) => {
-        res.docs.map((item) => (item.supplier = item.supplier.name));
+        res.docs.map((item) => {
+          item.document = item.supplier.ruc;
+          item.supplier = item.supplier.name;
+        });
         this.dataSource = new MatTableDataSource(res.docs);
         this.dataSource.sort = this.sort;
         this.totalItems = res.totalDocs;
@@ -128,6 +134,13 @@ export class IndexPurchaseComponent implements OnInit {
   onReset() {
     this.range.reset();
     this.router.navigate([], { queryParams: {} });
+  }
+
+  showDetails(data: any) {
+    this.dialog.open(DetailsPurchaseComponent, {
+      data: data,
+      width: '780px',
+    });
   }
 
   private setValuesDate() {

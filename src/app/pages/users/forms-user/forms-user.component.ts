@@ -47,7 +47,6 @@ export class FormsUserComponent implements OnInit {
   public user: any = {};
 
   ngOnInit(): void {
-    this.getSunatData();
     const { data, new_data } = this.dialogData;
     if (!new_data) {
       this.titleModal = 'Actualizar Usuario';
@@ -57,6 +56,7 @@ export class FormsUserComponent implements OnInit {
       this.id = data._id;
       this.myForm.controls['password'].value;
     }
+    this.getSunatData();
   }
 
   getSunatData() {

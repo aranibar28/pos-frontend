@@ -15,8 +15,18 @@ import { MatSort } from '@angular/material/sort';
 import { SaleService } from 'src/app/services/sale.service';
 import { Sale } from 'src/app/utils/intefaces';
 import { SHARED_MODULES, TABLE_MODULES } from 'src/app/utils/modules';
+import { MatDialog } from '@angular/material/dialog';
+import { DetailsSaleComponent } from '../details-sale/details-sale.component';
 
-const columns = ['customer', 'type', 'voucher', 'amount', 'tax', 'created_at'];
+const columns = [
+  'customer',
+  'type',
+  'voucher',
+  'amount',
+  'tax',
+  'created_at',
+  'actions',
+];
 
 @Component({
   selector: 'app-index-sale',
@@ -36,6 +46,7 @@ export class IndexSaleComponent implements OnInit {
   private saleService = inject(SaleService);
   private activatedRoute = inject(ActivatedRoute);
   private spinner = inject(NgxSpinnerService);
+  private dialog = inject(MatDialog);
   private router = inject(Router);
   private fb = inject(FormBuilder);
 
@@ -62,12 +73,7 @@ export class IndexSaleComponent implements OnInit {
         this.pageSize = limit || 10;
         this.start = start;
         this.end = end;
-        this.init_purchases(
-          this.currentPage,
-          this.pageSize,
-          this.start,
-          this.end
-        );
+        this.init_data(this.currentPage, this.pageSize, this.start, this.end);
       }
     );
     this.rangeChanged();
@@ -78,7 +84,7 @@ export class IndexSaleComponent implements OnInit {
     this.subscription.unsubscribe();
   }
 
-  init_purchases(page?: number, limit?: number, start?: string, end?: string) {
+  init_data(page?: number, limit?: number, start?: string, end?: string) {
     const params = start && end ? { page, limit, start, end } : { page, limit };
     this.spinner.show();
     this.saleService.read_sales(params).subscribe({
@@ -122,6 +128,13 @@ export class IndexSaleComponent implements OnInit {
           queryParamsHandling: 'merge',
         });
       }
+    });
+  }
+
+  showDetails(data: any) {
+    this.dialog.open(DetailsSaleComponent, {
+      data: data,
+      width: '780px',
     });
   }
 
