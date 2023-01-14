@@ -46,35 +46,6 @@ export class ImageDialogComponent {
     }
   }
 
-  onSubmit() {
-    this.loadButton = true;
-    if (this.file) {
-      this.productService
-        .upload_image(this.id, this.type, this.file)
-        .subscribe({
-          next: (res) => {
-            this.loadButton = false;
-            if (res.data) {
-              this.alertService.success('Se subió la imagen correctamente.');
-              this.dialogRef.close(true);
-            } else {
-              this.alertService.error(res.msg);
-            }
-          },
-          error: (err) => {
-            this.loadButton = false;
-            console.log(err);
-          },
-        });
-    } else {
-      this.loadButton = false;
-    }
-  }
-
-  onClose() {
-    this.dialogRef.close(false);
-  }
-
   fileChanged(event: Event) {
     const input = event.target as HTMLInputElement;
     const file: File = input.files![0];
@@ -108,5 +79,34 @@ export class ImageDialogComponent {
       return false;
     }
     return true;
+  }
+
+  onSubmit() {
+    this.loadButton = true;
+    if (this.file) {
+      this.productService
+        .upload_image(this.id, this.type, this.file)
+        .subscribe({
+          next: (res) => {
+            this.loadButton = false;
+            if (res.data) {
+              this.alertService.success('Se subió la imagen correctamente.');
+              this.dialogRef.close(true);
+            } else {
+              this.alertService.error(res.msg);
+            }
+          },
+          error: (err) => {
+            this.loadButton = false;
+            console.log(err);
+          },
+        });
+    } else {
+      this.loadButton = false;
+    }
+  }
+
+  onClose() {
+    this.dialogRef.close(false);
   }
 }

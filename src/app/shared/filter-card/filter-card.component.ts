@@ -1,9 +1,7 @@
-import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
-import { EventEmitter, Output, OnInit } from '@angular/core';
+import { Component, Output, OnInit, EventEmitter, inject } from '@angular/core';
+import { ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { debounceTime } from 'rxjs';
 
 import { MatCardModule } from '@angular/material/card';

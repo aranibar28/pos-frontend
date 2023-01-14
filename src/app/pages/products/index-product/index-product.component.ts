@@ -18,6 +18,7 @@ import { ProductService } from 'src/app/services/product.service';
 import { AlertService } from 'src/app/common/alert.service';
 import { Product, Category } from 'src/app/utils/intefaces';
 import { SHARED_MODULES, TABLE_MODULES } from 'src/app/utils/modules';
+import { BrokenImageDirective } from 'src/app/directives/broken-image.directive';
 
 const columns = [
   'image',
@@ -37,6 +38,7 @@ const columns = [
     TABLE_MODULES,
     FilterCardComponent,
     FilterButtonComponent,
+    BrokenImageDirective
   ],
   templateUrl: './index-product.component.html',
 })

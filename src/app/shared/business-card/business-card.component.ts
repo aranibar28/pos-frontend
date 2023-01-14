@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
-import { OnChanges, SimpleChanges } from '@angular/core';
-import { Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, inject } from '@angular/core';
+import { OnChanges, SimpleChanges, EventEmitter } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { debounceTime } from 'rxjs';
@@ -13,8 +12,8 @@ import { MatCardModule } from '@angular/material/card';
 
 import { AuthService } from 'src/app/services/auth.service';
 import { Business, Config } from 'src/app/utils/intefaces';
-import { ImagePipe } from 'src/app/pipes/image.pipe';
 import { getErrorMessage } from 'src/app/utils/validators';
+import { ImagePipe } from 'src/app/pipes/image.pipe';
 import { LengthNumberDirective } from 'src/app/directives/length-number.directive';
 
 @Component({
@@ -22,13 +21,13 @@ import { LengthNumberDirective } from 'src/app/directives/length-number.directiv
   standalone: true,
   imports: [
     CommonModule,
-    ImagePipe,
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
     MatCardModule,
     LengthNumberDirective,
+    ImagePipe,
   ],
   templateUrl: './business-card.component.html',
 })
@@ -66,10 +65,9 @@ export class BusinessCardComponent implements OnInit, OnChanges {
   }
 
   updateCorrelative(type: 'ticket' | 'invoice', number: string) {
-    if (this.form['serie'].value) {
-      let i = this.config[type].findIndex(
-        (x: any) => x.serie === this.form['serie'].value
-      );
+    const serie = this.form['serie'].value;
+    if (serie) {
+      let i = this.config[type].findIndex((x: any) => x.serie === serie);
       this.config[type][i].number = number;
     }
   }
@@ -89,7 +87,7 @@ export class BusinessCardComponent implements OnInit, OnChanges {
 
     serieChanges.subscribe((serie) => {
       const index = this.serie.findIndex((item) => item === serie);
-      this.form['number'].setValue(this.number[index]);
+      this.form['number'].setValue(this.number[index] || '');
     });
 
     formChanges.subscribe((value) => {
