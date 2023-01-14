@@ -14,6 +14,7 @@ import { Product, Details } from 'src/app/utils/intefaces';
 import { numberToCardinal } from 'src/app/utils/written-number';
 import { getErrorMessage } from 'src/app/utils/validators';
 import { BusinessCardComponent } from 'src/app/shared/business-card/business-card.component';
+import { DefaultImageDirective } from 'src/app/directives/default-image.directive';
 
 import {
   SHARED_MODULES,
@@ -36,6 +37,7 @@ const validatorRUC = [Validators.required, Validators.pattern(/^[0-9]{11}$/)];
     MatDatepickerModule,
     MatNativeDateModule,
     MatListModule,
+    DefaultImageDirective,
   ],
   templateUrl: './forms-sale.component.html',
 })
@@ -100,7 +102,10 @@ export class FormsSaleComponent implements OnInit, AfterViewInit {
   }
 
   private updateTotal(data: Details[]) {
-    this.amount = data.reduce((acc, item) => acc + item.price * item.quantity, 0);
+    this.amount = data.reduce(
+      (acc, item) => acc + item.price * item.quantity,
+      0
+    );
     this.opGrav = this.amount * (1 - this.tax);
     this.amountLetters = numberToCardinal(this.amount, this.currency);
     localStorage.setItem('details', JSON.stringify(this.details));

@@ -13,8 +13,8 @@ import { MatCardModule } from '@angular/material/card';
 import { AuthService } from 'src/app/services/auth.service';
 import { Business, Config } from 'src/app/utils/intefaces';
 import { getErrorMessage } from 'src/app/utils/validators';
-import { ImagePipe } from 'src/app/pipes/image.pipe';
 import { LengthNumberDirective } from 'src/app/directives/length-number.directive';
+import { DefaultImageDirective } from 'src/app/directives/default-image.directive';
 
 @Component({
   selector: 'app-business-card',
@@ -27,7 +27,7 @@ import { LengthNumberDirective } from 'src/app/directives/length-number.directiv
     MatSelectModule,
     MatCardModule,
     LengthNumberDirective,
-    ImagePipe,
+    DefaultImageDirective,
   ],
   templateUrl: './business-card.component.html',
 })

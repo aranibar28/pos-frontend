@@ -8,7 +8,7 @@
         <ng-container matColumnDef="image">
           <th mat-header-cell *matHeaderCellDef>Imagen</th>
           <td mat-cell *matCellDef="let element">
-             <img [src]="element.image | image: 'products'" loading="lazy" alt="product" class="pointer" style="width: 40px;">
+             <img [src]="element.image" default-image="product" alt="product" loading="lazy" class="pointer" style="width: 40px;">
           </td>
        </ng-container>
         <ng-container matColumnDef="product">

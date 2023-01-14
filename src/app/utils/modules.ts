@@ -4,7 +4,6 @@ import { RouterModule } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import { StatusPipe } from 'src/app/pipes/status.pipe';
-import { ImagePipe } from 'src/app/pipes/image.pipe';
 
 // Angular Material Dashboard Modules
 import { MatButtonModule } from '@angular/material/button';
@@ -34,6 +33,7 @@ import { MatPaginatorIntl } from '@angular/material/paginator';
 import { getEsPaginatorIntl } from '../utils/paginator-intl';
 import { MatDialogModule } from '@angular/material/dialog';
 import { LengthNumberDirective } from 'src/app/directives/length-number.directive';
+import { DefaultImageDirective } from 'src/app/directives/default-image.directive';
 
 export const SHARED_MODULES = [
   CommonModule,
@@ -50,8 +50,8 @@ export const TABLE_MODULES = [
   MatPaginatorModule,
   MatChipsModule,
   MatSortModule,
+  DefaultImageDirective,
   StatusPipe,
-  ImagePipe,
 ];
 
 export const FORMS_MODULES = [

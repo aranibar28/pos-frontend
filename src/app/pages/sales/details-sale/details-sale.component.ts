@@ -4,17 +4,23 @@ import { Component, OnInit, inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatCardModule } from '@angular/material/card';
-
-import { SaleService } from 'src/app/services/sale.service';
-import { Details } from 'src/app/utils/intefaces';
-import { ImagePipe } from 'src/app/pipes/image.pipe';
 import { MatListModule } from '@angular/material/list';
+
+import { Details } from 'src/app/utils/intefaces';
+import { SaleService } from 'src/app/services/sale.service';
+import { DefaultImageDirective } from 'src/app/directives/default-image.directive';
 const columns = ['image', 'product', 'quantity', 'price', 'subtotal'];
 
 @Component({
   selector: 'app-details-sale',
   standalone: true,
-  imports: [CommonModule, MatCardModule, MatTableModule, MatListModule, ImagePipe],
+  imports: [
+    CommonModule,
+    MatCardModule,
+    MatTableModule,
+    MatListModule,
+    DefaultImageDirective,
+  ],
   templateUrl: './details-sale.component.html',
 })
 export class DetailsSaleComponent implements OnInit {

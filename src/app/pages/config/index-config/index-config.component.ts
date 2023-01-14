@@ -9,8 +9,6 @@ import { BusinessService } from 'src/app/services/business.service';
 
 import { FORMS_MODULES } from 'src/app/utils/modules';
 import { Business, Config } from 'src/app/utils/intefaces';
-import { getErrorUnitControl } from 'src/app/utils/validators';
-import { ImagePipe } from 'src/app/pipes/image.pipe';
 import { ImageDialogComponent } from 'src/app/shared/image-dialog/image-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 
@@ -20,7 +18,7 @@ const validatorNumber = [Validators.required, Validators.minLength(7)];
 @Component({
   selector: 'app-index-config',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, ImagePipe, FORMS_MODULES],
+  imports: [CommonModule, ReactiveFormsModule, FORMS_MODULES],
   templateUrl: './index-config.component.html',
 })
 export class IndexConfigComponent implements OnInit, OnDestroy {

@@ -6,7 +6,7 @@
           <label for="imageUpload"><i class="material-icons">edit</i></label>
       </div>
       <div class="avatar-preview">
-          <img [src]="imgSelected | image: type">
+          <img [src]="imgSelected" [default-image]="type">
       </div>
       <p class="text-center mt-3 mb-0">{{ title }}</p>
     </div>

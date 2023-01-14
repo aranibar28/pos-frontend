@@ -5,7 +5,8 @@ import { MatButtonModule } from '@angular/material/button';
 
 import { UploadService } from 'src/app/common/upload.service';
 import { AlertService } from 'src/app/common/alert.service';
-import { ImagePipe } from 'src/app/pipes/image.pipe';
+
+import { DefaultImageDirective } from 'src/app/directives/default-image.directive';
 
 import {
   MatDialogRef,
@@ -16,7 +17,13 @@ import {
 @Component({
   selector: 'app-image-dialog',
   standalone: true,
-  imports: [CommonModule, MatCardModule, MatDialogModule, MatButtonModule, ImagePipe],
+  imports: [
+    CommonModule,
+    MatCardModule,
+    MatDialogModule,
+    MatButtonModule,
+    DefaultImageDirective,
+  ],
   templateUrl: './image-dialog.component.html',
   styleUrls: ['./image-dialog.component.scss'],
 })
