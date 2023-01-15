@@ -16,6 +16,7 @@ const routes: Routes = [
       { path: 'suppliers', loadChildren: () => import('./pages/routes').then((routes) => routes.Supplier) },
       { path: 'categories', loadChildren: () => import('./pages/routes').then((routes) => routes.Category) },
       { path: 'products', loadChildren: () => import('./pages/routes').then((routes) => routes.Product) },
+      { path: 'inventories', loadChildren: () => import('./pages/routes').then((routes) => routes.Inventory) },
       { path: 'purchases', loadChildren: () => import('./pages/routes').then((routes) => routes.Purchase) },
       { path: 'sales', loadChildren: () => import('./pages/routes').then((routes) => routes.Sales) },
       { path: 'roles', loadChildren: () => import('./pages/routes').then((routes) => routes.Roles) },

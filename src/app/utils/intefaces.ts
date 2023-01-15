@@ -119,6 +119,14 @@ export interface Supplier {
   created_at: Date;
   updated_at: Date;
 }
+export interface Inventory {
+  _id: string;
+  quantity: number;
+  product: Product;
+  supplier: Supplier;
+  created_at: Date;
+  updated_at: Date;
+}
 
 export interface Purchase {
   _id: string;

@@ -72,4 +72,33 @@ export class ProductService {
     const url = `${base_url}/delete_product/${id}`;
     return this.http.delete(url, this.headers);
   }
+
+  // INVENTORY SYSTEM
+  create_inventory(data: any): Observable<any> {
+    const url = `${base_url}/create_inventory`;
+    return this.http.post(url, data, this.headers);
+  }
+
+  read_inventory(parameters: any): Observable<Response> {
+    const { page, limit, start, end } = parameters;
+
+    let params = new HttpParams().set('page', page).set('limit', limit);
+
+    if (start && end) {
+      params = params.set('start', start).set('end', end);
+    }
+
+    const url = `${base_url}/read_inventory_input`;
+    return this.http.get<Response>(url, { ...this.headers, params });
+  }
+
+  read_inventory_output(): Observable<any> {
+    const url = `${base_url}/read_inventory_output`;
+    return this.http.get(url, this.headers);
+  }
+
+  delete_inventory(id: string): Observable<any> {
+    const url = `${base_url}/delete_inventory/${id}`;
+    return this.http.delete(url, this.headers);
+  }
 }

@@ -20,14 +20,34 @@ export const sidebar: any[] = [
     icon: 'person',
   },
   {
+    title: 'Proveedores',
+    path: 'suppliers',
+    icon: 'local_shipping',
+  },
+  {
     title: 'Categorias',
     path: 'categories',
-    icon: 'apps',
+    icon: 'category',
   },
   {
     title: 'Productos',
     path: 'products',
     icon: 'liquor',
+  },
+  {
+    title: 'Inventario',
+    path: 'inventories',
+    icon: 'apps',
+    children: [
+      {
+        title: 'Lista de Entradas',
+        path: 'inventories',
+      },
+      {
+        title: 'Lista de Salidas',
+        path: 'inventories/output',
+      },
+    ],
   },
   {
     title: 'Compras',
@@ -41,10 +61,6 @@ export const sidebar: any[] = [
       {
         title: 'Realizar Compra',
         path: 'purchases/create',
-      },
-      {
-        title: 'Proveedores',
-        path: 'suppliers',
       },
     ],
   },
@@ -68,8 +84,10 @@ export const sidebar: any[] = [
 export const modules: any = {
   system: false,
   users: false,
+  suppliers: false,
   categories: false,
   products: false,
+  inventories: false,
   purchases: false,
   sales: false,
 };
