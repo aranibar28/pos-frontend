@@ -15,6 +15,7 @@ import { numberToCardinal } from 'src/app/utils/written-number';
 import { getErrorMessage } from 'src/app/utils/validators';
 import { BusinessCardComponent } from 'src/app/shared/business-card/business-card.component';
 import { DefaultImageDirective } from 'src/app/directives/default-image.directive';
+import { FormatNumberDirective } from 'src/app/directives/format-number.directive';
 
 import {
   SHARED_MODULES,
@@ -38,6 +39,7 @@ const validatorRUC = [Validators.required, Validators.pattern(/^[0-9]{11}$/)];
     MatNativeDateModule,
     MatListModule,
     DefaultImageDirective,
+    FormatNumberDirective,
   ],
   templateUrl: './forms-sale.component.html',
 })
@@ -102,10 +104,7 @@ export class FormsSaleComponent implements OnInit, AfterViewInit {
   }
 
   private updateTotal(data: Details[]) {
-    this.amount = data.reduce(
-      (acc, item) => acc + item.price * item.quantity,
-      0
-    );
+    this.amount = data.reduce((acc, item) => acc + item.price * item.quantity, 0);
     this.opGrav = this.amount * (1 - this.tax);
     this.amountLetters = numberToCardinal(this.amount, this.currency);
     localStorage.setItem('details', JSON.stringify(this.details));
@@ -147,12 +146,6 @@ export class FormsSaleComponent implements OnInit, AfterViewInit {
     this.dataSource.data = this.details;
   }
 
-  changedPrice(event: Event, i: number) {
-    const input = event.target as HTMLInputElement;
-    this.details[i].price = Number(input.value) || 1;
-    this.dataSource.data = this.details;
-  }
-
   changedQuantity(event: Event, item: any, i: number) {
     const input = event.target as HTMLInputElement;
     const product = this.products.find((x) => x._id === item.product);
@@ -161,6 +154,12 @@ export class FormsSaleComponent implements OnInit, AfterViewInit {
     this.details[i].quantity = value;
     this.dataSource.data = this.details;
     input.value = value.toString();
+  }
+
+  changedPrice(event: Event, i: number) {
+    const input = event.target as HTMLInputElement;
+    this.details[i].price = Number(input.value) || 1;
+    this.dataSource.data = this.details;
   }
 
   getFormData(data: any) {
