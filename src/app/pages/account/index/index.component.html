@@ -2,46 +2,77 @@
   <div class="col-md-3">
     <mat-card>
       <mat-card-content>
-        <mat-card-title>Total Ventas {{ year }}</mat-card-title>
-        <mat-card-subtitle>{{ total_earnings | currency: 'PEN' }}</mat-card-subtitle>
+        <mat-card-subtitle>Total Ventas {{ year }}</mat-card-subtitle>
+        <mat-card-title>{{ total_current_year | currency: 'PEN' }}</mat-card-title>
+        <p>Ventas {{ year - 1 }}: {{ total_last_year | currency: 'PEN' }}</p>
       </mat-card-content>
     </mat-card>
   </div>
   <div class="col-md-3">
     <mat-card>
       <mat-card-content>
-        <mat-card-title>Total Ventas {{ month }}</mat-card-title>
-        <mat-card-subtitle>{{ current_earnings | currency: 'PEN' }}</mat-card-subtitle>
+        <mat-card-subtitle>Total Ventas {{ month }}</mat-card-subtitle>
+        <mat-card-title>{{ total_current_month | currency: 'PEN' }}</mat-card-title>
+        <p>Ventas {{ last_month }}: {{ total_last_month | currency: 'PEN' }}</p>
       </mat-card-content>
     </mat-card>
   </div>
   <div class="col-md-3">
     <mat-card>
       <mat-card-content>
-        <mat-card-title>Productos</mat-card-title>
-        <mat-card-subtitle>{{ products }}</mat-card-subtitle>
+        <mat-card-subtitle>Productos</mat-card-subtitle>
+        <mat-card-title>{{ products }}</mat-card-title>
+        <a routerLink="/dashboard/products">Ver lista</a>
       </mat-card-content>
     </mat-card>
   </div>
   <div class="col-md-3">
     <mat-card>
       <mat-card-content>
-        <mat-card-title>Usuarios</mat-card-title>
-        <mat-card-subtitle>{{ users }}</mat-card-subtitle>
+        <mat-card-subtitle>Usuarios</mat-card-subtitle>
+        <mat-card-title>{{ users }}</mat-card-title>
+        <a routerLink="/dashboard/users">Ver lista</a>
       </mat-card-content>
     </mat-card>
   </div>
 </div>
 
-<div class="row my-5">
+<div class="row my-3">
   <div class="col-md-12">
     <mat-card>
       <mat-card-content>
-        <h4>Ventas {{ year }}</h4>
+        <h4 class="text-center">Ventas de los últimos 12 meses</h4>
         <div class="row">
-           <div class="col-12">
-              <canvas id="myChart" height="200"></canvas>
-           </div>
+          <div class="col-12">
+            <canvas id="myChart" height="200"></canvas>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-6">
+    <mat-card>
+      <mat-card-content>
+        <h4 class="text-center">TOP 5 Productos más vendidos</h4>
+        <div class="row">
+          <div class="col-12">
+            <canvas id="topProducts" height="300"></canvas>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+  <div class="col-md-6">
+    <mat-card>
+      <mat-card-content>
+        <h4 class="text-center">Rendimiento de Comprobantes</h4>
+        <div class="row">
+          <div class="col-12">
+            <canvas id="typeSales" height="300"></canvas>
+          </div>
         </div>
       </mat-card-content>
     </mat-card>

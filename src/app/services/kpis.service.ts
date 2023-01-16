@@ -27,4 +27,14 @@ export class KpisService {
     const url = `${base_url}/kpi_earnings`;
     return this.http.get(url, this.headers);
   }
+
+  kpi_top_products(): Observable<any> {
+    const url = `${base_url}/kpi_top_products`;
+    return this.http.get(url, this.headers);
+  }
+
+  kpi_type_sales(): Observable<any> {
+    const url = `${base_url}/kpi_type_sales`;
+    return this.http.get(url, this.headers);
+  }
 }
