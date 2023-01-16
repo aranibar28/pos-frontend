@@ -1,0 +1,49 @@
+<div class="row">
+  <div class="col-md-3">
+    <mat-card>
+      <mat-card-content>
+        <mat-card-title>Total Ventas {{ year }}</mat-card-title>
+        <mat-card-subtitle>{{ total_earnings | currency: 'PEN' }}</mat-card-subtitle>
+      </mat-card-content>
+    </mat-card>
+  </div>
+  <div class="col-md-3">
+    <mat-card>
+      <mat-card-content>
+        <mat-card-title>Total Ventas {{ month }}</mat-card-title>
+        <mat-card-subtitle>{{ current_earnings | currency: 'PEN' }}</mat-card-subtitle>
+      </mat-card-content>
+    </mat-card>
+  </div>
+  <div class="col-md-3">
+    <mat-card>
+      <mat-card-content>
+        <mat-card-title>Productos</mat-card-title>
+        <mat-card-subtitle>{{ products }}</mat-card-subtitle>
+      </mat-card-content>
+    </mat-card>
+  </div>
+  <div class="col-md-3">
+    <mat-card>
+      <mat-card-content>
+        <mat-card-title>Usuarios</mat-card-title>
+        <mat-card-subtitle>{{ users }}</mat-card-subtitle>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
+
+<div class="row my-5">
+  <div class="col-md-12">
+    <mat-card>
+      <mat-card-content>
+        <h4>Ventas {{ year }}</h4>
+        <div class="row">
+           <div class="col-12">
+              <canvas id="myChart" height="200"></canvas>
+           </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

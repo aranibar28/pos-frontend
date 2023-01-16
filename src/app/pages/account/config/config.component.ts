@@ -16,12 +16,12 @@ const validatorSerie = [Validators.required, Validators.minLength(4)];
 const validatorNumber = [Validators.required, Validators.minLength(7)];
 
 @Component({
-  selector: 'app-index-config',
+  selector: 'app-config',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, FORMS_MODULES],
-  templateUrl: './index-config.component.html',
+  templateUrl: './config.component.html',
 })
-export class IndexConfigComponent implements OnInit, OnDestroy {
+export class ConfigComponent implements OnInit, OnDestroy {
   private destroyed$ = new Subject<void>();
   private authService = inject(AuthService);
   private businessService = inject(BusinessService);

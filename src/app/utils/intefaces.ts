@@ -32,14 +32,13 @@ export interface Rol {
 }
 
 export interface AllowsRoles {
+  system: boolean;
   users: boolean;
   suppliers: boolean;
   categories: boolean;
   products: boolean;
-  purchases: boolean;
-  sales: boolean;
-  roles: boolean;
   inventories: boolean;
+  sales: boolean;
 }
 
 export interface Business {

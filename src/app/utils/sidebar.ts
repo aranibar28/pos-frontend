@@ -50,21 +50,6 @@ export const sidebar: any[] = [
     ],
   },
   {
-    title: 'Compras',
-    path: 'purchases',
-    icon: 'inventory',
-    children: [
-      {
-        title: 'Lista de Compras',
-        path: 'purchases',
-      },
-      {
-        title: 'Realizar Compra',
-        path: 'purchases/create',
-      },
-    ],
-  },
-  {
     title: 'Ventas',
     path: 'sales',
     icon: 'shopping_cart',
@@ -88,6 +73,5 @@ export const modules: any = {
   categories: false,
   products: false,
   inventories: false,
-  purchases: false,
   sales: false,
 };

@@ -21,8 +21,9 @@ import { Inventory } from 'src/app/utils/intefaces';
 import { SHARED_MODULES, TABLE_MODULES } from 'src/app/utils/modules';
 import { FormsInventoryComponent } from '../forms-inventory/forms-inventory.component';
 import { ConfirmDialogComponent } from 'src/app/shared/confirm-dialog/confirm-dialog.component';
+import { DefaultImageDirective } from 'src/app/directives/default-image.directive';
 
-const columns = ['product', 'supplier', 'quantity', 'created_at', 'actions'];
+const columns = ['product', 'quantity', 'supplier', 'created_at', 'actions'];
 
 @Component({
   selector: 'app-index-inventory',
@@ -33,6 +34,7 @@ const columns = ['product', 'supplier', 'quantity', 'created_at', 'actions'];
     MatFormFieldModule,
     MatDatepickerModule,
     MatNativeDateModule,
+    DefaultImageDirective,
   ],
   templateUrl: './index-inventory.component.html',
 })
@@ -92,6 +94,7 @@ export class IndexInventoryComponent implements OnInit {
     this.productService.read_inventory(params).subscribe({
       next: (res) => {
         res.docs.map((item) => {
+          item.image = item.product.image?.secure_url;
           item.product = item.product.title;
           item.supplier = item.supplier.name;
         });

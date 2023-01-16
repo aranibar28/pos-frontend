@@ -92,9 +92,17 @@ export class ProductService {
     return this.http.get<Response>(url, { ...this.headers, params });
   }
 
-  read_inventory_output(): Observable<any> {
+  read_inventory_output(parameters: any): Observable<any> {
+    const { page, limit, start, end } = parameters;
+
+    let params = new HttpParams().set('page', page).set('limit', limit);
+
+    if (start && end) {
+      params = params.set('start', start).set('end', end);
+    }
+
     const url = `${base_url}/read_inventory_output`;
-    return this.http.get(url, this.headers);
+    return this.http.get<Response>(url, { ...this.headers, params });
   }
 
   delete_inventory(id: string): Observable<any> {

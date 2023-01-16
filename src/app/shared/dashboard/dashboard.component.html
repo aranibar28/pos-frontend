@@ -7,6 +7,9 @@
       <span>POS SYSTEM</span>
    </mat-toolbar>
    <mat-nav-list>
+      <mat-list-item routerLink="index" routerLinkActive="active">
+         <mat-icon fontIcon="home"></mat-icon> Inicio
+      </mat-list-item>
       <ng-container *ngFor="let item of sidebar">
          <ng-container *ngIf="isAllowed(item.path)" [ngTemplateOutlet]="item.children ?  childMenu : parentMenu" [ngTemplateOutletContext]="{ menu : item }"></ng-container>
       </ng-container>

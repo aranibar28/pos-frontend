@@ -1,8 +1,10 @@
 import { Routes } from '@angular/router';
 import { AllowedGuard } from '../guards/allowed.guard';
 
+import { IndexComponent } from './account/index/index.component';
+import { ConfigComponent } from './account/config/config.component';
+
 import { IndexRoleComponent } from './roles/index-role/index-role.component';
-import { IndexConfigComponent } from './config/index-config/index-config.component';
 import { IndexUserComponent } from './users/index-user/index-user.component';
 import { IndexCategoryComponent } from './categories/index-category/index-category.component';
 import { IndexProductComponent } from './products/index-product/index-product.component';
@@ -10,18 +12,21 @@ import { IndexSupplierComponent } from './suppliers/index-supplier/index-supplie
 
 import { IndexInventoryComponent } from './inventories/index-inventory/index-inventory.component';
 import { OutputInventoryComponent } from './inventories/output-inventory/output-inventory.component';
-import { IndexPurchaseComponent } from './purchases/index-purchase/index-purchase.component';
-import { FormsPurchaseComponent } from './purchases/forms-purchase/forms-purchase.component';
 import { IndexSaleComponent } from './sales/index-sale/index-sale.component';
 import { FormsSaleComponent } from './sales/forms-sale/forms-sale.component';
 
-export const Roles: Routes = [
-  { path: '', component: IndexRoleComponent, canActivate: [AllowedGuard], title: 'Roles', data: { module: 'system' } },
+export const Index: Routes = [
+  { path: '', component: IndexComponent, title: 'Dashboard' },
   { path: '**', redirectTo: '' },
 ];
 
 export const Config: Routes = [
-  { path: '', component: IndexConfigComponent, canActivate: [AllowedGuard], title: 'Config', data: { module: 'system' } },
+  { path: '', component: ConfigComponent, canActivate: [AllowedGuard], title: 'Config', data: { module: 'system' } },
+  { path: '**', redirectTo: '' },
+];
+
+export const Role: Routes = [
+  { path: '', component: IndexRoleComponent, canActivate: [AllowedGuard], title: 'Roles', data: { module: 'system' } },
   { path: '**', redirectTo: '' },
 ];
 
@@ -48,12 +53,6 @@ export const Product: Routes = [
 export const Inventory: Routes = [
   { path: '', component: IndexInventoryComponent, canActivate: [AllowedGuard], title: 'Inventarios', data: { module: 'inventories' } },
   { path: 'output', component: OutputInventoryComponent, canActivate: [AllowedGuard], title: 'Inventarios', data: { module: 'inventories' } },
-  { path: '**', redirectTo: '' },
-];
-
-export const Purchase: Routes = [
-  { path: '', component: IndexPurchaseComponent, canActivate: [AllowedGuard], title: 'Compras', data: { module: 'purchases' } },
-  { path: 'create', component: FormsPurchaseComponent, canActivate: [AllowedGuard], title: 'Compras', data: { module: 'purchases' } },
   { path: '**', redirectTo: '' },
 ];
 

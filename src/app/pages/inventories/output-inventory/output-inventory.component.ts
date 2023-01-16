@@ -11,18 +11,12 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
-import { MatDialog } from '@angular/material/dialog';
 
-import { Product, Supplier } from 'src/app/utils/intefaces';
 import { ProductService } from 'src/app/services/product.service';
-import { SupplierService } from 'src/app/services/supplier.service';
-import { AlertService } from 'src/app/common/alert.service';
 import { Inventory } from 'src/app/utils/intefaces';
 import { SHARED_MODULES, TABLE_MODULES } from 'src/app/utils/modules';
-import { FormsInventoryComponent } from '../forms-inventory/forms-inventory.component';
-import { ConfirmDialogComponent } from 'src/app/shared/confirm-dialog/confirm-dialog.component';
 
-const columns = ['product', 'customer', 'quantity', 'created_at', 'actions'];
+const columns = ['product', 'quantity', 'customer', 'created_at', 'actions'];
 
 @Component({
   selector: 'app-output-inventory',
@@ -41,9 +35,7 @@ export class OutputInventoryComponent implements OnInit {
   private subscription: Subscription = new Subscription();
   private productService = inject(ProductService);
   private activatedRoute = inject(ActivatedRoute);
-  private alertService = inject(AlertService);
   private spinner = inject(NgxSpinnerService);
-  private dialog = inject(MatDialog);
   private router = inject(Router);
   private fb = inject(FormBuilder);
 
@@ -84,16 +76,14 @@ export class OutputInventoryComponent implements OnInit {
   init_data(page?: number, limit?: number, start?: string, end?: string) {
     const params = start && end ? { page, limit, start, end } : { page, limit };
     this.spinner.show();
-    this.productService.read_inventory_output().subscribe({
+    this.productService.read_inventory_output(params).subscribe({
       next: (res) => {
-        console.log(res);
-
-        res.data.map((item: any) => {
+        res.docs.map((item: any) => {
+          item.image = item.product.image?.secure_url;
           item.product = item.product.title;
           item.customer = item.sale.customer;
-          item.created_at = item.sale.created_at;
         });
-        this.dataSource = new MatTableDataSource(res.data);
+        this.dataSource = new MatTableDataSource(res.docs);
         this.dataSource.sort = this.sort;
         this.totalItems = res.totalDocs;
         this.pageIndex = res.page - 1;
