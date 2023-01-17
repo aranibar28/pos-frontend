@@ -182,7 +182,7 @@ export class IndexProductComponent implements OnInit {
 
   update_image(item: Product) {
     const dialogRef = this.dialog.open(ImageDialogComponent, {
-      data: { data: item, type: 'product' },
+      data: { data: item, type: 'products' },
       width: '400px',
     });
     dialogRef.afterClosed().subscribe((result) => {
