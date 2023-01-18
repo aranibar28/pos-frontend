@@ -1,0 +1,15 @@
+{
+    "routes": [
+        {
+            "src": "/api/.*",
+            "dest": "https://$1",
+            "headers": {
+                "response": {
+                    "Location": {
+                        "force": true
+                    }
+                }
+            }
+        }
+    ]
+}
